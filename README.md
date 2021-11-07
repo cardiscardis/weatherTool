@@ -1,3 +1,85 @@
+Edited readme
+-------------
+
+Installing node dependencies
+----------------------------
+All files except the node modules have been pushed. This means that all node dependencies must be installed before starting the app.
+To install all required node dependencies, from datable root folder run:
+npm install
+
+The same dependencies are used by the React app.
+
+running sql server
+------------------
+However, before running the app, You must serve sql whether locally using e.g. xampp, or remotely, using the aws-hosted sql database.
+The same data contained in the aws-hosted sql database was used for the entire project.
+
+Authentication and request servers
+----------------------------------
+After running the sql server, you will need to run both node server and fastapi server 
+(You could create multiple terminals in VS Code for easily running each servers in one place). 
+I used node.js to handle all authentication requests which stores user information in the sql database, but Fastapi handles all user requests.
+
+Running node (Authentication) server
+------------------------------------
+However to run node.js server, sql credentials must be supplied to the node app.
+Using your editor, navigate to:
+server/config/db.config.js (to change sql credentials)
+
+You may want to change your secret key to something more secure for production. Navigate to:
+server/config/auth.config.js (to change your secret key).
+
+then run from cli:
+cd server (to change to node directory)
+node server (to start the node server)
+
+Running FastApi (User Request) server
+--------------------------------
+To run FastApi server, first, you need to input the sql credentials required.
+Using your editor, navigate to:
+server/fastapi/.env (and replace the credentials as required).
+
+Then run the following commands from cli:
+
+cd server/fastapi (to change diretory to fastapi directory)
+
+pip install --user pipenv (to install pipenv. pipenv would install fastapi dependencies environmentally, unlike pip or pip3. 
+However, you need python and pip for this).
+
+pipenv shell (To initialize a virtual environment for the project).
+
+pipenv install (to install all fastapi dependencies present in the pipfile)
+
+finally, run 
+unicorn main:app --reload (to start the fastapi server).
+
+Running React app
+-----------------
+
+run:
+npm start (to start the app).
+
+Warning
+-------
+The same data in the aws-hosted sql database was used to create this app. If you need to replicate these data on your local machine,
+run the previous python app that scrapes the data to your local sql server. Remember to connect the scraper to your sql server by providing
+the required credentials in the scraper.
+
+Thanks.
+
+Warm Regards, 
+
+Ibukun Olofin.
+giftedcardis@outlook.com
+
+
+
+After installation, also from the datable root folder, run:
+npm start
+to start the app
+
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

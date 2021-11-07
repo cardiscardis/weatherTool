@@ -539,7 +539,12 @@ const Dashboard = (props) => {
         : (filterControl === 'Annual Raw Data') ?
         <Aux>
             <Row>
-                <RawDataTable annual={mainState.forAnnualTable} />
+                <Col md={6} xl={6}>
+                    <RawDataTable annual={mainState.forAnnualTable} />
+                </Col>
+                <Col md={6} xl={6}>
+                    <LineChart data={mainState.lineChartData} />
+                </Col>
             </Row>
         </Aux>  
         : (filterControl === 'Monthly Raw Data') ?

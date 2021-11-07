@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, Table, Form } from 'react-bootstrap' // Tabs, Tab, Form } from 'react-bootstrap';
 
-import Loader from '../../App/layout/Loader'
-import LineChart from "../Charts/Nvd3Chart/LineChart";
-import Aux from "../../hoc/_Aux";
-//import DEMO from "../../store/constant";
 import UserService from "../services/user.service.js"
 import { decimalToFraction } from "../services/decimalToFraction.js"
 import FastService from "../services/fast.service.js"
 
+import Loader from '../../App/layout/Loader'
+import LineChart from "../Charts/Nvd3Chart/LineChart";
+import Aux from "../../hoc/_Aux";
+//import DEMO from "../../store/constant";
 //import avatar1 from '../../assets/images/user/avatar-1.jpg';
 //import avatar2 from '../../assets/images/user/avatar-2.jpg';
 //import avatar3 from '../../assets/images/user/avatar-3.jpg';
+import RawDataTable from '../Tables/BootstrapTable';
+//import { data } from 'jquery';
 
 const getMonthlyMaxMonth = (num) => {
     let month = ''
@@ -64,6 +66,7 @@ const Dashboard = (props) => {
     const [ queryCode, setQueryCode ] = useState('68005');
     const [ isFetching, setIsFetching ] = useState(true);
     const [ mainState, setMainState ] = useState({});     
+    const [ filterControl, setFilterControl ] = useState('Annual Raw Data');
 
     const onChange = (e) => {
         setIsFetching(true);
@@ -85,6 +88,7 @@ const Dashboard = (props) => {
                 mainData.category = "Renewables";               
                 
                 if (codes && data) {
+                    mainData.data = data;
                     //set station codes for form render
                     mainData.stationCodes = codes;                                  
 
@@ -181,6 +185,8 @@ const Dashboard = (props) => {
                     let sumOfRainfallPerYear = {};
                     let sumOfRainfallPerMonth = {};
                     let sumOfRainfallPerFiveYears = {};
+                    let forMonthlyTable = [];
+                    let forAnnualTable = [];
                     
                     //five year basis array.
                     let fiveYearsArr = [];
@@ -298,6 +304,17 @@ const Dashboard = (props) => {
                                         return a + b;
                                     }, 0);
                                     sumOfRainfallPerMonth[arrOfYearAndMonth[k]] = sumOfMonthlyRain;
+                                    
+                                    //array to hold monthly data for monthly component
+                                    forMonthlyTable.push({ 
+                                        product_code: data[k].product_code,
+                                        station_number: data[k].station_number,
+                                        year: data[k].year,
+                                        month: data[k].month,
+                                        rainfall_amount: sumOfMonthlyRain,
+                                        quality: data[k].quality
+                                    });
+
                                     monthArray = [];
 
                                     //all months of the last year.
@@ -305,11 +322,11 @@ const Dashboard = (props) => {
                                         if (sumOfMonthlyRain) {                                            
                                             mainData[getMonthlyMaxMonth(Number(y[1]))] = sumOfMonthlyRain;
                                         } else {                                            
-                                            mainData[getMonthlyMaxMonth(Number(y[1]))] = 'n/a'
-                                        }                                                                        
-                                    }                                    
-                                }                                
-                            }                            
+                                            mainData[getMonthlyMaxMonth(Number(y[1]))] = 'n/a';
+                                        }
+                                    }
+                                }
+                            }
                         }
 
                         //sum of rainfall data by year;
@@ -320,6 +337,8 @@ const Dashboard = (props) => {
 
                         //lineChart Data
                         lineChartData.push({x: year1[i], y: sumOfRainfall});                                            
+
+                        forAnnualTable.push({year: year1[i], rainfall_amount: sumOfRainfall});
                         
                         //last year amount of rain
                         if (i === year1.length - 1) {
@@ -357,10 +376,10 @@ const Dashboard = (props) => {
                         let annualMaxYear = year1[annualMaxIndex];
                         let annualMinYear = year1[annualMinIndex];
 
-                        mainData.annualMax = annualMax;
-                        mainData.annualMaxYear = annualMaxYear;
-                        mainData.annualMin = annualMin;
-                        mainData.annualMinYear = annualMinYear;
+                        mainData.annualMax = annualMax || 'n/a';
+                        mainData.annualMaxYear = annualMaxYear || 'n/a';
+                        mainData.annualMin = annualMin || 'n/a';
+                        mainData.annualMinYear = annualMinYear || 'n/a';
                     }
 
                     // month max, min, month and year name
@@ -377,6 +396,10 @@ const Dashboard = (props) => {
                         mainData.monthlyMaxYear = monthlyMaxDate[0];
                         mainData.monthlyMaxMonth = getMonthlyMaxMonth(Number(monthlyMaxDate[1]));
                     }
+                    
+                    mainData.forMonthlyTable = forMonthlyTable;
+                    mainData.forAnnualTable = forAnnualTable;
+                    console.log(forAnnualTable);
                                         
                     //Five years Average.
                     let annualFiveYearAvg = '';
@@ -389,23 +412,32 @@ const Dashboard = (props) => {
                     mainData.annualFiveYearAvg = annualFiveYearAvg || 'n/a';                        
 
                     //autumn 
-                    if (winter.length && spring.length && summer.length && autumn.length) {
+                    if (winter.length) {
                         mainData.winter = winter.reduce(function(a, b) {
                             return a + b;
                         }, 0);
+                    } else {
+                        mainData.winter = 'n/a';                         
+                    }
+                    if (spring.length) {
                         mainData.spring = spring.reduce(function(a, b) {
                             return a + b;
                         }, 0);
+                    } else {
+                        mainData.spring = 'n/a'; 
+                    }
+                    if (summer.length) {
                         mainData.summer = summer.reduce(function(a, b) {
                             return a + b;
                         }, 0);
+                    } else {                        
+                        mainData.summer = 'n/a'; 
+                    }
+                    if (autumn.length) {
                         mainData.autumn = autumn.reduce(function(a, b) {
                             return a + b;
                         }, 0);
-                    } else {
-                        mainData.winter = 'n/a'; 
-                        mainData.spring = 'n/a'; 
-                        mainData.summer = 'n/a'; 
+                    } else {                     
                         mainData.autumn = 'n/a';
                     }
 
@@ -503,14 +535,130 @@ const Dashboard = (props) => {
     );*/
 
     return (
-        isFetching ? <Loader /> :
+        isFetching ? <Loader /> 
+        : (filterControl === 'Annual Raw Data') ?
+        <Aux>
+            <Row>
+                <RawDataTable annual={mainState.forAnnualTable} />
+            </Row>
+        </Aux>  
+        : (filterControl === 'Monthly Raw Data') ?
+        <Aux>
+            <Row>
+                <RawDataTable monthly={mainState.forMonthlyTable} />
+            </Row>
+        </Aux>  
+        : (filterControl === 'Daily Raw Data') ?
+        <Aux>
+            <Row>
+                <RawDataTable data={mainState.data} />
+            </Row>
+        </Aux>
+        : (filterControl === 'Location Tool') ? 
+        <Aux>
+            <Row>            
+                <Col md={12} xl={12}>
+                <Card>
+                        <Card.Body>
+                            {/*<h6 className='mb-4'>Daily Sales</h6>8*/}
+                            <div className="row d-flex align-items-center">
+                                
+                            <div className="col-7">
+                                    <h6 className="f-w-300 d-flex align-items-center m-b-0">{/*<i className="feather icon-arrow-up text-c-green f-30 m-r-5"/>*/} Weather Station</h6>
+                                </div>
+
+                                <div className="col-5 text-right">
+                                    <p className="m-b-0">{Object.keys(mainState).length ? mainState.location : 'n/a'}</p>
+                                </div>
+                                <hr />
+                                
+                                <div className="col-7">
+                                    <h6 className="f-w-300 d-flex align-items-center m-b-0">{/*<i className="feather icon-arrow-up text-c-green f-30 m-r-5"/>*/} Source</h6>
+                                </div>
+
+                                <div className="col-5 text-right">
+                                    <p className="m-b-0">{Object.keys(mainState).length ? mainState.source ? mainState.source : 'BOM' : 'n/a'}</p>
+                                </div>
+                                <hr />
+                                <div className="col-7">
+                                    <h6 className="f-w-300 d-flex align-items-center m-b-0">{/*<i className="feather icon-arrow-up text-c-green f-30 m-r-5"/>*/} Station Number</h6>
+                                </div>
+
+                                <div className="col-5 text-right">
+                                    <p className="m-b-0">{queryCode ? queryCode : 'n/a'}</p>
+                                </div>
+                                <hr />
+                                <div className="col-7">
+                                    <h6 className="f-w-300 d-flex align-items-center m-b-0">{/*<i className="feather icon-arrow-up text-c-green f-30 m-r-5"/>*/} District</h6>
+                                </div>
+
+                                <div className="col-5 text-right">
+                                    <p className="m-b-0">{Object.keys(mainState).length ? mainState.district ? mainState.district: 'n/a' : 'n/a'}</p>
+                                </div>
+                                <hr />
+                                <div className="col-7">
+                                    <h6 className="f-w-300 d-flex align-items-center m-b-0">{/*<i className="feather icon-arrow-up text-c-green f-30 m-r-5"/>*/} Station Height</h6>
+                                </div>
+
+                                <div className="col-5 text-right">
+                                    <p className="m-b-0">{Object.keys(mainState).length ? mainState.stationHeight ? mainState.stationHeight: 'n/a' : 'n/a'}</p>
+                                </div>
+                                <hr />
+                                <div className="col-7">
+                                    <h6 className="f-w-300 d-flex align-items-center m-b-0">{/*<i className="feather icon-arrow-up text-c-green f-30 m-r-5"/>*/} Year Opened</h6>
+                                </div>
+
+                                <div className="col-5 text-right">
+                                    <p className="m-b-0">{Object.keys(mainState).length ? mainState.yearOpened ? mainState.yearOpened: 'n/a' : 'n/a'}</p>
+                                </div>
+                                <hr />
+                                <div className="col-7">
+                                    <h6 className="f-w-300 d-flex align-items-center m-b-0">{/*<i className="feather icon-arrow-up text-c-green f-30 m-r-5"/>*/} Status</h6>
+                                </div>
+
+                                <div className="col-5 text-right">
+                                    <p className="m-b-0">{Object.keys(mainState).length ? mainState.open ? mainState.open : 'n/a' : 'n/a'}</p>
+                                </div>
+                                <hr />
+                                <div className="col-7">
+                                    <h6 className="f-w-300 d-flex align-items-center m-b-0">{/*<i className="feather icon-arrow-up text-c-green f-30 m-r-5"/>*/} Operational (Years)</h6>
+                                </div>
+
+                                <div className="col-5 text-right">
+                                    <p className="m-b-0">{Object.keys(mainState).length ? mainState.opYears ? mainState.opYears : 'n/a' : 'n/a'}</p>
+                                </div>
+                                <hr />
+                                <div className="col-7">
+                                    <h6 className="f-w-300 d-flex align-items-center m-b-0">{/*<i className="feather icon-arrow-up text-c-green f-30 m-r-5"/>*/} Latitude (decimal)</h6>
+                                </div>
+
+                                <div className="col-5 text-right">
+                                    <p className="m-b-0">{Object.keys(mainState).length ? mainState.latitude ? mainState.latitude : 'n/a' : 'n/a'}</p>
+                                </div>
+                                <hr />
+                                <div className="col-7">
+                                    <h6 className="f-w-300 d-flex align-items-center m-b-0">{/*<i className="feather icon-arrow-up text-c-green f-30 m-r-5"/>*/} Longitude (decimal)</h6>
+                                </div>
+
+                                <div className="col-5 text-right">
+                                    <p className="m-b-0">{Object.keys(mainState).length ? mainState.longitude ? mainState.longitude : 'n/a' : 'n/a'}</p>
+                                </div>
+                            </div>
+                            {/*<div className="progress m-t-30" style={{height: '7px'}}>
+                                <div className="progress-bar progress-c-theme" role="progressbar" style={{width: '50%'}} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"/>
+                            </div>*/}
+                        </Card.Body>
+                    </Card>
+                </Col>
+            </Row>
+        </Aux> : (filterControl === 'Overview') &&
         <Aux>
             <Row>            
                 <Col md={12} xl={12}>
                     <h5>Choose weather type and station number to get started.</h5>
                 </Col>
                 <Col md={6}>
-                    <Form.Control size="lg" as="select" className="mb-3" name='weatherType' onChange={(e) => {onChange(e)}}>
+                    <Form.Control size="lg" as="select" className="mb-3" name='weatherType' value={weatherType} onChange={(e) => {onChange(e)}}>
                             <option>Rainfall</option>
                             <option>Minimum Temperature</option>
                             <option>Maximum Temperature</option>
@@ -518,7 +666,7 @@ const Dashboard = (props) => {
                         </Form.Control> 
                 </Col>
                 <Col md={6}>
-                    <Form.Control size="lg" as="select" className="mb-3" name='queryCode' onChange={(e) => {onChange(e)}}>
+                    <Form.Control size="lg" as="select" className="mb-3" name='queryCode' value={queryCode} onChange={(e) => {onChange(e)}}>
                         {Object.keys(mainState).length &&
                             mainState.stationCodes.map((c, i) => (<option key={i}>{c.code}</option>))}                            
                     </Form.Control>                                        
@@ -535,7 +683,7 @@ const Dashboard = (props) => {
                                 </div>
 
                                 <div className="col-5 text-right">
-                                    <p className="m-b-0">{Object.keys(mainState).length && mainState.location}</p>
+                                    <p className="m-b-0">{Object.keys(mainState).length ? mainState.location : 'n/a'}</p>
                                 </div>
                                 <hr />
                                 <div className="col-7">
@@ -543,15 +691,15 @@ const Dashboard = (props) => {
                                 </div>
 
                                 <div className="col-5 text-right">
-                                    <p className="m-b-0">{Object.keys(mainState).length && mainState.stationState}</p>
+                                    <p className="m-b-0">{Object.keys(mainState).length ? mainState.stationState : 'n/a'}</p>
                                 </div>
                                 <hr />
-                                <div className="col-5">
+                                <div className="col-7">
                                     <h6 className="f-w-300 d-flex align-items-center m-b-0">{/*<i className="feather icon-arrow-up text-c-green f-30 m-r-5"/>*/} Category</h6>
                                 </div>
 
                                 <div className="col-5 text-right">
-                                    <p className="m-b-0">{Object.keys(mainState).length && mainState.category}</p>
+                                    <p className="m-b-0">{Object.keys(mainState).length ? mainState.category : 'n/a'}</p>
                                 </div>
                             </div>
                             {/*<div className="progress m-t-30" style={{height: '7px'}}>
@@ -576,7 +724,7 @@ const Dashboard = (props) => {
                                 </div>
 
                                 <div className="col-5 text-right">
-                                    <p className="m-b-0">Open</p>
+                                    <p className="m-b-0">{mainState.open ? mainState.open : 'n/a'}</p>
                                 </div>
                                 <hr />
                                 <div className="col-7">
@@ -601,7 +749,7 @@ const Dashboard = (props) => {
                                 </div>
 
                                 <div className="col-5 text-right">
-                                    <p className="m-b-0">{`${Number(mainState.annualMax).toFixed(1)} (${mainState.annualMaxYear})`}</p>
+                                    <p className="m-b-0">{(!mainState.annualMax || mainState.annualMax === 'n/a') ? 'n/a (n/a)' : `${Number(mainState.annualMax).toFixed(1)} (${mainState.annualMaxYear})`}</p>
                                 </div>
                                 <hr />
                                 <div className="col-7">
@@ -609,7 +757,7 @@ const Dashboard = (props) => {
                                 </div>
 
                                 <div className="col-5 text-right">
-                                    <p className="m-b-0">{`${Number(mainState.annualMin).toFixed(1)} (${mainState.annualMinYear})`}</p>
+                                    <p className="m-b-0">{(!mainState.annualMin || mainState.annualMin === 'n/a') ? 'n/a (n/a)' : `${Number(mainState.annualMin).toFixed(1)} (${mainState.annualMinYear})`}</p>
                                 </div>
                                 <hr />
                                 <div className="col-7">
@@ -617,7 +765,7 @@ const Dashboard = (props) => {
                                 </div>
 
                                 <div className="col-5 text-right">
-                                    <p className="m-b-0">{`${Number(mainState.monthlyMax).toFixed(1)} (${mainState.monthlyMaxMonth}) (${mainState.monthlyMaxYear})`}</p>
+                                    <p className="m-b-0">{(!mainState.monthlyMax || mainState.monthlyMax ==='n/a') ? 'n/a (n/a)' : `${Number(mainState.monthlyMax).toFixed(1)} (${mainState.monthlyMaxMonth}) (${mainState.monthlyMaxYear})`}</p>
                                 </div>
                             </div>
                             {/*<div className="progress m-t-30" style={{height: '7px'}}>
@@ -634,14 +782,14 @@ const Dashboard = (props) => {
                                 </div>
 
                                 <div className="col-5 text-right">
-                                    <p className="m-b-0">{Number(mainState.annualFiveYearAvg).toFixed(1)}</p>
+                                    <p className="m-b-0">{(!mainState.annualFiveYearAvg || mainState.annualFiveYearAvg === 'n/a') ? 'n/a' : Number(mainState.annualFiveYearAvg).toFixed(1)}</p>
                                 </div>
                                 <hr />
                                 <div className="col-7">
                                     <h6 className="f-w-300 d-flex align-items-center m-b-0">{/*<i className="feather icon-arrow-up text-c-green f-30 m-r-5"/>*/} Annual Long-Term AVG</h6>
                                 </div>                                    
                                 <div className="col-5 text-right">
-                                    <p className="m-b-0">{Number(mainState.annualAvg).toFixed(1)}</p>
+                                    <p className="m-b-0">{(!mainState.annualAvg || mainState.annualAvg === 'n/a') ? 'n/a' : Number(mainState.annualAvg).toFixed(1)}</p>
                                 </div>
                             </div>
                             {/*<div className="progress m-t-30" style={{height: '7px'}}>
@@ -658,7 +806,7 @@ const Dashboard = (props) => {
                                 </div>
 
                                 <div className="col-5 text-right">
-                                    <p className="m-b-0">{Number(mainState.daysWithRain).toFixed(1)}</p>
+                                    <p className="m-b-0">{(!mainState.daysWithRain || mainState.daysWithRain === 'n/a') ? 'n/a' : Number(mainState.daysWithRain).toFixed(1)}</p>
                                 </div>
                                 <hr />
                                 <div className="col-7">
@@ -666,7 +814,7 @@ const Dashboard = (props) => {
                                 </div>
 
                                 <div className="col-5 text-right">
-                                    <p className="m-b-0">{Number(mainState.daysOfRainGreaterThan10).toFixed(1)}</p>
+                                    <p className="m-b-0">{(!mainState.daysOfRainGreaterThan10 || mainState.daysOfRainGreaterThan10 === 'n/a') ? 'n/a' : Number(mainState.daysOfRainGreaterThan10).toFixed(1)}</p>
                                 </div>
                                 <hr />
                                 <div className="col-7">
@@ -674,7 +822,7 @@ const Dashboard = (props) => {
                                 </div>
 
                                 <div className="col-5 text-right">
-                                    <p className="m-b-0">{Number(mainState.daysOfRainGreaterThan25).toFixed(1)}</p>
+                                    <p className="m-b-0">{(!mainState.daysOfRainGreaterThan25 || mainState.daysOfRainGreaterThan25 === 'n/a') ? 'n/a' : Number(mainState.daysOfRainGreaterThan25).toFixed(1)}</p>
                                 </div>
                                 <hr />
                                 <div className="col-7">
@@ -682,7 +830,7 @@ const Dashboard = (props) => {
                                 </div>
 
                                 <div className="col-5 text-right">
-                                    <p className="m-b-0">{Number(mainState.dryDays).toFixed(1)}</p>
+                                    <p className="m-b-0">{(!mainState.dryDays || mainState.dryDays === 'n/a') ? 'n/a' : Number(mainState.dryDays).toFixed(1)}</p>
                                 </div>
                                 <hr />
                                 <div className="col-7">
@@ -690,7 +838,7 @@ const Dashboard = (props) => {
                                 </div>
 
                                 <div className="col-5 text-right">
-                                    <p className="m-b-0">{Number(mainState.dryDaysMaxConsec).toFixed(1)}</p>
+                                    <p className="m-b-0">{(!mainState.dryDaysMaxConsec || mainState.dryDaysMaxConsec === 'n/a') ? 'n/a' : Number(mainState.dryDaysMaxConsec).toFixed(1)}</p>
                                 </div>
                             </div>
                             {/*<div className="progress m-t-30" style={{height: '7px'}}>
@@ -727,7 +875,7 @@ const Dashboard = (props) => {
                                     <td>
                                         <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{Number(mainState.annualRainForLastYear).toFixed(1)}</h6>
                                     </td>
-                                    <td><h6 className="text-muted">{decimalToFraction(mainState.annualRainForLastYear / mainState.overallStationRainfall).display}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                    <td><h6 className="text-muted">{(!mainState.annualRainForLastYear || mainState.annualRainForLastYear === 'n/a') ? 'n/a' : decimalToFraction(mainState.annualRainForLastYear / mainState.overallStationRainfall).display}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                 </tr>
                                 <tr className="unread" style={{visibility: "hidden"}}>
                                     {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -857,7 +1005,7 @@ const Dashboard = (props) => {
                                         {/*<p className="m-0">Lorem Ipsum is simply dummy text of…</p>*/}
                                     </td>
                                     <td>
-                                        <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Nov || mainState.Nov === 'n/a') ? mainState.Nov : Number(mainState.Nov).toFixed(1)}</h6>
+                                        <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Nov || mainState.Nov === 'n/a') ? 'n/a' : Number(mainState.Nov).toFixed(1)}</h6>
                                     </td>
                                     <td><h6 className="text-muted">{(!mainState.Nov || mainState.Nov === 'n/a') ? 'n/a' : decimalToFraction(mainState.Nov / mainState.annualRainForLastYear).display}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                 </tr>
@@ -984,7 +1132,7 @@ const Dashboard = (props) => {
                         <Card.Body>
                             <LineChart data={mainState.lineChartData}/>
                         </Card.Body>
-                    </Card>
+                    </Card>                    
                 </Col>
                 {/*<Col md={6} xl={8}>                        
                 </Col>
@@ -1193,8 +1341,8 @@ const Dashboard = (props) => {
                         </Tab>
                     </Tabs>
                 </Col>*/} 
-            </Row> 
-        </Aux>        
+            </Row>             
+        </Aux>            
     );
 }
 

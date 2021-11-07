@@ -15,7 +15,7 @@ export default {
                 }
             ]
         },
-        {
+/*        {
             id: 'ui-element',
             title: 'UI ELEMENT',
             type: 'group',
@@ -110,7 +110,7 @@ export default {
                     url: '/maps/google-map'
                 }
             ]
-        },
+        },*/
         {
             id: 'pages',
             title: 'Pages',
@@ -123,8 +123,8 @@ export default {
                     type: 'collapse',
                     icon: 'feather icon-lock',
                     badge: {
-                        title: 'New',
-                        type: 'label-danger'
+                        title: '',//'New',
+                        type: ''//'label-danger'
                     },
                     children: [
                         {
@@ -146,14 +146,14 @@ export default {
                     ]
                 },
 
-                {
+            /*    {
                     id: 'sample-page',
                     title: 'Sample Page',
                     type: 'item',
                     url: '/sample-page',
                     classes: 'nav-item',
                     icon: 'feather icon-sidebar'
-                },
+                },*/
                 {
                     id: 'docs',
                     title: 'Documentation',
@@ -161,7 +161,7 @@ export default {
                     url: '/docs',
                     classes: 'nav-item',
                     icon: 'feather icon-help-circle'
-                },
+                },/*
                 {
                     id: 'menu-level',
                     title: 'Menu Levels',
@@ -216,7 +216,7 @@ export default {
                     classes: 'nav-item disabled',
                     icon: 'feather icon-power'
                 },
-                /*{
+                {
                     id: 'buy-now',
                     title: 'Buy Now',
                     type: 'item',

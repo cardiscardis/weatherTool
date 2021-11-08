@@ -66,15 +66,17 @@ const Dashboard = (props) => {
     const [ queryCode, setQueryCode ] = useState('68005');
     const [ isFetching, setIsFetching ] = useState(true);
     const [ mainState, setMainState ] = useState({});     
-    const [ filterControl, setFilterControl ] = useState('Annual Raw Data');
+    const [ filterControl, setFilterControl ] = useState('Overview');
 
     const onChange = (e) => {
         setIsFetching(true);
         if (e.target.name === 'queryCode') {
             setQueryCode(e.target.value);
+        } else if (e.target.name === 'weatherType') {
+            setWeatherType(e.target.value); 
         } else {
-            setWeatherType(e.target.value);
-        }        
+            setFilterControl(e.target.value);
+        }
     }
 
     useEffect(() => {
@@ -534,10 +536,39 @@ const Dashboard = (props) => {
         </Aux>
     );*/
 
-    return (
+    return (        
         isFetching ? <Loader /> 
         : (filterControl === 'Annual Raw Data') ?
-        <Aux>
+        <Aux>        
+            <Row>            
+                <Col md={12} xl={12}>
+                    <h5>Choose weather type and station number to get started.</h5>
+                </Col>
+                <Col md={4}>
+                    <Form.Control size="lg" as="select" className="mb-3" name='weatherType' value={weatherType} onChange={(e) => {onChange(e)}}>
+                            <option>Rainfall</option>
+                            <option>Minimum Temperature</option>
+                            <option>Maximum Temperature</option>
+                            <option>Solar Exposure</option>                               
+                        </Form.Control> 
+                </Col>
+                <Col md={4}>
+                    <Form.Control size="lg" as="select" className="mb-3" name='queryCode' value={queryCode} onChange={(e) => {onChange(e)}}>
+                        {Object.keys(mainState).length &&
+                            mainState.stationCodes.map((c, i) => (<option key={i}>{c.code}</option>))}                            
+                    </Form.Control>                                        
+                </Col>
+                <Col md={4}>
+                    <Form.Control size="lg" as="select" className="mb-3" name='filterControl' value={filterControl} onChange={(e) => {onChange(e)}}>
+                            <option>Overview</option>
+                            <option>Location Tool</option>
+                            <option>Daily Raw Data</option>
+                            <option>Monthly Raw Data</option>
+                            <option>Annual Raw Data</option>
+                            {/*<option>Annual Sort</option>*/}
+                        </Form.Control> 
+                </Col>
+            </Row>       
             <Row>
                 <Col md={6} xl={6}>
                     <RawDataTable annual={mainState.forAnnualTable} />
@@ -549,18 +580,105 @@ const Dashboard = (props) => {
         </Aux>  
         : (filterControl === 'Monthly Raw Data') ?
         <Aux>
+            <Row>            
+                <Col md={12} xl={12}>
+                    <h5>Choose weather type and station number to get started.</h5>
+                </Col>
+                <Col md={4}>
+                    <Form.Control size="lg" as="select" className="mb-3" name='weatherType' value={weatherType} onChange={(e) => {onChange(e)}}>
+                            <option>Rainfall</option>
+                            <option>Minimum Temperature</option>
+                            <option>Maximum Temperature</option>
+                            <option>Solar Exposure</option>                               
+                        </Form.Control> 
+                </Col>
+                <Col md={4}>
+                    <Form.Control size="lg" as="select" className="mb-3" name='queryCode' value={queryCode} onChange={(e) => {onChange(e)}}>
+                        {Object.keys(mainState).length &&
+                            mainState.stationCodes.map((c, i) => (<option key={i}>{c.code}</option>))}                            
+                    </Form.Control>                                        
+                </Col>
+                <Col md={4}>
+                    <Form.Control size="lg" as="select" className="mb-3" name='filterControl' value={filterControl} onChange={(e) => {onChange(e)}}>
+                            <option>Overview</option>
+                            <option>Location Tool</option>
+                            <option>Daily Raw Data</option>
+                            <option>Monthly Raw Data</option>
+                            <option>Annual Raw Data</option>
+                            {/*<option>Annual Sort</option>*/}
+                        </Form.Control> 
+                </Col>
+            </Row>
             <Row>
                 <RawDataTable monthly={mainState.forMonthlyTable} />
             </Row>
         </Aux>  
         : (filterControl === 'Daily Raw Data') ?
         <Aux>
+            <Row>            
+                <Col md={12} xl={12}>
+                    <h5>Choose weather type and station number to get started.</h5>
+                </Col>
+                <Col md={4}>
+                    <Form.Control size="lg" as="select" className="mb-3" name='weatherType' value={weatherType} onChange={(e) => {onChange(e)}}>
+                            <option>Rainfall</option>
+                            <option>Minimum Temperature</option>
+                            <option>Maximum Temperature</option>
+                            <option>Solar Exposure</option>                               
+                        </Form.Control> 
+                </Col>
+                <Col md={4}>
+                    <Form.Control size="lg" as="select" className="mb-3" name='queryCode' value={queryCode} onChange={(e) => {onChange(e)}}>
+                        {Object.keys(mainState).length &&
+                            mainState.stationCodes.map((c, i) => (<option key={i}>{c.code}</option>))}                            
+                    </Form.Control>                                        
+                </Col>
+                <Col md={4}>
+                    <Form.Control size="lg" as="select" className="mb-3" name='filterControl' value={filterControl} onChange={(e) => {onChange(e)}}>
+                            <option>Overview</option>
+                            <option>Location Tool</option>
+                            <option>Daily Raw Data</option>
+                            <option>Monthly Raw Data</option>
+                            <option>Annual Raw Data</option>
+                            {/*<option>Annual Sort</option>*/}
+                        </Form.Control> 
+                </Col>
+            </Row>
             <Row>
                 <RawDataTable data={mainState.data} />
             </Row>
         </Aux>
         : (filterControl === 'Location Tool') ? 
         <Aux>
+            <Row>            
+                <Col md={12} xl={12}>
+                    <h5>Choose weather type and station number to get started.</h5>
+                </Col>
+                <Col md={4}>
+                    <Form.Control size="lg" as="select" className="mb-3" name='weatherType' value={weatherType} onChange={(e) => {onChange(e)}}>
+                            <option>Rainfall</option>
+                            <option>Minimum Temperature</option>
+                            <option>Maximum Temperature</option>
+                            <option>Solar Exposure</option>                               
+                        </Form.Control> 
+                </Col>
+                <Col md={4}>
+                    <Form.Control size="lg" as="select" className="mb-3" name='queryCode' value={queryCode} onChange={(e) => {onChange(e)}}>
+                        {Object.keys(mainState).length &&
+                            mainState.stationCodes.map((c, i) => (<option key={i}>{c.code}</option>))}                            
+                    </Form.Control>                                        
+                </Col>
+                <Col md={4}>
+                    <Form.Control size="lg" as="select" className="mb-3" name='filterControl' value={filterControl} onChange={(e) => {onChange(e)}}>
+                            <option>Overview</option>
+                            <option>Location Tool</option>
+                            <option>Daily Raw Data</option>
+                            <option>Monthly Raw Data</option>
+                            <option>Annual Raw Data</option>
+                            {/*<option>Annual Sort</option>*/}
+                        </Form.Control> 
+                </Col>
+            </Row>
             <Row>            
                 <Col md={12} xl={12}>
                 <Card>
@@ -657,12 +775,12 @@ const Dashboard = (props) => {
                 </Col>
             </Row>
         </Aux> : (filterControl === 'Overview') &&
-        <Aux>
+        <Aux>     
             <Row>            
                 <Col md={12} xl={12}>
                     <h5>Choose weather type and station number to get started.</h5>
                 </Col>
-                <Col md={6}>
+                <Col md={4}>
                     <Form.Control size="lg" as="select" className="mb-3" name='weatherType' value={weatherType} onChange={(e) => {onChange(e)}}>
                             <option>Rainfall</option>
                             <option>Minimum Temperature</option>
@@ -670,13 +788,23 @@ const Dashboard = (props) => {
                             <option>Solar Exposure</option>                               
                         </Form.Control> 
                 </Col>
-                <Col md={6}>
+                <Col md={4}>
                     <Form.Control size="lg" as="select" className="mb-3" name='queryCode' value={queryCode} onChange={(e) => {onChange(e)}}>
                         {Object.keys(mainState).length &&
                             mainState.stationCodes.map((c, i) => (<option key={i}>{c.code}</option>))}                            
                     </Form.Control>                                        
                 </Col>
-            </Row>
+                <Col md={4}>
+                    <Form.Control size="lg" as="select" className="mb-3" name='filterControl' value={filterControl} onChange={(e) => {onChange(e)}}>
+                            <option>Overview</option>
+                            <option>Location Tool</option>
+                            <option>Daily Raw Data</option>
+                            <option>Monthly Raw Data</option>
+                            <option>Annual Raw Data</option>
+                            {/*<option>Annual Sort</option>*/}
+                        </Form.Control> 
+                </Col>
+            </Row>       
             <Row>
                 <Col md={6} xl={4}>
                     <Card>

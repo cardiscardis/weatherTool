@@ -26,9 +26,8 @@ const SignUp1 = (props) => {
                 const user = await AuthService.getCurrentUser();
                 setUser(user);        
             }, () => {
-                props.history.push("/auth/signin-1");
-                window.location.reload();
-            });      
+                return false;
+            });
         }
         fetchData();
       }, [props]);

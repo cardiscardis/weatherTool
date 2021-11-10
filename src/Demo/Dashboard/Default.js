@@ -84,8 +84,18 @@ const Dashboard = (props) => {
             await UserService.getUserBoard().then(async () => {                                
                 let mainData = {};
                 //get station codes and weather data from api
-                let codes = await FastService.getStationCodes();                        
-                let data = await FastService.getWeatherContent(weatherType, queryCode); 
+                let codes = '';
+                let data = '';
+                await FastService.getStationCodes().then((response) => {
+                    codes = response;
+                }, () => {
+                    return false;
+                });                        
+                await FastService.getWeatherContent(weatherType, queryCode).then((response) => {
+                    data = response;
+                }, () => {
+                    return false;
+                }); 
                 
                 mainData.category = "Renewables";               
                 
@@ -335,6 +345,7 @@ const Dashboard = (props) => {
                         let sumOfRainfall = arr.reduce(function(a, b) {
                             return a + b;
                         }, 0);
+
                         sumOfRainfallPerYear[year1[i]] = sumOfRainfall;
 
                         //lineChart Data
@@ -362,7 +373,7 @@ const Dashboard = (props) => {
                         //overall station rainfall
                         mainData.overallStationRainfall = sumOfRain.reduce(function(a, b) {
                             return a + b;
-                        });
+                        }, 0);
 
                         //annual max and min
                         let annualMax = sumOfRain.reduce(function(a, b) {
@@ -538,7 +549,7 @@ const Dashboard = (props) => {
 
     return (        
         isFetching ? <Loader /> 
-        : (filterControl === 'Annual Raw Data') ?
+        : (filterControl === 'Annual Sort') ?
         <Aux>        
             <Row>            
                 <Col md={12} xl={12}>
@@ -546,11 +557,11 @@ const Dashboard = (props) => {
                 </Col>
                 <Col md={4}>
                     <Form.Control size="lg" as="select" className="mb-3" name='weatherType' value={weatherType} onChange={(e) => {onChange(e)}}>
-                            <option>Rainfall</option>
-                            <option>Minimum Temperature</option>
-                            <option>Maximum Temperature</option>
-                            <option>Solar Exposure</option>                               
-                        </Form.Control> 
+                        <option>Rainfall</option>
+                        <option>Minimum Temperature</option>
+                        <option>Maximum Temperature</option>
+                        <option>Solar Exposure</option>                               
+                    </Form.Control> 
                 </Col>
                 <Col md={4}>
                     <Form.Control size="lg" as="select" className="mb-3" name='queryCode' value={queryCode} onChange={(e) => {onChange(e)}}>
@@ -560,13 +571,56 @@ const Dashboard = (props) => {
                 </Col>
                 <Col md={4}>
                     <Form.Control size="lg" as="select" className="mb-3" name='filterControl' value={filterControl} onChange={(e) => {onChange(e)}}>
-                            <option>Overview</option>
-                            <option>Location Tool</option>
-                            <option>Daily Raw Data</option>
-                            <option>Monthly Raw Data</option>
-                            <option>Annual Raw Data</option>
-                            {/*<option>Annual Sort</option>*/}
-                        </Form.Control> 
+                        <option>Overview</option>
+                        <option>Location Tool</option>
+                        <option>Daily Raw Data</option>
+                        <option>Monthly Raw Data</option>
+                        <option>Annual Raw Data</option>
+                        <option>Annual Sort</option>
+                    </Form.Control> 
+                </Col>
+            </Row>
+            <Row>
+                {/* For slider */}
+            </Row>       
+            <Row>
+                <Col md={7} xl={7}>
+                    <RawDataTable annualSort={mainState.forAnnualTable} annualAvg={mainState.annualAvg} />
+                </Col>
+                <Col md={5} xl={5}>
+                    <LineChart data={mainState.lineChartData} />
+                </Col>
+            </Row>
+        </Aux>   
+        : (filterControl === 'Annual Raw Data') ?
+        <Aux>        
+            <Row>            
+                <Col md={12} xl={12}>
+                    <h5>Choose weather type and station number to get started.</h5>
+                </Col>
+                <Col md={4}>
+                    <Form.Control size="lg" as="select" className="mb-3" name='weatherType' value={weatherType} onChange={(e) => {onChange(e)}}>
+                        <option>Rainfall</option>
+                        <option>Minimum Temperature</option>
+                        <option>Maximum Temperature</option>
+                        <option>Solar Exposure</option>                               
+                    </Form.Control> 
+                </Col>
+                <Col md={4}>
+                    <Form.Control size="lg" as="select" className="mb-3" name='queryCode' value={queryCode} onChange={(e) => {onChange(e)}}>
+                        {Object.keys(mainState).length &&
+                            mainState.stationCodes.map((c, i) => (<option key={i}>{c.code}</option>))}                            
+                    </Form.Control>                                        
+                </Col>
+                <Col md={4}>
+                    <Form.Control size="lg" as="select" className="mb-3" name='filterControl' value={filterControl} onChange={(e) => {onChange(e)}}>
+                        <option>Overview</option>
+                        <option>Location Tool</option>
+                        <option>Daily Raw Data</option>
+                        <option>Monthly Raw Data</option>
+                        <option>Annual Raw Data</option>
+                        <option>Annual Sort</option>
+                    </Form.Control> 
                 </Col>
             </Row>       
             <Row>
@@ -605,7 +659,7 @@ const Dashboard = (props) => {
                             <option>Daily Raw Data</option>
                             <option>Monthly Raw Data</option>
                             <option>Annual Raw Data</option>
-                            {/*<option>Annual Sort</option>*/}
+                            <option>Annual Sort</option>
                         </Form.Control> 
                 </Col>
             </Row>
@@ -640,7 +694,7 @@ const Dashboard = (props) => {
                             <option>Daily Raw Data</option>
                             <option>Monthly Raw Data</option>
                             <option>Annual Raw Data</option>
-                            {/*<option>Annual Sort</option>*/}
+                            <option>Annual Sort</option>
                         </Form.Control> 
                 </Col>
             </Row>
@@ -675,7 +729,7 @@ const Dashboard = (props) => {
                             <option>Daily Raw Data</option>
                             <option>Monthly Raw Data</option>
                             <option>Annual Raw Data</option>
-                            {/*<option>Annual Sort</option>*/}
+                            <option>Annual Sort</option>
                         </Form.Control> 
                 </Col>
             </Row>
@@ -801,7 +855,7 @@ const Dashboard = (props) => {
                             <option>Daily Raw Data</option>
                             <option>Monthly Raw Data</option>
                             <option>Annual Raw Data</option>
-                            {/*<option>Annual Sort</option>*/}
+                            <option>Annual Sort</option>
                         </Form.Control> 
                 </Col>
             </Row>       

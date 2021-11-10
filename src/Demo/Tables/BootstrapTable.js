@@ -8,9 +8,46 @@ const BootstrapTable = (props) => {
     let monthly = props.monthly || [];
     let data = props.data || [];
     let annual = props.annual || [];
+    let annualSort = props.annualSort || [];
+    let annualAvg = props.annualAvg || '';
+    
+    
 
     return (
-        annual.length ? 
+        annualSort.length ?
+        <Aux>
+            <Row>
+                <Col>
+                    <Card>
+                        <Card.Header>
+                            <Card.Title as="h5">Annual Sort Raw Data</Card.Title>
+                            <span className="d-block m-t-5"><code>-1</code> means <code>no data recorded</code></span>
+                        </Card.Header>
+                        <Card.Body>
+                            <Table striped responsive>
+                                <thead>
+                                <tr>
+                                    <th>#</th>                                    
+                                    <th>Year</th>                                    
+                                    <th>Monthly Precipitation Total (millimetres)</th>                                                                        
+                                    <th>AVG</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {annualSort.map((d, i) => (<tr key={i}>
+                                    <th scope="row">{i + 1}</th>
+                                    <td>{d.year}</td>
+                                    <td>{d.rainfall_amount}</td>
+                                    <td>{annualAvg}</td>
+                                </tr>))}                                
+                                </tbody>
+                            </Table>
+                        </Card.Body>
+                    </Card>
+                </Col>
+            </Row>
+        </Aux>
+        :annual.length ? 
         <Aux>
             <Row>
                 <Col>

@@ -7,12 +7,15 @@ import FastService from "../services/fast.service.js"
 
 import Loader from '../../App/layout/Loader'
 import LineChart from "../Charts/Nvd3Chart/LineChart";
+import MultiBarChart from "../Charts/Nvd3Chart/MultiBarChart";
 import Aux from "../../hoc/_Aux";
 //import DEMO from "../../store/constant";
 //import avatar1 from '../../assets/images/user/avatar-1.jpg';
 //import avatar2 from '../../assets/images/user/avatar-2.jpg';
 //import avatar3 from '../../assets/images/user/avatar-3.jpg';
 import RawDataTable from '../Tables/BootstrapTable';
+//import { setObservableConfig } from 'recompose';
+//import { Slide } from '../slider/index.js';
 //import { data } from 'jquery';
 
 const getMonthlyMaxMonth = (num) => {
@@ -69,6 +72,7 @@ const Dashboard = (props) => {
     const [ filterControl, setFilterControl ] = useState('Overview');
 
     const onChange = (e) => {
+        e.stopPropagation();
         setIsFetching(true);
         if (e.target.name === 'queryCode') {
             setQueryCode(e.target.value);
@@ -79,8 +83,10 @@ const Dashboard = (props) => {
         }
     }
 
-    useEffect(() => {
-        async function fetchData() {
+ 
+
+    useEffect(() => {        
+        async function fetchData() {            
             await UserService.getUserBoard().then(async () => {                                
                 let mainData = {};
                 //get station codes and weather data from api
@@ -88,13 +94,13 @@ const Dashboard = (props) => {
                 let data = '';
                 await FastService.getStationCodes().then((response) => {
                     codes = response;
-                }, () => {
-                    return false;
+                }, (e) => {
+                    console.log(e);
                 });                        
                 await FastService.getWeatherContent(weatherType, queryCode).then((response) => {
                     data = response;
-                }, () => {
-                    return false;
+                }, (e) => {
+                    console.log(e);
                 }); 
                 
                 mainData.category = "Renewables";               
@@ -117,7 +123,7 @@ const Dashboard = (props) => {
                     if (stationState) {mainData.stationState = stationState;} else {mainData.stationState = 'n/a';}
 
                     //set year opened
-                    let yearOpened = data[0].year;
+                    let yearOpened = data[0].year;                    
                     if (yearOpened) {mainData.yearOpened = yearOpened;} else {mainData.yearOpened = 'n/a';}
 
                     //set operational years
@@ -205,7 +211,7 @@ const Dashboard = (props) => {
                     let basis = 5;
                     let fiveYearStart = year1[0];                    
 
-                    //seasonal data
+                    //seasonal data for last year
                     let winter = [];
                     let spring = [];
                     let summer = [];
@@ -223,6 +229,22 @@ const Dashboard = (props) => {
 
                     //array to hold lineChart data
                     let lineChartData = [];
+                    
+                    
+                    let h1 = []; 
+                    let h2 = []; 
+                    let q1 = [];
+                    let q2 = [];
+                    let q3 = [];
+                    let q4 = [];
+
+                    let h_1 = [], h_2 = [], q_1 = [], q_2 = [], q_3 = [], q_4 = [], winter_1 = [], spring_1 = [], summer_1 = [], autumn_1 = [];
+
+                    //for each year (overall)
+                    let winter2 = [];
+                    let spring2 = [];
+                    let summer2 = [];
+                    let autumn2 = [];
                                        
                     for (let i = 0; i <= year1.length-1; i++) {                    
                         //per Year Array
@@ -274,7 +296,7 @@ const Dashboard = (props) => {
                             //calculate monthly           
                             let y = arrOfYearAndMonth[k].split('-');                 
                                                         
-                            //last year
+                            //last year daily data
                             if (String(data[k].year) === year1[year1.length - 1]) {
                                 //last year data info.                            
                                 if (Number(arrOfRainfall[k]) > 0) {
@@ -288,9 +310,9 @@ const Dashboard = (props) => {
                                 } 
                                 if (Number(arrOfRainfall[k]) <= 0) {
                                     dryDays.push(Number(arrOfRainfall[k]));
-                                } 
-                            
-                                //season data
+                                }                                                                             
+
+                                //season data for last year
                                 if (y[1] === '12' || y[1] === '1' || y[1] === '2') {
                                     winter.push(Number(arrOfRainfall[k]));
                                 }                                                                
@@ -302,8 +324,57 @@ const Dashboard = (props) => {
                                 }         
                                 if (y[1] === '9' || y[1] === '10' || y[1] === '11') {
                                     autumn.push(Number(arrOfRainfall[k]));
-                                }                                                                              
+                                }
                             }
+
+                            //---------------------------------------------
+                            
+                            //seasonal
+                            //season data for each other year including last
+                            if (y[1] === '12' || y[1] === '1' || y[1] === '2') {
+                                winter2.push(Number(arrOfRainfall[k]));
+                            }                                                                
+                            if (y[1] === '3' || y[1] === '4' || y[1] === '5') {
+                                spring2.push(Number(arrOfRainfall[k]));
+                            }         
+                            if (y[1] === '6' || y[1] === '7' || y[1] === '8') {
+                                summer2.push(Number(arrOfRainfall[k]));
+                            }         
+                            if (y[1] === '9' || y[1] === '10' || y[1] === '11') {
+                                autumn2.push(Number(arrOfRainfall[k]));
+                            }
+
+                            //--------------------------------------------
+                            
+                            //compute for h1 and h2 (year halfs) 
+                            if (y[1] === '1' || y[1] === '2' || y[1] === '3' || y[1] === '4' || y[1] === '5' || y[1] === '6') {                            
+                                h1.push(Number(arrOfRainfall[k]));
+                            }
+
+                            if (y[1] === '7' || y[1] === '8' || y[1] === '9' || y[1] === '10' || y[1] === '11' || y[1] === '12') {
+                                h2.push(Number(arrOfRainfall[k]));
+                            }
+
+                            //---------------------------------------------
+
+                            //compute for q1 to q4 (year quarters)
+                            if (y[1] === '1' || y[1] === '2' || y[1] === '3') {
+                                q1.push(Number(arrOfRainfall[k]));
+                            }
+
+                            if (y[1] === '4' || y[1] === '5' || y[1] === '6') {
+                                q2.push(Number(arrOfRainfall[k]));
+                            }
+                            if (y[1] === '7' || y[1] === '8' || y[1] === '9') {
+                                q3.push(Number(arrOfRainfall[k]));
+                            }
+
+                            if (y[1] === '10' || y[1] === '11' || y[1] === '12') {
+                                q4.push(Number(arrOfRainfall[k]));
+                            }
+
+                            //--------------------------------------------
+
 
                             //monthly continues...                    
                             if (y[0] === String(data[k].year) && y[1] === String(data[k].month)) {                                                                                
@@ -357,7 +428,75 @@ const Dashboard = (props) => {
                         if (i === year1.length - 1) {
                             mainData.annualRainForLastYear = sumOfRainfall;                            
                         }
+
+                        //add up h1, h2, then q1-q4
+                        let sumOfH1PerYear = h1.reduce(function(a, b) {
+                            return a + b;
+                        }, 0);
+                        let sumOfH2PerYear = h2.reduce(function(a, b) {
+                            return a + b;
+                        }, 0);
+                        let sumOfQ1PerYear = q1.reduce(function(a, b) {
+                            return a + b;
+                        }, 0);
+                        let sumOfQ2PerYear = q2.reduce(function(a, b) {
+                            return a + b;
+                        }, 0);
+                        let sumOfQ3PerYear = q3.reduce(function(a, b) {
+                            return a + b;
+                        }, 0);
+                        let sumOfQ4PerYear = q4.reduce(function(a, b) {
+                            return a + b;
+                        }, 0);
+                        let sumOfWinterPerYear = winter2.reduce(function(a, b) {
+                            return a + b;
+                        }, 0);
+                        let sumOfSpringPerYear = spring2.reduce(function(a, b) {
+                            return a + b;
+                        }, 0);
+                        let sumOfSummerPerYear = summer2.reduce(function(a, b) {
+                            return a + b;
+                        }, 0);
+                        let sumOfAutumnPerYear = autumn2.reduce(function(a, b) {
+                            return a + b;
+                        }, 0);
+
+                        //then prepare for barChart
+                        h_1.push({x: year1[i], y: sumOfH1PerYear})
+                        h_2.push({x: year1[i], y: sumOfH2PerYear});
+                        q_1.push({x: year1[i], y: sumOfQ1PerYear});
+                        q_2.push({x: year1[i], y: sumOfQ2PerYear});
+                        q_3.push({x: year1[i], y: sumOfQ3PerYear});
+                        q_4.push({x: year1[i], y: sumOfQ4PerYear});
+                        winter_1.push({x: year1[i], y: sumOfWinterPerYear});
+                        spring_1.push({x: year1[i], y: sumOfSpringPerYear});
+                        summer_1.push({x: year1[i], y: sumOfSummerPerYear});
+                        autumn_1.push({x: year1[i], y: sumOfAutumnPerYear});
+                        
+                        //reset arrays
+                        h1 = [];
+                        h2 = [];
+                        q1 = [];
+                        q2 = [];
+                        q3 = [];
+                        q4 = [];
+                        winter2 = [];
+                        spring2 = [];
+                        summer2 = [];
+                        autumn2 = [];                        
                     }                                 
+                    
+                    //commit data for bar chart
+                    mainData.h1 = h_1;
+                    mainData.h2 = h_2;
+                    mainData.q1 = q_1;
+                    mainData.q2 = q_2;
+                    mainData.q3 = q_3;
+                    mainData.q4 = q_4;
+                    mainData.winterPerYear = winter_1;
+                    mainData.springPerYear = spring_1;
+                    mainData.summerPerYear = summer_1;
+                    mainData.autumnPerYear = autumn_1;
 
                     //per year
                     let sumOfRainYears = Object.keys(sumOfRainfallPerYear);
@@ -411,8 +550,7 @@ const Dashboard = (props) => {
                     }
                     
                     mainData.forMonthlyTable = forMonthlyTable;
-                    mainData.forAnnualTable = forAnnualTable;
-                    console.log(forAnnualTable);
+                    mainData.forAnnualTable = forAnnualTable;                    
                                         
                     //Five years Average.
                     let annualFiveYearAvg = '';
@@ -476,7 +614,8 @@ const Dashboard = (props) => {
                     console.log(data);
                     
                     //set Main state
-                    setMainState(mainData);
+                    setMainState(mainData);                    
+                    
                     setIsFetching(false);
                 }
             }, () => {
@@ -486,8 +625,45 @@ const Dashboard = (props) => {
         }
         fetchData();               
     }, [ props, queryCode, weatherType, isFetching ]);    
+
     
-    
+    const UserChoiceInput = () => (
+        <Row>            
+            <Col md={12} xl={12}>
+                <h5>Choose weather type and station number to get started.</h5>
+            </Col>
+            <Col md={4}>
+                <Form.Control size="lg" as="select" className="mb-3" name='weatherType' value={weatherType} onChange={(e) => {onChange(e)}}>
+                    <option>Rainfall</option>
+                    <option>Minimum Temperature</option>
+                    <option>Maximum Temperature</option>
+                    <option>Solar Exposure</option>                               
+                </Form.Control> 
+            </Col>
+            <Col md={4}>
+                <Form.Control size="lg" as="select" className="mb-3" name='queryCode' value={queryCode} onChange={(e) => {onChange(e)}}>
+                    {Object.keys(mainState).length &&
+                        mainState.stationCodes.map((c, i) => (<option key={i}>{c.code}</option>))}                            
+                </Form.Control>                                        
+            </Col>
+            <Col md={4}>
+                <Form.Control size="lg" as="select" className="mb-3" name='filterControl' value={filterControl} onChange={(e) => {onChange(e)}}>
+                    <option>Overview</option>
+                    <option>Location Tool</option>
+                    <option>Daily Raw Data</option>
+                    <option>Monthly Raw Data</option>
+                    <option>Annual Raw Data</option>
+                    <option>Annual Sort</option>
+                    <option>H1H2Q1Q4</option>
+                </Form.Control> 
+            </Col>
+            <Col md={12} xl={12}>
+                {/*filterControl === 'Annual Sort' && <Slide min={mainState.yearOpened} max={mainState.yearClosed} />*/}
+            </Col>
+        </Row>
+    );
+
+
     /*const tabContent = (
         <Aux>                
             <div className="media friendlist-box align-items-center justify-content-center m-b-20">
@@ -547,39 +723,25 @@ const Dashboard = (props) => {
         </Aux>
     );*/
 
-    return (        
+    return ( 
         isFetching ? <Loader /> 
-        : (filterControl === 'Annual Sort') ?
+        : (filterControl === 'H1H2Q1Q4') ?
         <Aux>        
-            <Row>            
-                <Col md={12} xl={12}>
-                    <h5>Choose weather type and station number to get started.</h5>
-                </Col>
-                <Col md={4}>
-                    <Form.Control size="lg" as="select" className="mb-3" name='weatherType' value={weatherType} onChange={(e) => {onChange(e)}}>
-                        <option>Rainfall</option>
-                        <option>Minimum Temperature</option>
-                        <option>Maximum Temperature</option>
-                        <option>Solar Exposure</option>                               
-                    </Form.Control> 
-                </Col>
-                <Col md={4}>
-                    <Form.Control size="lg" as="select" className="mb-3" name='queryCode' value={queryCode} onChange={(e) => {onChange(e)}}>
-                        {Object.keys(mainState).length &&
-                            mainState.stationCodes.map((c, i) => (<option key={i}>{c.code}</option>))}                            
-                    </Form.Control>                                        
-                </Col>
-                <Col md={4}>
-                    <Form.Control size="lg" as="select" className="mb-3" name='filterControl' value={filterControl} onChange={(e) => {onChange(e)}}>
-                        <option>Overview</option>
-                        <option>Location Tool</option>
-                        <option>Daily Raw Data</option>
-                        <option>Monthly Raw Data</option>
-                        <option>Annual Raw Data</option>
-                        <option>Annual Sort</option>
-                    </Form.Control> 
+            <UserChoiceInput />            
+            <Row>                
+                <Col>
+                    {mainState.q1.length && <MultiBarChart q1={mainState.q1} q2={mainState.q2} q3={mainState.q3} q4={mainState.q4} />}
                 </Col>
             </Row>
+            <Row>                
+                <Col>
+                    {mainState.h1.length && <MultiBarChart h1={mainState.h1} h2={mainState.h2} />}
+                </Col>
+            </Row>
+        </Aux>
+        : (filterControl === 'Annual Sort') ?
+        <Aux>        
+            <UserChoiceInput />
             <Row>
                 {/* For slider */}
             </Row>       
@@ -593,36 +755,8 @@ const Dashboard = (props) => {
             </Row>
         </Aux>   
         : (filterControl === 'Annual Raw Data') ?
-        <Aux>        
-            <Row>            
-                <Col md={12} xl={12}>
-                    <h5>Choose weather type and station number to get started.</h5>
-                </Col>
-                <Col md={4}>
-                    <Form.Control size="lg" as="select" className="mb-3" name='weatherType' value={weatherType} onChange={(e) => {onChange(e)}}>
-                        <option>Rainfall</option>
-                        <option>Minimum Temperature</option>
-                        <option>Maximum Temperature</option>
-                        <option>Solar Exposure</option>                               
-                    </Form.Control> 
-                </Col>
-                <Col md={4}>
-                    <Form.Control size="lg" as="select" className="mb-3" name='queryCode' value={queryCode} onChange={(e) => {onChange(e)}}>
-                        {Object.keys(mainState).length &&
-                            mainState.stationCodes.map((c, i) => (<option key={i}>{c.code}</option>))}                            
-                    </Form.Control>                                        
-                </Col>
-                <Col md={4}>
-                    <Form.Control size="lg" as="select" className="mb-3" name='filterControl' value={filterControl} onChange={(e) => {onChange(e)}}>
-                        <option>Overview</option>
-                        <option>Location Tool</option>
-                        <option>Daily Raw Data</option>
-                        <option>Monthly Raw Data</option>
-                        <option>Annual Raw Data</option>
-                        <option>Annual Sort</option>
-                    </Form.Control> 
-                </Col>
-            </Row>       
+        <Aux> 
+            <UserChoiceInput />                         
             <Row>
                 <Col md={6} xl={6}>
                     <RawDataTable annual={mainState.forAnnualTable} />
@@ -634,105 +768,21 @@ const Dashboard = (props) => {
         </Aux>  
         : (filterControl === 'Monthly Raw Data') ?
         <Aux>
-            <Row>            
-                <Col md={12} xl={12}>
-                    <h5>Choose weather type and station number to get started.</h5>
-                </Col>
-                <Col md={4}>
-                    <Form.Control size="lg" as="select" className="mb-3" name='weatherType' value={weatherType} onChange={(e) => {onChange(e)}}>
-                            <option>Rainfall</option>
-                            <option>Minimum Temperature</option>
-                            <option>Maximum Temperature</option>
-                            <option>Solar Exposure</option>                               
-                        </Form.Control> 
-                </Col>
-                <Col md={4}>
-                    <Form.Control size="lg" as="select" className="mb-3" name='queryCode' value={queryCode} onChange={(e) => {onChange(e)}}>
-                        {Object.keys(mainState).length &&
-                            mainState.stationCodes.map((c, i) => (<option key={i}>{c.code}</option>))}                            
-                    </Form.Control>                                        
-                </Col>
-                <Col md={4}>
-                    <Form.Control size="lg" as="select" className="mb-3" name='filterControl' value={filterControl} onChange={(e) => {onChange(e)}}>
-                            <option>Overview</option>
-                            <option>Location Tool</option>
-                            <option>Daily Raw Data</option>
-                            <option>Monthly Raw Data</option>
-                            <option>Annual Raw Data</option>
-                            <option>Annual Sort</option>
-                        </Form.Control> 
-                </Col>
-            </Row>
+            <UserChoiceInput />            
             <Row>
                 <RawDataTable monthly={mainState.forMonthlyTable} />
             </Row>
         </Aux>  
         : (filterControl === 'Daily Raw Data') ?
-        <Aux>
-            <Row>            
-                <Col md={12} xl={12}>
-                    <h5>Choose weather type and station number to get started.</h5>
-                </Col>
-                <Col md={4}>
-                    <Form.Control size="lg" as="select" className="mb-3" name='weatherType' value={weatherType} onChange={(e) => {onChange(e)}}>
-                            <option>Rainfall</option>
-                            <option>Minimum Temperature</option>
-                            <option>Maximum Temperature</option>
-                            <option>Solar Exposure</option>                               
-                        </Form.Control> 
-                </Col>
-                <Col md={4}>
-                    <Form.Control size="lg" as="select" className="mb-3" name='queryCode' value={queryCode} onChange={(e) => {onChange(e)}}>
-                        {Object.keys(mainState).length &&
-                            mainState.stationCodes.map((c, i) => (<option key={i}>{c.code}</option>))}                            
-                    </Form.Control>                                        
-                </Col>
-                <Col md={4}>
-                    <Form.Control size="lg" as="select" className="mb-3" name='filterControl' value={filterControl} onChange={(e) => {onChange(e)}}>
-                            <option>Overview</option>
-                            <option>Location Tool</option>
-                            <option>Daily Raw Data</option>
-                            <option>Monthly Raw Data</option>
-                            <option>Annual Raw Data</option>
-                            <option>Annual Sort</option>
-                        </Form.Control> 
-                </Col>
-            </Row>
+        <Aux>   
+            <UserChoiceInput />                     
             <Row>
                 <RawDataTable data={mainState.data} />
             </Row>
         </Aux>
         : (filterControl === 'Location Tool') ? 
         <Aux>
-            <Row>            
-                <Col md={12} xl={12}>
-                    <h5>Choose weather type and station number to get started.</h5>
-                </Col>
-                <Col md={4}>
-                    <Form.Control size="lg" as="select" className="mb-3" name='weatherType' value={weatherType} onChange={(e) => {onChange(e)}}>
-                            <option>Rainfall</option>
-                            <option>Minimum Temperature</option>
-                            <option>Maximum Temperature</option>
-                            <option>Solar Exposure</option>                               
-                        </Form.Control> 
-                </Col>
-                <Col md={4}>
-                    <Form.Control size="lg" as="select" className="mb-3" name='queryCode' value={queryCode} onChange={(e) => {onChange(e)}}>
-                        {Object.keys(mainState).length &&
-                            mainState.stationCodes.map((c, i) => (<option key={i}>{c.code}</option>))}                            
-                    </Form.Control>                                        
-                </Col>
-                <Col md={4}>
-                    <Form.Control size="lg" as="select" className="mb-3" name='filterControl' value={filterControl} onChange={(e) => {onChange(e)}}>
-                            <option>Overview</option>
-                            <option>Location Tool</option>
-                            <option>Daily Raw Data</option>
-                            <option>Monthly Raw Data</option>
-                            <option>Annual Raw Data</option>
-                            <option>Annual Sort</option>
-                        </Form.Control> 
-                </Col>
-            </Row>
+            <UserChoiceInput />           
             <Row>            
                 <Col md={12} xl={12}>
                 <Card>
@@ -829,36 +879,8 @@ const Dashboard = (props) => {
                 </Col>
             </Row>
         </Aux> : (filterControl === 'Overview') &&
-        <Aux>     
-            <Row>            
-                <Col md={12} xl={12}>
-                    <h5>Choose weather type and station number to get started.</h5>
-                </Col>
-                <Col md={4}>
-                    <Form.Control size="lg" as="select" className="mb-3" name='weatherType' value={weatherType} onChange={(e) => {onChange(e)}}>
-                            <option>Rainfall</option>
-                            <option>Minimum Temperature</option>
-                            <option>Maximum Temperature</option>
-                            <option>Solar Exposure</option>                               
-                        </Form.Control> 
-                </Col>
-                <Col md={4}>
-                    <Form.Control size="lg" as="select" className="mb-3" name='queryCode' value={queryCode} onChange={(e) => {onChange(e)}}>
-                        {Object.keys(mainState).length &&
-                            mainState.stationCodes.map((c, i) => (<option key={i}>{c.code}</option>))}                            
-                    </Form.Control>                                        
-                </Col>
-                <Col md={4}>
-                    <Form.Control size="lg" as="select" className="mb-3" name='filterControl' value={filterControl} onChange={(e) => {onChange(e)}}>
-                            <option>Overview</option>
-                            <option>Location Tool</option>
-                            <option>Daily Raw Data</option>
-                            <option>Monthly Raw Data</option>
-                            <option>Annual Raw Data</option>
-                            <option>Annual Sort</option>
-                        </Form.Control> 
-                </Col>
-            </Row>       
+        <Aux> 
+            <UserChoiceInput />                                 
             <Row>
                 <Col md={6} xl={4}>
                     <Card>

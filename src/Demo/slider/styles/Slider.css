@@ -1,0 +1,70 @@
+:root {
+    --rail-default-color: #cbe1ff;
+    --rail-color: #0099ff;
+    --handle-color: var(--rail-color);
+}
+
+.Slider {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 100%;
+    touch-action: none;
+}
+
+.Slider_rail {
+    width: 100%;
+    height: 8px;
+    background: var(--rail-default-color);
+}
+
+.Slider_rail-colored {
+    width: auto;
+    position: absolute;
+    background: var(--rail-color);
+}
+
+.Slider_handle, .Slider_knob {
+    position: absolute;
+    align-self: center;
+    transform: translate(-50%, 0);
+}
+
+.Slider_knob {
+    border-radius: 50px;
+    background: var(--rail-default-color);
+}
+
+.Slider_knob-major {
+    height: 14px;
+    width: 4px;
+}
+
+.Slider_knob-normal {
+    width: 4px;
+    height: 12px;
+}
+
+.Slider_knob-minor {
+    width: 3px;
+    height: 10px;
+}
+
+.Slider_knob-colored {
+    background: var(--rail-color);
+}
+
+.Slider_handle {
+    z-index: 10;
+    cursor: pointer;
+    width: 12px;
+    height: 12px;
+    background: white;
+    border: 4px solid var(--handle-color);
+    border-radius: 100px;
+    transition: 0.2s box-shadow;
+}
+
+.Slider_handle-active, .Slider_handle:hover {
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}

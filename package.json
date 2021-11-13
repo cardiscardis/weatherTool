@@ -30,6 +30,7 @@
     "react-router": "^5.2.1",
     "react-router-dom": "^4.3.1",
     "react-scripts": "^3.0.0",
+    "react-use-window-sessionstorage": "^1.0.9",
     "react-validation": "^3.0.7",
     "react-window-size": "^1.2.2",
     "recompose": "^0.30.0",

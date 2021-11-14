@@ -10,6 +10,8 @@ const BootstrapTable = (props) => {
     let annual = props.annual || [];
     let annualSort = props.annualSort || [];
     let annualAvg = props.annualAvg || '';
+    let mon = props.mon || [];
+    let averages = props.averages || [];
     
     
 
@@ -39,6 +41,136 @@ const BootstrapTable = (props) => {
                                     <td>{d.year}</td>
                                     <td>{d.rainfall_amount}</td>
                                     <td>{annualAvg}</td>
+                                </tr>))}                                
+                                </tbody>
+                            </Table>
+                        </Card.Body>
+                    </Card>
+                </Col>
+            </Row>
+        </Aux>
+        : averages.length ? 
+        <Aux>
+            <Row>
+                <Col>
+                    <Card>
+                        <Card.Header>
+                            <Card.Title as="h5">Averages</Card.Title>
+                            <span className="d-block m-t-5"><code>-1</code> means <code>no data recorded</code></span>
+                        </Card.Header>
+                        <Card.Body>
+                            <Table striped responsive>
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Year</th>
+                                    <th>Jan</th>
+                                    <th>Feb</th>
+                                    <th>Mar</th>                                    
+                                    <th>Apr</th>                                    
+                                    <th>May</th>
+                                    <th>Jun</th>
+                                    <th>Jul</th>
+                                    <th>Aug</th>
+                                    <th>Sep</th>
+                                    <th>Oct</th>
+                                    <th>Nov</th>
+                                    <th>Dec</th>
+                                    <th>Annual</th>
+                                    <th>Q1</th>
+                                    <th>Q2</th>
+                                    <th>Q3</th>
+                                    <th>Q4</th>
+                                    <th>H1</th>
+                                    <th>H2</th>
+                                    <th>Winter</th>
+                                    <th>Spring</th>
+                                    <th>Summer</th>
+                                    <th>Autumn</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {averages.map((d, i) => (<tr key={i}>
+                                    <th scope="row">{i + 1}</th>
+                                    <td>{d.year}</td>
+                                    <td>{d.jan}</td>
+                                    <td>{d.feb}</td>
+                                    <td>{d.mar}</td>                                    
+                                    <td>{d.apr}</td>                                    
+                                    <td>{d.may}</td>
+                                    <td>{d.jun}</td>
+                                    <td>{d.jul}</td>
+                                    <td>{d.aug}</td>
+                                    <td>{d.sep}</td>
+                                    <td>{d.oct}</td>
+                                    <td>{d.nov}</td>
+                                    <td>{d.dec}</td>
+                                    <td>{d.annual}</td>
+                                    <td>{d.q1}</td>
+                                    <td>{d.q2}</td>
+                                    <td>{d.q3}</td>
+                                    <td>{d.q4}</td>
+                                    <td>{d.h1}</td>
+                                    <td>{d.h2}</td>
+                                    <td>{d.winter}</td>
+                                    <td>{d.spring}</td>
+                                    <td>{d.summer}</td>
+                                    <td>{d.autumn}</td>
+                                </tr>))}                                
+                                </tbody>
+                            </Table>
+                        </Card.Body>
+                    </Card>
+                </Col>
+            </Row>
+        </Aux>
+        : mon.length ? 
+        <Aux>
+            <Row>
+                <Col>
+                    <Card>
+                        <Card.Header>
+                            <Card.Title as="h5">Monthly Data</Card.Title>
+                            <span className="d-block m-t-5"><code>-1</code> means <code>no data recorded</code></span>
+                        </Card.Header>
+                        <Card.Body>
+                            <Table striped responsive>
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Year</th>
+                                    <th>Jan</th>
+                                    <th>Feb</th>
+                                    <th>Mar</th>                                    
+                                    <th>Apr</th>                                    
+                                    <th>May</th>
+                                    <th>Jun</th>
+                                    <th>Jul</th>
+                                    <th>Aug</th>
+                                    <th>Sep</th>
+                                    <th>Oct</th>
+                                    <th>Nov</th>
+                                    <th>Dec</th>
+                                    <th>Annual</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {mon.map((d, i) => (<tr key={i}>
+                                    <th scope="row">{i + 1}</th>
+                                    <td>{d.year}</td>
+                                    <td>{d.jan}</td>
+                                    <td>{d.feb}</td>
+                                    <td>{d.mar}</td>                                    
+                                    <td>{d.apr}</td>                                    
+                                    <td>{d.may}</td>
+                                    <td>{d.jun}</td>
+                                    <td>{d.jul}</td>
+                                    <td>{d.aug}</td>
+                                    <td>{d.sep}</td>
+                                    <td>{d.oct}</td>
+                                    <td>{d.nov}</td>
+                                    <td>{d.dec}</td>
+                                    <td>{d.annual}</td>
                                 </tr>))}                                
                                 </tbody>
                             </Table>

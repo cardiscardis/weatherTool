@@ -67,6 +67,29 @@ function getDatum(props) {
                 color: '#04a9f5'
             }            
         ];
+    }   else if (props.winterPerYear) {
+        return [
+            {
+                values: props.winterPerYear,
+                key: 'Winter',
+                color: '#A389D4'
+            },
+            {
+                values: props.springPerYear,
+                key: 'Spring',
+                color: '#04a9f5'
+            },            
+            {
+                values: props.summerPerYear,
+                key: 'Summer',
+                color: '#A389D4'
+            },
+            {
+                values: props.autumnPerYear,
+                key: 'Autumn',
+                color: '#04a9f5'
+            }            
+        ];
     }  else {
             return [
             {

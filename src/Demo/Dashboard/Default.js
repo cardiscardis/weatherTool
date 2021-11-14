@@ -205,6 +205,8 @@ const Dashboard = (props) => {
                     let sumOfRainfallPerFiveYears = {};
                     let forMonthlyTable = [];
                     let forAnnualTable = [];
+                    let forMonthlyFilterTable = [];
+                    let forAveragesFilterTable = [];
                     
                     //five year basis array.
                     let fiveYearsArr = [];
@@ -264,6 +266,9 @@ const Dashboard = (props) => {
                                 end += freq[j];
                             }                           
                         }
+                        
+                        let janDecRainPerYear = [];
+                        let janDecRainPerYearAvg = [];
 
                         for (let k = start; k <= end - 1; k++) {
                             //calculate yearly
@@ -387,13 +392,17 @@ const Dashboard = (props) => {
                                         return a + b;
                                     }, 0);
                                     sumOfRainfallPerMonth[arrOfYearAndMonth[k]] = sumOfMonthlyRain;
+
+                                    //preparing monthly filter
+                                    janDecRainPerYear.push(sumOfMonthlyRain);
+                                    janDecRainPerYearAvg.push(sumOfMonthlyRain/monthArray.length);
                                     
                                     //array to hold monthly data for monthly component
                                     forMonthlyTable.push({ 
                                         product_code: data[k].product_code,
                                         station_number: data[k].station_number,
                                         year: data[k].year,
-                                        month: data[k].month,
+                                        month: data[k].month,                                        
                                         rainfall_amount: sumOfMonthlyRain,
                                         quality: data[k].quality
                                     });
@@ -461,7 +470,7 @@ const Dashboard = (props) => {
                             return a + b;
                         }, 0);
 
-                        //then prepare for barChart
+                        //then prepare {x: year, y: sum of var per year} for barChart
                         h_1.push({x: year1[i], y: sumOfH1PerYear})
                         h_2.push({x: year1[i], y: sumOfH2PerYear});
                         q_1.push({x: year1[i], y: sumOfQ1PerYear});
@@ -471,8 +480,53 @@ const Dashboard = (props) => {
                         winter_1.push({x: year1[i], y: sumOfWinterPerYear});
                         spring_1.push({x: year1[i], y: sumOfSpringPerYear});
                         summer_1.push({x: year1[i], y: sumOfSummerPerYear});
-                        autumn_1.push({x: year1[i], y: sumOfAutumnPerYear});
+                        autumn_1.push({x: year1[i], y: sumOfAutumnPerYear});                       
+                                              
+
+                        //for monthly filter table
+                        forMonthlyFilterTable.push({year: [year1[i]], 
+                            jan: janDecRainPerYear[0] || -1, 
+                            feb: janDecRainPerYear[1] || -1,
+                            mar: janDecRainPerYear[2] || -1, 
+                            apr: janDecRainPerYear[3] || -1,
+                            may: janDecRainPerYear[4] || -1,
+                            jun: janDecRainPerYear[5] || -1,
+                            jul: janDecRainPerYear[6] || -1,
+                            aug: janDecRainPerYear[7] || -1,
+                            sep: janDecRainPerYear[8] || -1,
+                            oct: janDecRainPerYear[9] || -1,
+                            nov: janDecRainPerYear[10] || -1,
+                            dec: janDecRainPerYear[11] || -1,
+                            annual: sumOfRainfall
+                        });
                         
+                        //for averages filter table
+                        forAveragesFilterTable.push({year: [year1[i]], 
+                            jan: janDecRainPerYearAvg[0] || -1, 
+                            feb: janDecRainPerYearAvg[1] || -1,
+                            mar: janDecRainPerYearAvg[2] || -1, 
+                            apr: janDecRainPerYearAvg[3] || -1,
+                            may: janDecRainPerYearAvg[4] || -1,
+                            jun: janDecRainPerYearAvg[5] || -1,
+                            jul: janDecRainPerYearAvg[6] || -1,
+                            aug: janDecRainPerYearAvg[7] || -1,
+                            sep: janDecRainPerYearAvg[8] || -1,
+                            oct: janDecRainPerYearAvg[9] || -1,
+                            nov: janDecRainPerYearAvg[10] || -1,
+                            dec: janDecRainPerYearAvg[11] || -1,
+                            annual: sumOfRainfall/arr.length || -1,
+                            q1: sumOfQ1PerYear/q1.length || -1,
+                            q2: sumOfQ2PerYear/q2.length || -1,
+                            q3: sumOfQ3PerYear/q3.length || -1,
+                            q4: sumOfQ4PerYear/q4.length || -1,
+                            h1: sumOfH1PerYear/h1.length || -1,
+                            h2: sumOfH2PerYear/h2.length || -1,
+                            winter: sumOfWinterPerYear/winter2.length || -1,
+                            spring: sumOfSpringPerYear/spring2.length || -1,
+                            summer: sumOfSummerPerYear/summer2.length || -1,
+                            autumn: sumOfAutumnPerYear/autumn2.length || -1
+                        });
+
                         //reset arrays
                         h1 = [];
                         h2 = [];
@@ -483,10 +537,13 @@ const Dashboard = (props) => {
                         winter2 = [];
                         spring2 = [];
                         summer2 = [];
-                        autumn2 = [];                        
-                    }                                 
+                        autumn2 = [];  
+                    }                        
                     
-                    //commit data for bar chart
+                    mainData.forMonthlyFilterTable = forMonthlyFilterTable;
+                    mainData.forAveragesFilterTable = forAveragesFilterTable;
+
+                    //commit data to state for bar chart
                     mainData.h1 = h_1;
                     mainData.h2 = h_2;
                     mainData.q1 = q_1;
@@ -655,6 +712,10 @@ const Dashboard = (props) => {
                     <option>Annual Raw Data</option>
                     <option>Annual Sort</option>
                     <option>H1H2Q1Q4</option>
+                    <option>H1H2Q1Q4 Sort</option>
+                    <option>Seasonal</option>
+                    <option>Monthly</option>
+                    <option>Averages</option>
                 </Form.Control> 
             </Col>
             <Col md={12} xl={12}>
@@ -725,6 +786,46 @@ const Dashboard = (props) => {
 
     return ( 
         isFetching ? <Loader /> 
+        : (filterControl === 'Averages') ?
+        <Aux>
+            <UserChoiceInput />            
+            <Row>
+                <RawDataTable averages={mainState.forAveragesFilterTable} />
+            </Row>
+        </Aux> 
+        : (filterControl === 'Monthly') ?
+        <Aux>
+            <UserChoiceInput />            
+            <Row>
+                <RawDataTable mon={mainState.forMonthlyFilterTable} />
+            </Row>
+        </Aux>  
+        : (filterControl === 'Seasonal') ?
+        <Aux>        
+            <UserChoiceInput />            
+            <Row>                
+                <Col>
+                    {mainState.winterPerYear.length && <MultiBarChart winterPerYear={mainState.winterPerYear} 
+                    springPerYear={mainState.springPerYear} summerPerYear={mainState.summerPerYear} 
+                    autumnPerYear={mainState.autumnPerYear} />}
+                </Col>
+            </Row>
+           
+        </Aux>
+        : (filterControl === 'H1H2Q1Q4 Sort') ?
+        <Aux>        
+            <UserChoiceInput />            
+            <Row>                
+                <Col>
+                    {mainState.q1.length && <MultiBarChart q1={mainState.q1} q2={mainState.q2} q3={mainState.q3} q4={mainState.q4} />}
+                </Col>
+            </Row>
+            <Row>                
+                <Col>
+                    {mainState.h1.length && <MultiBarChart h1={mainState.h1} h2={mainState.h2} />}
+                </Col>
+            </Row>
+        </Aux>
         : (filterControl === 'H1H2Q1Q4') ?
         <Aux>        
             <UserChoiceInput />            

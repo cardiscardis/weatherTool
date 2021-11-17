@@ -6,29 +6,14 @@ function generateNumber(min, max) {
 }
 
 function getDatum(props) {
-    let sin = [],
-        sin2 = [],
-        sin3 = [],
-        sin4 = [];
+    let sin = [];        
 
     const len =  35 + (Math.random() * (70-35));
     for (let i = 0; i < len; i++) {
         sin.push({
             'x': i,
             'y': generateNumber(0, 60)
-        });
-        sin2.push({
-            'x': i,
-            'y': generateNumber(0, 100)
-        });
-        sin3.push({
-            'x': i,
-            'y': generateNumber(0, 30)
-        });
-        sin4.push({
-            'x': i,
-            'y': i
-        });
+        });        
     }
    if (props.q1) {
     return [
@@ -54,7 +39,7 @@ function getDatum(props) {
             area: true
         }
     ];
-} else if (props.h1) {
+    } else if (props.h1) {
         return [
             {
                 values: props.h1,
@@ -67,7 +52,7 @@ function getDatum(props) {
                 color: '#04a9f5'
             }            
         ];
-    }   else if (props.winterPerYear) {
+    }  else if (props.winterPerYear) {
         return [
             {
                 values: props.winterPerYear,
@@ -90,29 +75,109 @@ function getDatum(props) {
                 color: '#04a9f5'
             }            
         ];
-    }  else {
-            return [
+    }  else if (props.monthlyGraphs) {
+        return [
             {
-                values: sin,
-                key: 'sin',
+                values: props.monthlyGraphs.g_jan,
+                key: 'Jan',
                 color: '#A389D4'
             },
             {
-                values: sin2,
-                key: 'sin2',
+                values: props.monthlyGraphs.g_feb,
+                key: 'Feb',
+                color: '#04a9f5'
+            },            
+            {
+                values: props.monthlyGraphs.g_mar,
+                key: 'Mar',
+                color: '#A389D4'
+            },
+
+            {
+                values: props.monthlyGraphs.g_apr,
+                key: 'Apr',
                 color: '#04a9f5'
             },
             {
-                values: sin3,
-                key: 'sin3',
-                color: '#1de9b6',          
+                values: props.monthlyGraphs.g_may,
+                key: 'May',
+                color: '#04a9f5'
+            },            
+            {
+                values: props.monthlyGraphs.g_jun,
+                key: 'Jun',
+                color: '#A389D4'
             },
             {
-                values: sin4,
-                key: 'sin4',
-                color: '#1de9b6',
-                area: true
+                values: props.monthlyGraphs.g_jul,
+                key: 'Jul',
+                color: '#04a9f5'
+            },            
+            {
+                values: props.monthlyGraphs.g_aug,
+                key: 'Aug',
+                color: '#A389D4'
+            },
+            {
+                values: props.monthlyGraphs.g_sep,
+                key: 'Sep',
+                color: '#04a9f5'
+            },            
+            {
+                values: props.monthlyGraphs.g_oct,
+                key: 'Oct',
+                color: '#A389D4'
+            },            
+            {
+                values: props.monthlyGraphs.g_nov,
+                key: 'Nov',
+                color: '#04a9f5'
+            },            
+            {
+                values: props.monthlyGraphs.g_dec,
+                key: 'Dec',
+                color: '#A389D4'
             }
+        ];
+    }  else if (props.winter) {
+        return [
+            {
+                values: props.winter,
+                key: 'Winter',
+                color: '#A389D4'
+            }
+        ]
+    }  else if (props.spring) {
+        return [
+            {
+                values: props.spring,
+                key: 'Spring',
+                color: '#A389D4'
+            }
+        ]
+    }  else if (props.summer) {
+        return [
+            {
+                values: props.summer,
+                key: 'Summer',
+                color: '#A389D4'
+            }
+        ]
+    }  else if (props.autumn) {
+        return [
+            {
+                values: props.autumn,
+                key: 'Autumn',
+                color: '#A389D4'
+            }
+        ]
+    }   else {
+            return [
+            {
+                values: props.data || sin,
+                key: props.m || 'n/a',
+                color: '#A389D4'
+            }            
         ];
     }
 }

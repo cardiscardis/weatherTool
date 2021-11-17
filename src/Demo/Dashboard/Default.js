@@ -73,6 +73,7 @@ const Dashboard = (props) => {
     const [ seasonControl, setSeasonControl ] = useState('Summer');
     const [ monthlyControl, setMonthlyControl ] = useState('February');
     const [ ojiControl, setOjiControl ] = useState('OJ');
+    const [ analysisControl, setAnalysisControl ] = useState('Select Year');
 
     const onChange = (e) => {
         e.stopPropagation();
@@ -87,6 +88,8 @@ const Dashboard = (props) => {
             setMonthlyControl(e.target.value); 
         } else if (e.target.name === 'ojiControl') {
             setOjiControl(e.target.value); 
+        } else if (e.target.name === 'analysisControl') {
+            setAnalysisControl(e.target.value); 
         } else {
             setFilterControl(e.target.value);
         }
@@ -245,6 +248,9 @@ const Dashboard = (props) => {
                     //for oji line chart
                     let oji = [], sji = [], aji = [];
 
+                    //for data analysis
+                    let forDailyAnalysis = [];
+
                     //main loop                                       
                     for (let i = 0; i <= year1.length-1; i++) {                    
                         //per Year Array
@@ -271,9 +277,16 @@ const Dashboard = (props) => {
                         //for aj, sj and oj
                         let ad = [], sd = [], od = [];
 
+                        //for each day of the month per year (for data analysis sample)
+                        let twenty_2 = {}, twenty_3 = {}, twenty_4 = {}, twenty_5 = {}, twenty_6 = {}, twenty_7 = {}, twenty_8 = {}, twenty_9 = {};
+                        let thirties = {}, thirty_1 = {}, ones = {}, twos = {}, threes = {}, fours= {}, fives = {}, sixes = {}, sevens = {};
+                        let eights = {}, nines = {}, tens = {}, elevens = {}, twelves = {}, thirteens = {}, fourteens = {}, fifteens = {};
+                        let sixteens = {}, eighteens = {}, nineteens = {}, twenties = {}, seveenteens = {}, twenty_1 = {};
+                        
+                        //loop through each year
                         for (let k = start; k <= end - 1; k++) {
                             //calculate yearly
-                            arr.push(arrOfRainfall[k]);                            
+                            arr.push(arrOfRainfall[k]);                   
 
                             //calculate five years interval/basis.
                             fiveYearsArr.push(Number(arrOfRainfall[k]));
@@ -336,6 +349,101 @@ const Dashboard = (props) => {
 
                             //---------------------------------------------
                             
+                            //Populate each day of each month of each year. For Data Analysis
+                            if (data[k].day === 1 ) {
+                                ones[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);
+                            }
+                            if (data[k].day === 2) {
+                                twos[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);
+                            }
+                            if (data[k].day === 3) {
+                                threes[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);
+                            }
+                            if (data[k].day === 4) {
+                                fours[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);
+                            }
+                            if (data[k].day === 5) {
+                                fives[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);
+                            }
+                            if (data[k].day === 6) {
+                                sixes[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);
+                            }
+                            if (data[k].day === 7) {
+                                sevens[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);
+                            }
+                            if (data[k].day === 8) {
+                                eights[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);
+                            }
+                            if (data[k].day === 9) {
+                                nines[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);
+                            }
+                            if (data[k].day === 10) {
+                                tens[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);
+                            }
+                            if (data[k].day === 11) {
+                                elevens[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);
+                            }
+                            if (data[k].day === 12) {
+                                twelves[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);
+                            }
+                            if (data[k].day === 13) {
+                                thirteens[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);
+                            }
+                            if (data[k].day === 14) {
+                                fourteens[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);
+                            }
+                            if (data[k].day === 15) {
+                                fifteens[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);
+                            }
+                            if (data[k].day === 16) {
+                                sixteens[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);
+                            }
+                            if (data[k].day === 17) {
+                                seveenteens[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);
+                            }
+                            if (data[k].day === 18) {
+                                eighteens[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);
+                            }
+                            if (data[k].day === 19) {
+                                nineteens[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);
+                            }
+                            if (data[k].day === 20) {
+                                twenties[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);
+                            }
+                            if (data[k].day === 21) {
+                                twenty_1[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);
+                            }
+                            if (data[k].day === 22) {
+                                twenty_2[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);
+                            }
+                            if (data[k].day === 23) {
+                                twenty_3[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);
+                            }
+                            if (data[k].day === 24) {
+                                twenty_4[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);
+                            }
+                            if (data[k].day === 25) {
+                                twenty_5[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);
+                            }
+                            if (data[k].day === 26) {
+                                twenty_6[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);
+                            }
+                            if (data[k].day === 27) {
+                                twenty_7[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);
+                            }
+                            if (data[k].day === 28) {
+                                twenty_8[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);
+                            }
+                            if (data[k].day === 29) {
+                                twenty_9[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);
+                            }
+                            if (data[k].day === 30) {
+                                thirties[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);
+                            }
+                            if (data[k].day === 31) {
+                                thirty_1[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);
+                            }
+
                             //seasonal
                             //season data for each other year including last
                             if (y[1] === '1' || y[1] === '2') {
@@ -394,7 +502,7 @@ const Dashboard = (props) => {
                             }                            
 
                             //--------------------------------------------
-
+                            
                             //monthly continues...                    
                             if (y[0] === String(data[k].year) && y[1] === String(data[k].month)) {                                                                                
                                 if (arrOfYearAndMonth[k] === arrOfYearAndMonth[k + 1]) {                                    
@@ -462,6 +570,10 @@ const Dashboard = (props) => {
                                 }
                             }
                         }
+
+                        forDailyAnalysis.push({year: year1[i], rainfall_amount: {twenty_2, twenty_3, twenty_4, twenty_5, twenty_6, twenty_7, twenty_8,
+                            twenty_9, thirties, thirty_1, ones, twos, threes, fours, fives, sixes, sevens, eights, nines, tens, elevens, twelves,
+                            thirteens, fourteens, fifteens, sixteens, eighteens, nineteens, twenties, seveenteens, twenty_1}});
 
                         //sum of rainfall data by year;
                         let sumOfRainfall = arr.reduce(function(a, b) {
@@ -632,6 +744,9 @@ const Dashboard = (props) => {
                             sj: sd,
                             oj: od
                         });
+
+                        //data analysis
+                        mainData.forDailyAnalysis = forDailyAnalysis;                        
 
                         //for OJ Index line chart
                         oji.push({x: `${year1[i]}.${(String(Number(year1[i]) + 1)[2])}${(String(Number(year1[i]) + 1)[3])}`, y: od});
@@ -806,6 +921,7 @@ const Dashboard = (props) => {
 
                     //lineChart data continues
                     mainData.lineChartData = lineChartData;                    
+                    mainData.dataYears = year1;
 
                     console.log(mainData);
                     
@@ -859,6 +975,7 @@ const Dashboard = (props) => {
                     <option>Averages</option>
                     <option>OJ Index</option>
                     <option>OJ Index Sort</option>
+                    <option>Daily Analysis</option>
                 </Form.Control> 
             </Col>
             <Col md={12} xl={12}>
@@ -875,6 +992,12 @@ const Dashboard = (props) => {
                     <option>OJ</option>
                     <option>SJ</option>
                     <option>AJ</option>                    
+                </Form.Control>}
+            </Col>
+            <Col md={12} xl={12}>                
+                {filterControl === 'Daily Analysis' && <Form.Control size="lg" as="select" className="mb-3" name='analysisControl' value={analysisControl} onChange={(e) => {onChange(e)}}>
+                    <option>Select Year</option>
+                    {mainState.dataYears && mainState.dataYears.map((years, i) => <option key={i}>{years}</option>)}                    
                 </Form.Control>}
             </Col>
             <Col md={12} xl={12}>                
@@ -958,6 +1081,23 @@ const Dashboard = (props) => {
 
     return ( 
         isFetching ? <Loader /> 
+        : (filterControl === 'Daily Analysis') ?
+        <Aux>
+            <UserChoiceInput />            
+            <Row>
+                {analysisControl !== 'Select Year' && <RawDataTable forDailyAnalysis={mainState.forDailyAnalysis} q={analysisControl} />}
+            </Row>
+            {/*<Row>
+                <Col xl={12} md={12}>
+                    <LineChart monthlyGraphs={mainState.monthlyGraphs} />
+                </Col>
+            </Row>
+            <Row>
+                <Col xl={12} md={12}>
+                    <MultiBarChart monthlyGraphs={mainState.monthlyGraphs} />
+                </Col>
+            </Row>*/}
+        </Aux>  
         : (filterControl === 'OJ Index Sort') ?
         <Aux>
             <UserChoiceInput />            
@@ -1219,7 +1359,7 @@ const Dashboard = (props) => {
                                 </div>
 
                                 <div className="col-5 text-right">
-                                    <p className="m-b-0">{Object.keys(mainState).length ? mainState.opYears ? mainState.opYears : 'n/a' : 'n/a'}</p>
+                                    <p className="m-b-0">{Object.keys(mainState).length ? mainState.opYears ? mainState.opYears + 1 : 'n/a' : 'n/a'}</p>
                                 </div>
                                 <hr />
                                 <div className="col-7">

@@ -250,6 +250,7 @@ const Dashboard = (props) => {
 
                     //for data analysis
                     let forDailyAnalysis = [];
+                    let janToDecMaxPerYear = [];
 
                     //main loop                                       
                     for (let i = 0; i <= year1.length-1; i++) {                    
@@ -282,6 +283,7 @@ const Dashboard = (props) => {
                         let thirties = {}, thirty_1 = {}, ones = {}, twos = {}, threes = {}, fours= {}, fives = {}, sixes = {}, sevens = {};
                         let eights = {}, nines = {}, tens = {}, elevens = {}, twelves = {}, thirteens = {}, fourteens = {}, fifteens = {};
                         let sixteens = {}, eighteens = {}, nineteens = {}, twenties = {}, seveenteens = {}, twenty_1 = {};
+                        let janToDecMax = {};
                         
                         //loop through each year
                         for (let k = start; k <= end - 1; k++) {
@@ -302,7 +304,7 @@ const Dashboard = (props) => {
                                 basis += 5;                                
                             }                                                                                    
 
-                            //consec dry days
+                            //consec dry days per year
                             if (arrOfRainfall[k] === 0) {                               
                                 if (arrOfRainfall[k] === arrOfRainfall[k + 1]) {
                                     dryDaysConsec.push(arrOfRainfall[k]);
@@ -509,6 +511,14 @@ const Dashboard = (props) => {
                                     monthArray.push(Number(arrOfRainfall[k]));                                    
                                 } else {
                                     monthArray.push(Number(arrOfRainfall[k]));
+                                    
+                                    //Get max
+                                    let maxOfMonthlyRain = monthArray.reduce(function(a, b) {
+                                        return Math.max(a, b);
+                                    });
+
+                                    janToDecMax[getMonthlyMaxMonth(Number(data[k].month))] = maxOfMonthlyRain;
+
                                     //add up month rainfall data
                                     let sumOfMonthlyRain = monthArray.reduce(function(a, b) {
                                         return a + b;
@@ -571,9 +581,12 @@ const Dashboard = (props) => {
                             }
                         }
 
+                        //for data analysis
                         forDailyAnalysis.push({year: year1[i], rainfall_amount: {twenty_2, twenty_3, twenty_4, twenty_5, twenty_6, twenty_7, twenty_8,
                             twenty_9, thirties, thirty_1, ones, twos, threes, fours, fives, sixes, sevens, eights, nines, tens, elevens, twelves,
                             thirteens, fourteens, fifteens, sixteens, eighteens, nineteens, twenties, seveenteens, twenty_1}});
+
+                        janToDecMaxPerYear.push({year: year1[i], max: janToDecMax});
 
                         //sum of rainfall data by year;
                         let sumOfRainfall = arr.reduce(function(a, b) {
@@ -779,7 +792,10 @@ const Dashboard = (props) => {
                         spring2 = [];
                         summer2 = [];
                         autumn2 = [];  
-                    }                                          
+                    }                     
+                    
+                    //max per month per year
+                    mainData.janToDecMaxPerYear = janToDecMaxPerYear;
                     
                     //remove last element of forOJIndexTable because it has no January
                     forOJIndexTable.pop();                     
@@ -1085,7 +1101,13 @@ const Dashboard = (props) => {
         <Aux>
             <UserChoiceInput />            
             <Row>
-                {analysisControl !== 'Select Year' && <RawDataTable forDailyAnalysis={mainState.forDailyAnalysis} q={analysisControl} />}
+                {
+                    analysisControl !== 'Select Year' && <RawDataTable 
+                    forDailyAnalysis={mainState.forDailyAnalysis} 
+                    q={analysisControl} 
+                    janToDecMaxPerYear={mainState.janToDecMaxPerYear} 
+                />
+                }
             </Row>
             {/*<Row>
                 <Col xl={12} md={12}>

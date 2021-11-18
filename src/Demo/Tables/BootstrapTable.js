@@ -17,30 +17,30 @@ const BootstrapTable = (props) => {
     let hqSort = props.hqSort || [];
     let seasonal = props.seasonal || [];
     let seasonalSort = props.seasonalSort || [];
+    let janToDecMaxPerYear = props.janToDecMaxPerYear || [];    
 
     let forDataAnalysis = props.forDailyAnalysis || [];
     let analysisYear = props.q || '';
 
-    let analysisData = '';
+    let analysisData = '';    
     if (analysisYear && forDataAnalysis) {
         analysisData = forDataAnalysis.find((d) => {
             return d.year === analysisYear;
         });
-    }
+    }   
 
     let a = '';
     if (analysisData) {
         a = analysisData.rainfall_amount;
     }
 
-    console.log(a);
-    
+    let janToDecMax = '';
+    if (analysisYear && janToDecMaxPerYear) {
+        janToDecMax = janToDecMaxPerYear.find((d) => {
+            return d.year === analysisYear;
+        });
+    }
 
-    /*forDailyAnalysis.push({year: year1[i], rainfall_amount: {twenty_2, twenty_3, twenty_4, twenty_5, twenty_6, twenty_7, twenty_8,
-                            twenty_9, thirties, thirty_1, ones, twos, threes, fours, fives, sixes, sevens, eights, nines, tens, elevens, twelves,
-                            thirteens, fourteens, fifteens, sixteens, eighteens, nineteens, twenties, seveenteens, twenty_1}}); */
-    
-    
 
     return (
         annualSort.length ?
@@ -524,7 +524,7 @@ const BootstrapTable = (props) => {
                                     <td>{a.twenty_8.Oct ? a.twenty_8.Oct : a.twenty_8.Oct === 0 ? 0 : 'n/a'}</td>
                                     <td>{a.twenty_8.Nov ? a.twenty_8.Nov : a.twenty_8.Nov === 0 ? 0 : 'n/a'}</td>
                                     <td>{a.twenty_8.Dec ? a.twenty_8.Dec : a.twenty_8.Dec === 0 ? 0 : 'n/a'}</td>                                    
-                                </tr> 
+                                </tr>                                                                                                   
                                 <tr>
                                     <th scope="row">{29}</th>                                                                                                            
                                     <td>{a.twenty_9.Jan ? a.twenty_9.Jan : a.twenty_9.Jan === 0 ? 0 : 'n/a'}</td>
@@ -554,22 +554,7 @@ const BootstrapTable = (props) => {
                                     <td>{a.thirties.Oct ? a.thirties.Oct : a.thirties.Oct === 0 ? 0 : 'n/a'}</td>
                                     <td>{a.thirties.Nov ? a.thirties.Nov : a.thirties.Nov === 0 ? 0 : 'n/a'}</td>
                                     <td>{a.thirties.Dec ? a.thirties.Dec : a.thirties.Dec === 0 ? 0 : 'n/a'}</td>                                    
-                                </tr> 
-                                <tr>
-                                    <th scope="row">{29}</th>                                                                                                            
-                                    <td>{a.twenty_9.Jan ? a.twenty_9.Jan : a.twenty_9.Jan === 0 ? 0 : 'n/a'}</td>
-                                    <td>{a.twenty_9.Feb ? a.twenty_9.Feb : a.twenty_9.Feb === 0 ? 0 : 'n/a'}</td>
-                                    <td>{a.twenty_9.Mar ? a.twenty_9.Mar : a.twenty_9.Mar === 0 ? 0 : 'n/a'}</td>
-                                    <td>{a.twenty_9.Apr ? a.twenty_9.Apr : a.twenty_9.Apr === 0 ? 0 : 'n/a'}</td>
-                                    <td>{a.twenty_9.May ? a.twenty_9.May : a.twenty_9.May === 0 ? 0 : 'n/a'}</td>
-                                    <td>{a.twenty_9.Jun ? a.twenty_9.Jun : a.twenty_9.Jun === 0 ? 0 : 'n/a'}</td>
-                                    <td>{a.twenty_9.Jul ? a.twenty_9.Jul : a.twenty_9.Jul === 0 ? 0 : 'n/a'}</td>
-                                    <td>{a.twenty_9.Aug ? a.twenty_9.Aug : a.twenty_9.Aug === 0 ? 0 : 'n/a'}</td>
-                                    <td>{a.twenty_9.Sep ? a.twenty_9.Sep : a.twenty_9.Sep === 0 ? 0 : 'n/a'}</td>
-                                    <td>{a.twenty_9.Oct ? a.twenty_9.Oct : a.twenty_9.Oct === 0 ? 0 : 'n/a'}</td>
-                                    <td>{a.twenty_9.Nov ? a.twenty_9.Nov : a.twenty_9.Nov === 0 ? 0 : 'n/a'}</td>
-                                    <td>{a.twenty_9.Dec ? a.twenty_9.Dec : a.twenty_9.Dec === 0 ? 0 : 'n/a'}</td>                                    
-                                </tr> 
+                                </tr>
                                 <tr>
                                     <th scope="row">{31}</th>                                                                                                            
                                     <td>{a.thirty_1.Jan ? a.thirty_1.Jan : a.thirty_1.Jan === 0 ? 0 : 'n/a'}</td>
@@ -584,6 +569,21 @@ const BootstrapTable = (props) => {
                                     <td>{a.thirty_1.Oct ? a.thirty_1.Oct : a.thirty_1.Oct === 0 ? 0 : 'n/a'}</td>
                                     <td>{a.thirty_1.Nov ? a.thirty_1.Nov : a.thirty_1.Nov === 0 ? 0 : 'n/a'}</td>
                                     <td>{a.thirty_1.Dec ? a.thirty_1.Dec : a.thirty_1.Dec === 0 ? 0 : 'n/a'}</td>                                    
+                                </tr>
+                                <tr>
+                                    <th scope="row">{'Highest Daily'}</th>                                                                                                            
+                                    <td>{janToDecMax.max.Jan ? janToDecMax.max.Jan : janToDecMax.max.Jan === 0 ? 0 : 'n/a'}</td>
+                                    <td>{janToDecMax.max.Feb ? janToDecMax.max.Feb : janToDecMax.max.Feb === 0 ? 0 : 'n/a'}</td>
+                                    <td>{janToDecMax.max.Mar ? janToDecMax.max.Mar : janToDecMax.max.Mar === 0 ? 0 : 'n/a'}</td>
+                                    <td>{janToDecMax.max.Apr ? janToDecMax.max.Apr : janToDecMax.max.Apr === 0 ? 0 : 'n/a'}</td>
+                                    <td>{janToDecMax.max.May ? janToDecMax.max.May : janToDecMax.max.May === 0 ? 0 : 'n/a'}</td>
+                                    <td>{janToDecMax.max.Jun ? janToDecMax.max.Jun : janToDecMax.max.Jun === 0 ? 0 : 'n/a'}</td>
+                                    <td>{janToDecMax.max.Jul ? janToDecMax.max.Jul : janToDecMax.max.Jul === 0 ? 0 : 'n/a'}</td>
+                                    <td>{janToDecMax.max.Aug ? janToDecMax.max.Aug : janToDecMax.max.Aug === 0 ? 0 : 'n/a'}</td>
+                                    <td>{janToDecMax.max.Sep ? janToDecMax.max.Sep : janToDecMax.max.Sep === 0 ? 0 : 'n/a'}</td>
+                                    <td>{janToDecMax.max.Oct ? janToDecMax.max.Oct : janToDecMax.max.Oct === 0 ? 0 : 'n/a'}</td>
+                                    <td>{janToDecMax.max.Nov ? janToDecMax.max.Nov : janToDecMax.max.Nov === 0 ? 0 : 'n/a'}</td>
+                                    <td>{janToDecMax.max.Dec ? janToDecMax.max.Dec : janToDecMax.max.Dec === 0 ? 0 : 'n/a'}</td>                                    
                                 </tr>                                 
                                 </tbody>
                             </Table>

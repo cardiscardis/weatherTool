@@ -1,15 +1,17 @@
-import React from 'react';
+import React, { memo } from 'react';
 import NVD3Chart from 'react-nvd3';
 
-function getDatum(p) {
-    let sin = [];
+function getDatum(p) {    
+    let sin = [];            
         //sin2 = [],
         //cos = [];
     for (var i = 0; i < 10; i++) {
         sin.push({
             'x': i,
             'y': Math.sin(i / 10)
-        });/*
+        });
+    
+        /*
         sin2.push({
             'x': i,
             'y': Math.sin(i / 10) * 0.25 + 0.5
@@ -18,7 +20,8 @@ function getDatum(p) {
             'x': i,
             'y': .5 * Math.cos(i / 10)
         });    */
-    }
+    }    
+    
 
     if (p.monthlyGraphs) {
         return [
@@ -95,7 +98,8 @@ function getDatum(p) {
                 area: true
             }
         ];
-    } else if (p.oji && p.sji && p.aji) {
+    } else if (p.oji && p.sji && p.aji) {//data={mainState.lineChartData}
+                                        //totalAvg= {annualAvg}
         return [
             {
                 values: p.oji,
@@ -113,6 +117,21 @@ function getDatum(p) {
                 color: '#04a9f5'                
             }
         ];
+    } else if (p.data && p.totalAvg) {//data={mainState.lineChartData}
+        //totalAvg= {annualAvg}
+        return [
+            {
+                values: p.data,
+                key: 'Annual',
+                color: '#04a9f5',
+            },
+            {
+                values: p.totalAvg,
+                key: 'AVG',
+                color: '#A389D4'
+            }
+        ];
+    
     } else {
         return [
             {
@@ -136,7 +155,33 @@ function getDatum(p) {
 }
 
 const LineChart = (props) => {   
-    const data = getDatum(props);    
+    let data = [];
+     if (props.obj) {
+        let obj = Object.keys(props.obj).map((d) => (
+            {
+                values: props.obj[d],
+                key: d,
+                color: '#04a9f5'
+            }
+        ));
+
+        data = [...obj,
+            {
+                values: props.data,
+                key: 'Annual',
+                color: '#04a9f5',
+            },
+            {
+                values: props.totalAvg,
+                key: 'AVG',
+                color: '#A389D4'
+            }            
+        ];
+     } else {
+        data = getDatum(props);
+     }
+
+    //console.log(data);
     return (
         <div>
             {
@@ -161,7 +206,6 @@ const LineChart = (props) => {
             }
         </div>
     )
-
 }
 
-export default LineChart;
+export default memo(LineChart);

@@ -1,11 +1,12 @@
-import React from 'react';
+import React, {memo} from 'react';
 import NVD3Chart from 'react-nvd3';
-
+/** */
 function generateNumber(min, max) {
     return Math.floor(Math.random()*(max-min+1)+min)
 }
 
-function getDatum(props) {
+function getDatum(props) {    
+
     let sin = [];        
 
     const len =  35 + (Math.random() * (70-35));
@@ -15,31 +16,141 @@ function getDatum(props) {
             'y': generateNumber(0, 60)
         });        
     }
-   if (props.q1) {
+   if (props.winterAvg && props.winterAvg.length && props.springAvg.length && props.summerAvg && props.autumnAvg.length) {
     return [
         {
-            values: props.q1,
-            key: 'Q1',
+            values: props.winterAvg,
+            key: 'Winter',
             color: '#A389D4'
         },
         {
-            values: props.q2,
-            key: 'Q2',
+            values: props.springAvg,
+            key: 'Spring',
             color: '#04a9f5'
         },
         {
-            values: props.q3,
-            key: 'Q3',
+            values: props.summerAvg,
+            key: 'Summer',
             color: '#1de9b6',          
         },
         {
-            values: props.q4,
-            key: 'Q4',
+            values: props.autumnAvg,
+            key: 'Autumn',
             color: '#1de9b6',
             area: true
         }
-    ];
-    } else if (props.h1) {
+    ];//
+    } else if (props.hAvg && Object.keys(props.hAvg).length) {
+        let hObjs = Object.keys(props.hAvg).map((d) => ({
+            values: props.hAvg[d],
+            key: d,
+            color: '#A389D4'            
+        }));        
+        return hObjs;
+    } else if (props.qAvg && Object.keys(props.qAvg).length) {
+        let qObjs = Object.keys(props.qAvg).map((d) => ({
+            values: props.qAvg[d],
+            key: d,                    
+            color: '#A389D4'            
+        }));
+        return qObjs;
+    } else if (props.avgAnnual && Object.keys(props.avgAnnual).length) {
+        let annualObjs = Object.keys(props.avgAnnual).map((d) => ({
+            values: [props.avgAnnual[d]],
+            key: d,
+            color: '#A389D4'            
+        }));        
+        return annualObjs;
+    } else if (props.janAvg && props.janAvg.length) {                
+
+        return [
+            {
+                values: props.janAvg,
+                key: 'Jan',
+                color: '#04a9f5'
+            },
+            {
+                values: props.febAvg,
+                key: 'Feb',
+                color: '#04a9f5'
+            },
+            {
+                values: props.marAvg,
+                key: 'Mar',
+                color: '#1de9b6',          
+            },
+            {
+                values: props.aprAvg,
+                key: 'Apr',
+                color: '#A389D4'
+            },
+            {
+                values: props.mayAvg,
+                key: 'May',
+                color: '#04a9f5'
+            },
+            {
+                values: props.junAvg,
+                key: 'Jun',
+                color: '#1de9b6',          
+            },
+            {
+                values: props.julAvg,
+                key: 'Jul',
+                color: '#A389D4'
+            },
+            {
+                values: props.augAvg,
+                key: 'Aug',
+                color: '#04a9f5'
+            },
+            {
+                values: props.sepAvg,
+                key: 'Sep',
+                color: '#1de9b6',          
+            },
+            {
+                values: props.octAvg,
+                key: 'Oct',
+                color: '#A389D4'
+            },
+            {
+                values: props.novAvg,
+                key: 'Nov',
+                color: '#04a9f5'
+            },            
+            {
+                values: props.decAvg,
+                key: 'Dec',
+                color: '#1de9b6',
+                area: true
+            }
+        ];
+        } else if (props.q1 && props.q1.length) {
+            return [
+                {
+                    values: props.q1,
+                    key: 'Q1',
+                    color: '#A389D4'
+                },
+                {
+                    values: props.q2,
+                    key: 'Q2',
+                    color: '#04a9f5'
+                },
+                {
+                    values: props.q3,
+                    key: 'Q3',
+                    color: '#1de9b6',          
+                },
+                {
+                    values: props.q4,
+                    key: 'Q4',
+                    color: '#1de9b6',
+                    area: true
+                }
+            ];
+        } else if (props.h1 && props.h1.length) {
         return [
             {
                 values: props.h1,
@@ -52,7 +163,7 @@ function getDatum(props) {
                 color: '#04a9f5'
             }            
         ];
-    }  else if (props.winterPerYear) {
+    }  else if (props.winterPerYear && props.winterPerYear.length) {
         return [
             {
                 values: props.winterPerYear,
@@ -75,7 +186,7 @@ function getDatum(props) {
                 color: '#04a9f5'
             }            
         ];
-    }  else if (props.monthlyGraphs) {
+    }  else if (props.monthlyGraphs && Object.keys(props.monthlyGraphs).length) {
         return [
             {
                 values: props.monthlyGraphs.g_jan,
@@ -139,7 +250,7 @@ function getDatum(props) {
                 color: '#A389D4'
             }
         ];
-    }  else if (props.winter) {
+    }  else if (props.winter && props.winter.length) {
         return [
             {
                 values: props.winter,
@@ -147,7 +258,7 @@ function getDatum(props) {
                 color: '#A389D4'
             }
         ]
-    }  else if (props.spring) {
+    }  else if (props.spring && props.spring.length) {
         return [
             {
                 values: props.spring,
@@ -155,7 +266,7 @@ function getDatum(props) {
                 color: '#A389D4'
             }
         ]
-    }  else if (props.summer) {
+    }  else if (props.summer && props.summer.length) {
         return [
             {
                 values: props.summer,
@@ -163,7 +274,7 @@ function getDatum(props) {
                 color: '#A389D4'
             }
         ]
-    }  else if (props.autumn) {
+    }  else if (props.autumn && props.autumn.length) {
         return [
             {
                 values: props.autumn,
@@ -185,8 +296,8 @@ function getDatum(props) {
 
 
 const MultiBarChart = (props) => {    
-        const data = getDatum(props);
-        return (data.length) ? <NVD3Chart type="multiBarChart" datum={data} x="x" y="y" height={300} showValues groupSpacing={0.2} />: null;
+        const data = getDatum(props);       
+        return (data && data.length) ? <NVD3Chart type="multiBarChart" datum={data} x="x" y="y" height={300} showValues groupSpacing={0.2} />: null;
 }
 
-export default MultiBarChart;
+export default memo(MultiBarChart);

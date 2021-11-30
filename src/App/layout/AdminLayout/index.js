@@ -1,4 +1,4 @@
-import React, { Component, Suspense } from 'react';
+import React, { Component, Suspense, memo } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import {connect} from 'react-redux';
 import Fullscreen from "react-full-screen";
@@ -118,4 +118,4 @@ const mapDispatchToProps = dispatch => {
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps) (windowSize(AdminLayout));
+export default connect(mapStateToProps, mapDispatchToProps) (windowSize(memo(AdminLayout)));

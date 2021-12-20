@@ -2,7 +2,7 @@ import React, { useState, useEffect, memo } from 'react';
 import { Row, Col, Card, Table, Form } from 'react-bootstrap' // Tabs, Tab, Form } from 'react-bootstrap';
 
 import UserService from "../services/user.service.js"
-import { decimalToFraction } from "../services/decimalToFraction.js"
+//import { decimalToFraction } from "../services/decimalToFraction.js"
 import FastService from "../services/fast.service.js"
 
 import Loader from '../../App/layout/Loader'
@@ -75,90 +75,115 @@ const Dashboard = (props) => {
     const [ seasonControl, setSeasonControl ] = useState('Summer');
     const [ monthlyControl, setMonthlyControl ] = useState('February');
     const [ ojiControl, setOjiControl ] = useState('OJ');
-    const [ analysisControl, setAnalysisControl ] = useState('Select Year');
+    const [ analysisControl, setAnalysisControl ] = useState('Select Year');    
+    const [ codesAndData, setCodesAndData ] = useState({});
+    const [ isComputing, setIsComputing ] = useState(true);
     
     
 
     const onChange = (e) => {
-        e.stopPropagation();
-        setIsFetching(true);
+        e.stopPropagation();        
+        setIsComputing(true);
         if (e.target.name === 'queryCode') {
             setQueryCode(e.target.value);
+            setIsFetching(true);
         } 
         if (e.target.name === 'weatherType') {
             setWeatherType(e.target.value); 
+            setIsFetching(true);
         } 
         if (e.target.name === 'seasonControl') {
-            setSeasonControl(e.target.value); 
+            setSeasonControl(e.target.value);
         } 
         if (e.target.name === 'monthlyControl') {
-            setMonthlyControl(e.target.value); 
+            setMonthlyControl(e.target.value);             
         } 
         if (e.target.name === 'ojiControl') {
-            setOjiControl(e.target.value); 
+            setOjiControl(e.target.value);
         } 
         if (e.target.name === 'analysisControl') {
-            setAnalysisControl(e.target.value);                     
+            setAnalysisControl(e.target.value);            
         } 
         if (e.target.name === 'filterControl') {
-            setFilterControl(e.target.value);
+            setFilterControl(e.target.value);            
         }
     }   
 
  
 
     useEffect(() => {        
-        async function fetchData() {            
-            await UserService.getUserBoard().then(async () => {                                
+        //get station codes and weather data from api       
+        async function fetchData() {
+            if (isFetching) {
+                let codes = [];
+                let data = [];
+            
+                await UserService.getUserBoard().then(async () => {
+                    
+                    await FastService.getStationCodes().then(async (response) => {
+                        codes = await response;
+                        return codes;
+                    }, (e) => {
+                        console.log(e);
+                        alert('Error Fetching Data! Please Reload The Page To Continue');
+                        return setIsFetching(false); 
+                    });
+                    await FastService.getWeatherContent(weatherType, queryCode).then(async (response) => {
+                        data = await response;
+                        return data;
+                    }, (e) => {
+                        console.log(e);
+                        alert('Error Fetching Data! Please Reload The Page To Continue');
+                        return setIsFetching(false); 
+                    });
+                    let ans = { codes, data };
+                    //return ans;
+                    setCodesAndData(ans);
+                    return setIsFetching(false); 
+                }, () => {
+                    props.history.push("/auth/signin-1");
+                    return window.location.reload();
+                });                
+            }
+        }
+        
+        //-----------------------------------------------
+        if (isComputing) {
+            fetchData().then(() => {
+                let codes = codesAndData.codes;
+                let data = codesAndData.data;
+            
                 let mainData = {};
-                //get station codes and weather data from api
-                let codes = '';
-                let data = '';
-                await FastService.getStationCodes().then((response) => {
-                    codes = response;
-                }, (e) => {
-                    console.log(e);
-                    alert('Error Fetching Data! Please Reload The Page To Continue');
-                });                        
-                await FastService.getWeatherContent(weatherType, queryCode).then((response) => {
-                    data = response;
-                }, (e) => {
-                    console.log(e);
-                    alert('Error Fetching Data! Please Reload The Page To Continue');
-                }); 
-                
-                mainData.category = "Renewables";               
-                
-                if (codes && data) {
-                    mainData.data = data;
+                if (codes.length && data.length) {
+                    mainData.category = "Renewables";
+                    mainData.data = [...data];
                     //set station codes for form render
-                    mainData.stationCodes = codes;                                  
-
+                    mainData.stationCodes = [...codes];
+    
                     //set location
                     if (filterControl === 'Location Tool' || filterControl === 'Overview') {
-                        let location = codes.find((a) => {                        
+                        let location = codes.find((a) => {
                             return a.code === queryCode;
-                        });                               
+                        });
                         mainData.location = location.station;
-                    }
-                    
-                                       
+                    }                    
+                                        
                     //set station state
                     if (filterControl === 'Overview') {
                         let stationState = codes.find((a) => {
                             return a.state === queryCode;
                         });
                         if (stationState) {mainData.stationState = stationState;} else {mainData.stationState = 'n/a';}
-                    } 
-
+                    }
+    
                     //set year opened
                     if (filterControl === 'Overview' || filterControl === 'Location Tool') {
-                        let yearOpened = data[0].year;                    
+                        let yearOpened = data[0].year;
                         if (yearOpened) {mainData.yearOpened = yearOpened;} else {mainData.yearOpened = 'n/a';}
-
+    
                         //set operational years
                         let yearClosed = data[data.length - 1].year;
-                        mainData.yearClosed = yearClosed;                    
+                        mainData.yearClosed = yearClosed;
                         let opYears = yearClosed - yearOpened;
                         if (opYears < 1) {
                             opYears = '<1';
@@ -166,44 +191,44 @@ const Dashboard = (props) => {
                         mainData.opYears = opYears;
                     }
                     
-
+    
                     //Annual Max and Min
                     //Grouping rain data by year
                     //first create year array
                     let arrOfYear = [];
                     //then create an array of rain data
-                    let arrOfRainfall = [];                    
+                    let arrOfRainfall = [];
                     //create array for month+year
                     let arrOfYearAndMonth = [];
                     //push year data in year array and rain array (a must for the next stage to work well is to replace -1 values for rain array)
-
-                    for (let a of data) { 
+    
+                    for (let a of data) {
                         arrOfYear.push(Number(a.year));
                         let yearPlusMonth = a.year+'-'+a.month;
                         arrOfYearAndMonth.push(yearPlusMonth);
                         if (weatherType === 'Rainfall') {
-                            if (a.rainfall_amount === -1) {                            
-                                arrOfRainfall.push(0);                            
+                            if (a.rainfall_amount === -1) {
+                                arrOfRainfall.push(0);
                             } else {
-                                arrOfRainfall.push(Number(a.rainfall_amount));                         
-                            }                        
+                                arrOfRainfall.push(Number(a.rainfall_amount));
+                            }
                         } else if (weatherType === 'Minimum Temperature') {
-                            if (a.min_temp_celsius === -1) {                            
-                                arrOfRainfall.push(0);                            
+                            if (a.min_temp_celsius === -1) {
+                                arrOfRainfall.push(0);
                             } else {
-                                arrOfRainfall.push(Number(a.min_temp_celsius));                         
+                                arrOfRainfall.push(Number(a.min_temp_celsius));
                             }
                         } else if (weatherType === 'Maximum Temperature') {
-                            if (a.max_temp_celsius === -1) {                            
-                                arrOfRainfall.push(0);                            
+                            if (a.max_temp_celsius === -1) {
+                                arrOfRainfall.push(0);
                             } else {
-                                arrOfRainfall.push(Number(a.max_temp_celsius));                         
+                                arrOfRainfall.push(Number(a.max_temp_celsius));
                             }
                         } else if (weatherType === 'Solar Exposure') {
-                            if (a.solar_exposure === -1) {                            
-                                arrOfRainfall.push(0);                            
+                            if (a.solar_exposure === -1) {
+                                arrOfRainfall.push(0);
                             } else {
-                                arrOfRainfall.push(Number(a.solar_exposure));                         
+                                arrOfRainfall.push(Number(a.solar_exposure));
                             }
                         }
                     }
@@ -211,64 +236,64 @@ const Dashboard = (props) => {
                     
                     //then create 2 objects. One for grouping years and frequency(ocurrence length)
                     //the other for grouping years and start index.
-                    let yearsAndNumYears = {};                                    
+                    let yearsAndNumYears = {};
                     
                     //counter for arrOfYear
                     let counter = 1;
-                    //counter for arrOfYearAndMonth                    
+                    //counter for arrOfYearAndMonth
                     for (let i = 0; i < arrOfYear.length; i++) {
                         if (arrOfYear[i] === arrOfYear[i + 1]) {
-                            counter++;                        
+                            counter++;
                         } else {
-                            yearsAndNumYears[arrOfYear[i]] = counter;                           
+                            yearsAndNumYears[arrOfYear[i]] = counter;
                             counter = 1;
-                        }                                                 
+                        }
                     }
-
-                    //calculating maximum rainfall for each year.                                        
+    
+                    //calculating maximum rainfall for each year.
                     let year1 = Object.keys(yearsAndNumYears);
                     let freq = Object.values(yearsAndNumYears);
-
+    
                     //calculate maximum rainfall for each year and then month. Also on five years basis.
-                    let sumOfRainfallPerYear = {}, sumOfRainfallPerMonth = {}, sumOfRainfallPerFiveYears = {};// sumOfRainfallPerTenYears = {};
-
+                    let sumOfRainfallPerYear = {}, sumOfRainfallPerMonth = {}, sumOfRainfallPerFiveYears = {};
+    
                     //seasonal data for last year
-                    let winter = [], spring = [], summer = [], autumn = [];                    
-
+                    let winter = [], spring = [], summer = [], autumn = [];
+    
                     //consec dry days (last year)
                     let dryDaysMaxConsec = {};
                     let dryDaysConsec = [];
-
+    
                     //last year info data:
                     let daysWithRain = [], daysOfRainGreaterThan10 = [], daysOfRainGreaterThan25 = [], dryDays = [];
-
+    
                     //array to hold lineChart data
-                    let lineChartData = [];                    
+                    let lineChartData = [];
                     
                     //year halfs and quarters
                     let h1 = [], h2 = [], q1 = [], q2 = [], q3 = [], q4 = [];
                     let h_1 = [], h_2 = [], q_1 = [], q_2 = [], q_3 = [], q_4 = [], winter_1 = [], spring_1 = [], summer_1 = [], autumn_1 = [];
-
+    
                     //for each year (overall)
                     let winter2 = [], spring2 = [], summer2 = [], autumn2 = [], winter_cc = [], winterStartDecRain = [];
-
+    
                     //for each month per year. g means graph (for monthly filter contents)
                     let g_jan = [], g_feb = [], g_mar = [], g_apr = [], g_may = [], g_jun = [], g_jul = [], g_aug = [], g_sep = [], g_oct = [], g_nov = [], g_dec = [];
-
+    
                     let forMonthlyTable = [], forAnnualTable = [], forMonthlyFilterTable = [], forAveragesFilterTable = [], forOJIndexTable = [];
-                    let forAveragesLineChart = [], winterStartDecRainAvg = {};                    
-
+                    let forAveragesLineChart = [], winterStartDecRainAvg = {};
+    
                     //five year basis array.
                     let fiveYearsArr = [];                    
                     let fiveYearStart = year1[0];  
-                    let basis = 5;                    
+                    let basis = 5;
                     //ten year basis averages array.      
                     let tenYearStart = `${year1[0][0]}${year1[0][1]}${year1[0][2]}0`;
                     let basis10 = year1.indexOf(String(Number(tenYearStart) + 10));
                     //fifty year basis averages array.
                     let fiftyYearStart = `${year1[0][0]}${year1[0][1]}${year1[0][2]}0`;
-                    let basis50 = year1.indexOf(String(Number(fiftyYearStart) + 50));                    
-                    //last 100 years basis averages array.                    
+                    let basis50 = year1.indexOf(String(Number(fiftyYearStart) + 50));
+                    //last 100 years basis averages array.
                     let last100YearStart = `${year1[year1.length - 1][0]}${year1[year1.length - 1][1]}00`;
                     
                     // 5 years interval average per month per year (for averages filter table 2 contents).
@@ -296,19 +321,18 @@ const Dashboard = (props) => {
                     let forAvgLTA_sep = [], forAvgLTA_oct = [], forAvgLTA_nov = [], forAvgLTA_dec = [], forAvgLTA_annual = [], forAvgLTA_q1 = [], forAvgLTA_q2 = [], forAvgLTA_q3 = [];
                     let forAvgLTA_q4 = [], forAvgLTA_h1 = [], forAvgLTA_h2 = [], forAvgLTA_winter = [], forAvgLTA_spring = [], forAvgLTA_summer = [], forAvgLTA_autumn = [];
                     let ltaYearsAvg = [];
-
+    
                     //averages barchart
                     let avgChart1Winter = [], avgChart1Spring = [], avgChart1Summer = [], avgChart1Autumn = [];
-                    let avgChart2Annual = {};//, avgChart2Annual10 = {}, avgChart2AnnualLTA = [], avgChart2Annual50 = {}, avgChart2Annual5 = [];
+                    let avgChart2Annual = {};
                     let avgChart3monthFeb = [], avgChart3monthMar = [], avgChart3monthApr = [], avgChart3monthMay = [], avgChart3monthJun = [], avgChart3monthJul = [];
                     let avgChart3monthAug = [], avgChart3monthSep = [], avgChart3monthOct = [], avgChart3monthNov = [], avgChart3monthDec = [],  avgChart3monthJan = [];
-                    let avgChart4h1h2 = {}, avgChart4q1q2q3q4 = {};//, avgChart4h1h2_50 = {}, avgChart4q1q2q3q4_50 = {}, avgChart4q1q2q3q4_LTA = [];
-                    //, avgChart4h1h2_LTA = [], avgChart4h1h2_5 = [], avgChart4q1q2q3q4_5 = [], avgChart4h1h2_5 = [], avgChart4q1q2q3q4_5 = [];
+                    let avgChart4h1h2 = {}, avgChart4q1q2q3q4 = {};
                     
-
+    
                     //for oji line chart
                     let oji = [], sji = [], aji = []; //october-january, september-january and august-january
-
+    
                     //for data analysis
                     let forDailyAnalysis = []; //daily rain per month per year
                     let janToDecMaxPerYear = []; //max rain per month per year
@@ -317,13 +341,13 @@ const Dashboard = (props) => {
                     let hdnodConsec = [], hdnodConsec2 = [];//highest no of dry days per month per year consec
                     let nord = []; //number of rain days per month per year
                     let nodd = []; //number of dry days per month per year
-                    let nowd25 = [], nowd15 = [], nowd10 = []; //number of wet days > 25mm, 15mm and 10mm per month per year                  
+                    let nowd25 = [], nowd15 = [], nowd10 = []; //number of wet days > 25mm, 15mm and 10mm per month per year
                     
                     //for daily analysis
                     let arrOfEachMonthRainPerYear = [], arrOfEachMonthRainPerYear2 = [];
                     
-
-                    //main loop       
+    
+                    //main loop
                     for (let i = 0; i <= year1.length-1; i++) {
                         //per Year Array
                         let arr = [];
@@ -331,7 +355,7 @@ const Dashboard = (props) => {
                         let monthArray = [];
                         //year start and end
                         let start = 0;
-                        let end = freq[0];                        
+                        let end = freq[0];
                                                 
                         if (i !== 0) {
                             for (let j = 0; j <= i - 1; j++) {
@@ -340,15 +364,15 @@ const Dashboard = (props) => {
                             end = 0;
                             for (let j = 0; j <= i; j++) {
                                 end += freq[j];
-                            }                           
+                            }
                         }
                         
                         let janDecRainPerYear = {};
                         let janDecRainPerYearAvg = {};
-
+    
                         //for aj, sj and oj
                         let ad = [], sd = [], od = [];
-
+    
                         //for each day of the month per year (for data analysis sample)                        
                         let twenty_2 = {}, twenty_3 = {}, twenty_4 = {}, twenty_5 = {}, twenty_6 = {}, twenty_7 = {}, twenty_8 = {}, twenty_9 = {};
                         let thirties = {}, thirty_1 = {}, ones = {}, twos = {}, threes = {}, fours= {}, fives = {}, sixes = {}, sevens = {};
@@ -357,27 +381,27 @@ const Dashboard = (props) => {
                     
                         
                         let janToDecMax = {};
-
+    
                         //highest rain per month for data analysis consec
                         let highestRainConsec1 = [];
                         let highestRainPerMonth1 = {}, hrpMonth = {}, hrpMonth2 = {};  //highest amount of rain per month consec                       
                         let highestNodPerMonth1 = {}, hnodMonth = {}, hnodMonth2 = {};//no of days of highest rain per month for data analysis consec                        
-
+    
                         let highestDryNodConsec = {}, hdnodc = {}, hdnodc2 = {};                        
                         let highestDryConsec1 = [];
-
+    
                         //rain days per month per year continues
                         let noOfRainDaysAnalysis = [];
                         let nrd = {};
-
+    
                         //dry days per month per year continues
                         let noOfDryDaysAnalysis = [];
                         let ndd = {};
-
+    
                         //wet days > 25mm, 15mm and 10mm per month per year continues
                         let noOfWetDaysAnalysis25 = [], noOfWetDaysAnalysis15 = [], noOfWetDaysAnalysis10 = [];
                         let nwd25 = {}, nwd15 = {}, nwd10 = {};
-
+    
                         //for daily analysis                        
                         let monthlyCumulative = '';
                         let eachDayRainPerMonth = {}, arrOfEachMonthRain = {};
@@ -387,7 +411,7 @@ const Dashboard = (props) => {
                         for (let k = start; k <= end - 1; k++) {
                             //calculate yearly
                             arr.push(arrOfRainfall[k]);  
-
+    
                             //calculate five years interval/basis.
                             if (filterControl === 'Overview') {
                                 if (year1[basis - 1]) {
@@ -407,7 +431,7 @@ const Dashboard = (props) => {
                                     }
                                 }
                             
-
+    
                             //consec dry days per year
                             
                                 if (arrOfRainfall[k] === 0) {                               
@@ -421,9 +445,9 @@ const Dashboard = (props) => {
                                 }
                             }
                             
-
+    
                             //calculate monthly           
-                            let y = arrOfYearAndMonth[k].split('-');                 
+                            let y = arrOfYearAndMonth[k].split('-');
                                                         
                             //last year daily data                            
                             if (String(data[k].year) === year1[year1.length - 1]) {
@@ -441,8 +465,8 @@ const Dashboard = (props) => {
                                     if (Number(arrOfRainfall[k]) <= 0) {
                                         dryDays.push(Number(arrOfRainfall[k]));
                                     }                               
-                                                                                                             
-
+                                                                                                                
+    
                                     //season data for last year. The year starts with a winter (on January). 
                                     //Also, last year's December belongs to next year's winter. 
                                     if (y[1] === '1' || y[1] === '2') {
@@ -459,7 +483,7 @@ const Dashboard = (props) => {
                                     }                                
                                 }
                             }
-
+    
                             //---------------------------------------------
                             
                             //Populate each day of each month of each year. For Data Analysis
@@ -590,7 +614,7 @@ const Dashboard = (props) => {
                                     h2.push(Number(arrOfRainfall[k]));
                                 }
                                 //---------------------------------------------
-
+    
                                 //compute for q1 to q4 (year quarters)
                                 if (y[1] === '1' || y[1] === '2' || y[1] === '3') {
                                     q1.push(Number(arrOfRainfall[k]));
@@ -603,7 +627,7 @@ const Dashboard = (props) => {
                                 }
                                 if (y[1] === '10' || y[1] === '11' || y[1] === '12') {
                                     q4.push(Number(arrOfRainfall[k]));
-
+    
                                 //compute oj, sj and aj
                                 //for oj
                                     od.push(Number(arrOfRainfall[k]));
@@ -617,7 +641,7 @@ const Dashboard = (props) => {
                                     ad.push(Number(arrOfRainfall[k]));
                                 }                      
                             }                            
-
+    
                             
                             //--------------------------------------------
                             
@@ -640,7 +664,7 @@ const Dashboard = (props) => {
                                     //daily
                                     arrOfEachMonthRain2[`_${data[k].day}`] = Number(arrOfRainfall[k]);
                                     //____________________________________________________
-
+    
                                     //data analysis filter
                                     //----------------------
                                     //highest consecutive for data analysis filter
@@ -657,7 +681,7 @@ const Dashboard = (props) => {
                                         highestNodPerMonth1[`${data[k].year}${data[k].month}${data[k].day}`] = highestRainConsec1.length;
                                         highestRainConsec1 = [];
                                     }
-
+    
                                     //highest consecutive dry days for data analysis filter
                                     if (Number(arrOfRainfall[k]) === 0 && Number(arrOfRainfall[k + 1]) === 0) {
                                         highestDryConsec1.push(Number(arrOfRainfall[k]));
@@ -668,17 +692,17 @@ const Dashboard = (props) => {
                                         highestDryNodConsec[`${data[k].year}${data[k].month}${data[k].day}`] = highestDryConsec1.length;
                                         highestDryConsec1 = [];
                                     }
-
+    
                                     //no of rain days per month per year
                                     if (Number(arrOfRainfall[k]) > 0) {
                                         noOfRainDaysAnalysis.push(arrOfRainfall[k]);
                                     }
-
+    
                                     //no of dry days per month per year
                                     if (Number(arrOfRainfall[k]) === 0) {
                                         noOfDryDaysAnalysis.push(arrOfRainfall[k]);
                                     }
-
+    
                                     //no of wet days > 25mm, 15mm and 10mm per month per year
                                     if (Number(arrOfRainfall[k]) > 25) {
                                         noOfWetDaysAnalysis25.push(arrOfRainfall[k]);
@@ -689,7 +713,7 @@ const Dashboard = (props) => {
                                     if (Number(arrOfRainfall[k]) > 10) {
                                         noOfWetDaysAnalysis10.push(arrOfRainfall[k]);
                                     }
-
+    
                                 } else {//last day of month!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                                     
                                     //for daily cumulative (for last day)
@@ -709,14 +733,14 @@ const Dashboard = (props) => {
                                     }
                                     nrd = {...nrd, [getMonthlyMaxMonth(data[k].month)]: noOfRainDaysAnalysis.length};
                                     noOfRainDaysAnalysis = [];
-
+    
                                     //no of dry days per month per year
                                     if (Number(arrOfRainfall[k]) === 0) {
                                         noOfDryDaysAnalysis.push(arrOfRainfall[k]);
                                     }
                                     ndd = {...ndd, [getMonthlyMaxMonth(data[k].month)]: noOfDryDaysAnalysis.length};
                                     noOfDryDaysAnalysis = [];
-
+    
                                     //no of wet days > 25mm, 15mm and 10mm per month per year
                                     if (Number(arrOfRainfall[k]) > 25) {
                                         noOfWetDaysAnalysis25.push(arrOfRainfall[k]);
@@ -733,8 +757,8 @@ const Dashboard = (props) => {
                                     }
                                     nwd10 = {...nwd10, [getMonthlyMaxMonth(data[k].month)]: noOfWetDaysAnalysis10.length};
                                     noOfWetDaysAnalysis10 = [];
-
-
+    
+    
                                     //highest rain per month consec continues for last day of month...
                                     if (Number(arrOfRainfall[k - 1]) > 0 && Number(arrOfRainfall[k]) > 0) {
                                         highestRainConsec1.push(Number(arrOfRainfall[k]));
@@ -769,7 +793,7 @@ const Dashboard = (props) => {
                                     //reset
                                     highestRainPerMonth1 = {};
                                     highestNodPerMonth1 = {};                                    
-
+    
                                     //highest no of dry days consec continues for last day of month...
                                     if (Number(arrOfRainfall[k - 1]) === 0 && Number(arrOfRainfall[k]) === 0) {
                                         highestDryConsec1.push(Number(arrOfRainfall[k]));
@@ -800,19 +824,19 @@ const Dashboard = (props) => {
                                     let maxOfMonthlyRain = monthArray.reduce(function(a, b) {
                                         return Math.max(a, b);
                                     });
-
+    
                                     janToDecMax[getMonthlyMaxMonth(Number(data[k].month))] = maxOfMonthlyRain;
-
+    
                                     //add up month rainfall data
                                     let sumOfMonthlyRain = monthArray.reduce(function(a, b) {
                                         return a + b;
                                     }, 0);
                                     sumOfRainfallPerMonth[arrOfYearAndMonth[k]] = sumOfMonthlyRain;
-
+    
                                     //preparing monthly filter
                                     janDecRainPerYear[getMonthlyMaxMonth(Number(y[1]))] = sumOfMonthlyRain;
                                     janDecRainPerYearAvg[getMonthlyMaxMonth(Number(y[1]))] = Number(Number(sumOfMonthlyRain/monthArray.length).toFixed(2));
-
+    
                                     //for averages Filter Table                                    
                                     if (data[k].month === 12) {                                        
                                         winterStartDecRainAvg[year1[i]] = sumOfMonthlyRain/monthArray.length;
@@ -831,7 +855,7 @@ const Dashboard = (props) => {
                                         });
                                     }
                                     
-
+    
                                     //for monthly line and bar chart. g means for graph (in monthly filter) 
                                     if (filterControl === 'Monthly Sort' || filterControl === 'Monthly') {
                                         if (data[k].month === 1) {
@@ -872,7 +896,7 @@ const Dashboard = (props) => {
                                         }
                                     }
                                     
-
+    
                                     //all months of the last year.
                                     if (filterControl === 'Overview') {
                                         if (String(data[k].year) === year1[year1.length - 1]) {                                        
@@ -883,21 +907,21 @@ const Dashboard = (props) => {
                                             }
                                         }
                                     }                                                                        
-
-
+    
+    
                                     //reset
                                     monthArray = [];
                                 }
                             }
                         }                        
-
+    
                         //for daily cumulative
                         if (filterControl === 'Daily Cumulative') {
                             arrOfEachMonthRainPerYear.push({year: year1[i], r: eachDayRainPerMonth});
                             arrOfEachMonthRainPerYear2.push({year: year1[i], r: eachDayRainPerMonth2});
                         }
                         
-
+    
                         //for data analysis
                         if (filterControl === 'Daily Analysis') {
                             forDailyAnalysis.push({
@@ -910,8 +934,8 @@ const Dashboard = (props) => {
                             
                             //data analysis
                             mainData.forDailyAnalysis = forDailyAnalysis;
-                                               
-
+                                                
+    
                             //for data analysis: max rain per month per year
                             janToDecMaxPerYear.push({year: year1[i], max: janToDecMax});
                             
@@ -928,11 +952,11 @@ const Dashboard = (props) => {
                             //for data analysis: number of rain days per month per year
                             nord.push({year: year1[i], r: nrd});
                             mainData.noOfRainDaysAnalysis = nord;                        
-
+    
                             //for data analysis: number of dry days per month per year
                             nodd.push({year: year1[i], r: ndd});                        
                             mainData.noOfDryDaysAnalysis = nodd;                        
-
+    
                             //for data analysis: number of wet days > 25mm, 15mm and 10mm per month per year
                             nowd25.push({year: year1[i], r: nwd25});                        
                             mainData.noOfWetDaysAnalysis25 = nowd25;                        
@@ -941,17 +965,17 @@ const Dashboard = (props) => {
                             nowd10.push({year: year1[i], r: nwd10});                        
                             mainData.noOfWetDaysAnalysis10 = nowd10;
                         }
-
+    
                         //sum of rainfall data by year;
                         let sumOfRainfall = arr.reduce(function(a, b) {
                             return a + b;
                         }, 0);
-
+    
                         sumOfRainfallPerYear[year1[i]] = sumOfRainfall;
-
+    
                         //lineChart Data
                         lineChartData.push({x: year1[i], y: sumOfRainfall});                                            
-
+    
                         forAnnualTable.push({year: year1[i], rainfall_amount: Number(sumOfRainfall.toFixed(2))});
                         
                         //last year amount of rain
@@ -959,7 +983,7 @@ const Dashboard = (props) => {
                             mainData.annualRainForLastYear = sumOfRainfall;                            
                         }
                         
-
+    
                         //add up h1, h2, then q1-q4
                         let sumOfH1PerYear = h1.reduce(function(a, b) {
                             return a + b;
@@ -991,25 +1015,25 @@ const Dashboard = (props) => {
                         let sumOfAutumnPerYear = autumn2.reduce(function(a, b) {
                             return a + b;
                         }, 0);
-        
+    
                         
                             
                         //add winter start (last year december) rainfall to current winter rainfall
                         let wc = winter_cc.reduce(function(a, b) {
                             return a + b;
                         }, 0);
-
+    
                         winterStartDecRain.push(wc);
-
+    
                         //compute winter length to get mean average
                         //let winterLength = '';
                         if (winterStartDecRain[-2]) {
                             sumOfWinterPerYear += winterStartDecRain[-2];                        
                         }
-
+    
                         if (filterControl === 'Monthly Sort' || filterControl === 'Monthly' || filterControl === 'Seasonal' || filterControl === 'Seasonal Sort' ||
                             filterControl === 'H1H2Q1Q4' || filterControl === 'H1H2Q1Q4 Sort' || filterControl === 'OJ Index' || filterControl === 'OJ Index Sort') {
-
+    
                             //then prepare {x: year, y: sum of var per year} for barChart
                             h_1.push({x: year1[i], y: sumOfH1PerYear});
                             h_2.push({x: year1[i], y: sumOfH2PerYear});
@@ -1030,9 +1054,9 @@ const Dashboard = (props) => {
                         } else {
                             from = Number(year1[i]) - 1
                         }
-
+    
                         if (filterControl === 'Averages') {
-
+    
                             let ann = janDecRainPerYearAvg.Jan + janDecRainPerYearAvg.Feb + janDecRainPerYearAvg.Mar + janDecRainPerYearAvg.Apr +
                             janDecRainPerYearAvg.May + janDecRainPerYearAvg.Jun + janDecRainPerYearAvg.Jul + janDecRainPerYearAvg.Aug +
                             janDecRainPerYearAvg.Sep + janDecRainPerYearAvg.Oct + janDecRainPerYearAvg.Nov + janDecRainPerYearAvg.Dec || 0
@@ -1079,7 +1103,7 @@ const Dashboard = (props) => {
                             });
                         
                         
-
+    
                             //for averages filter table 2
                             //long term average all years                        
                             forAvgLTA_jan.push(janDecRainPerYearAvg.Jan || 0);
@@ -1171,12 +1195,12 @@ const Dashboard = (props) => {
                                 avgChart3monthOct.push({x: `LTA${ltaYearStartAndEnd}`, y: ooct || 0});
                                 avgChart3monthNov.push({x: `LTA${ltaYearStartAndEnd}`, y: nnov || 0});
                                 avgChart3monthDec.push({x: `LTA${ltaYearStartAndEnd}`, y: ddec || 0});
-
+    
                                 avgChart4h1h2[`LTA${ltaYearStartAndEnd}`] = [
                                     {x: 'H1', y: hhh1 || 0},
                                     {x: 'H2', y: hhh2 || 0}
                                 ];
-
+    
                                 avgChart4q1q2q3q4[`LTA${ltaYearStartAndEnd}`] = [
                                     {x: 'Q1', y: qqq1 || 0},
                                     {x: 'Q2', y: qqq2 || 0},
@@ -1185,7 +1209,7 @@ const Dashboard = (props) => {
                                 ];
                             }
                             
-
+    
                             //calculate 10 years interval/basis (for averages).                            
                             if (year1[basis10 - 1]) {                            
                                 forAvg10_jan.push(janDecRainPerYearAvg.Jan || 0);
@@ -1263,35 +1287,35 @@ const Dashboard = (props) => {
                                     summer: Number(ssumn10).toFixed(2) || 0,
                                     autumn: Number(aaut10).toFixed(2) || 0
                                     });
-
+    
                                     avgChart1Winter.push({x: `AVG${tenYearStartAndEnd}`, y: wwin10 || 0});
                                     avgChart1Spring.push({x: `AVG${tenYearStartAndEnd}`, y: sspr10 || 0});
                                     avgChart1Summer.push({x: `AVG${tenYearStartAndEnd}`, y: ssumn10 || 0});
                                     avgChart1Autumn.push({x: `AVG${tenYearStartAndEnd}`, y: aaut10 || 0});
                                     
                                     avgChart2Annual[`AVG${tenYearStartAndEnd}`]= {x: "Annual", y: aann10 || 0};
-
+    
                                     avgChart4h1h2[`AVG${tenYearStartAndEnd}`] = [
                                         {x: 'H1', y: hhh110 || 0},
                                         {x: 'H2', y: hhh210 || 0}
                                     ];
-
+    
                                     avgChart4q1q2q3q4[`AVG${tenYearStartAndEnd}`] = [
                                         {x: 'Q1', y: qqq110 || 0},
                                         {x: 'Q2', y: qqq210 || 0},
                                         {x: 'Q3', y: qqq310 || 0},
                                         {x: 'Q4', y: qqq410 || 0}
                                     ];
-
+    
                                     forAvg10_jan = []; forAvg10_feb = []; forAvg10_mar = [];; forAvg10_apr = []; forAvg10_may = []; forAvg10_jun = []; forAvg10_jul = []; forAvg10_aug = [];
                                     forAvg10_sep = []; forAvg10_oct = []; forAvg10_nov = []; forAvg10_dec = []; forAvg10_annual = []; forAvg10_q1 = []; forAvg10_q2 = []; forAvg10_q3 = [];
                                     forAvg10_q4 = []; forAvg10_h1 = []; forAvg10_h2 = []; forAvg10_winter = []; forAvg10_spring = []; forAvg10_summer = []; forAvg10_autumn = [];
-
+    
                                     tenYearStart = year1[basis10];
                                     basis10 += 10;                                 
                                 }
                             }
-
+    
                             //calculate 50 years interval/basis (for averages).                            
                             if (year1[basis50 - 1]) {                            
                                 forAvg50_jan.push(janDecRainPerYearAvg.Jan || 0);
@@ -1371,7 +1395,7 @@ const Dashboard = (props) => {
                                     });
                                     
                                     avgChart2Annual[`AVG${fiftyYearStartAndEnd}`] = {x: 'Annual', y: aann50 || 0};
-
+    
                                     avgChart3monthJan.push({x: `AVG${fiftyYearStartAndEnd}`, y: jjan50 || 0});
                                     avgChart3monthFeb.push({x: `AVG${fiftyYearStartAndEnd}`, y: ffeb50 || 0});
                                     avgChart3monthMar.push({x: `AVG${fiftyYearStartAndEnd}`, y: mmar50 || 0});
@@ -1384,29 +1408,29 @@ const Dashboard = (props) => {
                                     avgChart3monthOct.push({x: `AVG${fiftyYearStartAndEnd}`, y: ooct50 || 0});
                                     avgChart3monthNov.push({x: `AVG${fiftyYearStartAndEnd}`, y: nnov50 || 0});
                                     avgChart3monthDec.push({x: `AVG${fiftyYearStartAndEnd}`, y: ddec50 || 0});
-
+    
                                     avgChart4h1h2[`AVG${fiftyYearStartAndEnd}`] = [
                                         {x: 'H1', y: hhh150 || 0},
                                         {x: 'H2', y: hhh250 || 0}
                                     ];
-
+    
                                     avgChart4q1q2q3q4[`AVG${fiftyYearStartAndEnd}`] = [
                                         {x: 'Q1', y: qqq150 || 0},
                                         {x: 'Q2', y: qqq250 || 0},
                                         {x: 'Q3', y: qqq350 || 0},
                                         {x: 'Q4', y: qqq450 || 0}
                                     ];
-
+    
                                     forAvg50_jan = []; forAvg50_feb = []; forAvg50_mar = [];; forAvg50_apr = []; forAvg50_may = []; forAvg50_jun = []; forAvg50_jul = []; forAvg50_aug = [];
                                     forAvg50_sep = []; forAvg50_oct = []; forAvg50_nov = []; forAvg50_dec = []; forAvg50_annual = []; forAvg50_q1 = []; forAvg50_q2 = []; forAvg50_q3 = [];
                                     forAvg50_q4 = []; forAvg50_h1 = []; forAvg50_h2 = []; forAvg50_winter = []; forAvg50_spring = []; forAvg50_summer = []; forAvg50_autumn = [];
-
+    
                                     fiftyYearStart = year1[basis50];
                                     basis50 += 50;                                 
                                 }
                             }                           
                             
-
+    
                             //calculate last 100 years average (for averages).                            
                             if (Number(year1[i]) >= Number(last100YearStart)) {                            
                                 forAvg100_jan.push(janDecRainPerYearAvg.Jan || 0);
@@ -1485,7 +1509,7 @@ const Dashboard = (props) => {
                                     autumn: Number(aaut_100).toFixed(2) || 0
                                     });                                                               
                                     avgChart2Annual[`AVG${last100YearStartAndEnd}`] = {x: 'Annual', y: aann_100 || 0};
-
+    
                                     avgChart3monthJan.push({x: `AVG${last100YearStartAndEnd}`, y: jjan_100 || 0});
                                     avgChart3monthFeb.push({x: `AVG${last100YearStartAndEnd}`, y: ffeb_100 || 0});
                                     avgChart3monthMar.push({x: `AVG${last100YearStartAndEnd}`, y: mmar_100 || 0});
@@ -1498,12 +1522,12 @@ const Dashboard = (props) => {
                                     avgChart3monthOct.push({x: `AVG${last100YearStartAndEnd}`, y: ooct_100 || 0});
                                     avgChart3monthNov.push({x: `AVG${last100YearStartAndEnd}`, y: nnov_100 || 0});
                                     avgChart3monthDec.push({x: `AVG${last100YearStartAndEnd}`, y: ddec_100 || 0});
-
+    
                                     avgChart4h1h2[`AVG${last100YearStartAndEnd}`] = [
                                         {x: 'H1', y: hhh1_100 || 0},
                                         {x: 'H2', y: hhh2_100 || 0}
                                     ];
-
+    
                                     avgChart4q1q2q3q4[`AVG${last100YearStartAndEnd}`] = [
                                         {x: 'Q1', y: qqq1_100 || 0},
                                         {x: 'Q2', y: qqq2_100 || 0},
@@ -1588,14 +1612,14 @@ const Dashboard = (props) => {
                                     summer: Number(ssumn_5).toFixed(2) || 0,
                                     autumn: Number(aaut_5).toFixed(2) || 0
                                     });
-
+    
                                     avgChart1Winter.push({x: '5 Year AVG', y: wwin_5 || 0});
                                     avgChart1Spring.push({x: '5 Year AVG', y: sspr_5 || 0});
                                     avgChart1Summer.push({x: '5 Year AVG', y: ssumn_5 || 0});
                                     avgChart1Autumn.push({x: '5 Year AVG', y: aaut_5 || 0});
-
+    
                                     avgChart2Annual['5 Year AVG'] = {x: 'Annual', y: aann_5 || 0};
-
+    
                                     avgChart3monthJan.push({x: '5 Year AVG', y: jjan_5 || 0});
                                     avgChart3monthFeb.push({x: '5 Year AVG', y: ffeb_5 || 0});
                                     avgChart3monthMar.push({x: '5 Year AVG', y: mmar_5 || 0});
@@ -1608,12 +1632,12 @@ const Dashboard = (props) => {
                                     avgChart3monthOct.push({x: '5 Year AVG', y: ooct_5 || 0});
                                     avgChart3monthNov.push({x: '5 Year AVG', y: nnov_5 || 0});
                                     avgChart3monthDec.push({x: '5 Year AVG', y: ddec_5 || 0});
-
+    
                                     avgChart4h1h2['5 Year AVG'] = [
                                         {x: 'H1', y: hhh1_5 || 0},
                                         {x: 'H2', y: hhh2_5 || 0}
                                     ];
-
+    
                                     avgChart4q1q2q3q4['5 Year AVG'] = [
                                         {x: 'Q1', y: qqq1_5 || 0},
                                         {x: 'Q2', y: qqq2_5 || 0},
@@ -1623,12 +1647,12 @@ const Dashboard = (props) => {
                                 }
                             }
                         
-
+    
                         
                             //for averages line chart
                             forAveragesLineChart.push({x: year1[i], y: sumOfRainfall/arr.length || 0});
                         }
-
+    
                         //for monthly, seasonal and H1H2Q1Q4 filter table
                         if (filterControl === 'Monthly Sort' || filterControl === 'Monthly' || filterControl === 'Seasonal' || filterControl === 'Seasonal Sort' ||
                             filterControl === 'H1H2Q1Q4' || filterControl === 'H1H2Q1Q4 Sort' || filterControl === 'OJ Index' || filterControl === 'OJ Index Sort') {
@@ -1693,11 +1717,11 @@ const Dashboard = (props) => {
                                 aji[-2] = {...aji[-2], y: aji[-2] + janDecRainPerYear.Jan};
     
                                 if (Number(year1[i]) === forOJIndexTable[-2].yearTo) {
-
+    
                                     let aj = forOJIndexTable[-2].aj + janDecRainPerYear.Jan;
                                     let sj = forOJIndexTable[-2].sj + janDecRainPerYear.Jan;
                                     let oj = forOJIndexTable[-2].oj + janDecRainPerYear.Jan;
-
+    
                                     forOJIndexTable[-2] = {
                                         ...forOJIndexTable[-2], 
                                         aj,
@@ -1708,7 +1732,7 @@ const Dashboard = (props) => {
                             }
                         }
                         
-
+    
                         //reset arrays
                         h1 = [];
                         h2 = [];
@@ -1721,7 +1745,7 @@ const Dashboard = (props) => {
                         summer2 = [];
                         autumn2 = [];  
                     }
-
+    
                     mainData.avgChart1Winter = avgChart1Winter; mainData.avgChart1Spring = avgChart1Spring; mainData.avgChart1Summer = avgChart1Summer;
                     mainData.avgChart1Autumn = avgChart1Autumn; 
                     
@@ -1732,9 +1756,9 @@ const Dashboard = (props) => {
                     mainData.avgChart3monthNov = avgChart3monthNov; mainData.avgChart3monthDec = avgChart3monthDec; 
                     
                     mainData.avgChart4h1h2 = avgChart4h1h2; mainData.avgChart2Annual = avgChart2Annual;
-
+    
                     mainData.avgChart4q1q2q3q4 = avgChart4q1q2q3q4;
-
+    
                     //commit averages table 2 data
                     mainData.avgPerFiveYears = avgPerFiveYears;
                     mainData.avgPerTenYears = avgPerTenYears;
@@ -1742,7 +1766,7 @@ const Dashboard = (props) => {
                     mainData.last100YearAvg = last100YearAvg;
                     mainData.ltaYearsAvg = ltaYearsAvg;
                     mainData.avgPerFiveYears = avgPerFiveYears;
-
+    
                     //for Daily cumulative
                     mainData.cumulativeRain = arrOfEachMonthRainPerYear;
                     mainData.cumulativeRain2 = arrOfEachMonthRainPerYear2;
@@ -1761,10 +1785,10 @@ const Dashboard = (props) => {
                     oji.pop();
                     sji.pop();
                     aji.pop();
-
+    
                     //comit oji, sji and aji
                     mainData = {...mainData, oji, sji, aji};                    
-
+    
                     //commit jan - dec per year for monthly graphs
                     if (filterControl === 'Monthly Sort' || filterControl === 'Monthly') {
                         mainData = {...mainData, monthlyGraphs: {g_jan, g_feb, g_mar, g_apr, g_may, g_jun, g_jul, g_aug, g_sep, g_oct, g_nov, g_dec}};
@@ -1775,7 +1799,7 @@ const Dashboard = (props) => {
                     mainData.forMonthlyFilterTable = forMonthlyFilterTable;
                     mainData.forAveragesFilterTable = forAveragesFilterTable;
                     mainData.forAveragesLineChart = forAveragesLineChart;
-
+    
                     //commit data to state for bar chart
                     mainData.h1 = h_1;
                     mainData.h2 = h_2;
@@ -1787,7 +1811,7 @@ const Dashboard = (props) => {
                     mainData.springPerYear = spring_1;
                     mainData.summerPerYear = summer_1;
                     mainData.autumnPerYear = autumn_1;
-                   
+                    
                     //per year
                     let sumOfRainYears = Object.keys(sumOfRainfallPerYear);
                     let sumOfRain = '';
@@ -1795,17 +1819,17 @@ const Dashboard = (props) => {
                         sumOfRain = Object.values(sumOfRainfallPerYear);
                         mainData.sumOfRainPerYear = sumOfRain;
                         mainData.sumOfRainYears = sumOfRainYears;
-
+    
                         //overall year average
                         mainData.annualAvg = Number(sumOfRain.reduce(function(a, b) {
                             return a + b;
                         }, 0)/sumOfRain.length).toFixed(2);
-
+    
                         //overall station rainfall
                         mainData.overallStationRainfall = sumOfRain.reduce(function(a, b) {
                             return a + b;
                         }, 0);
-
+    
                         //annual max and min
                         let annualMax = sumOfRain.reduce(function(a, b) {
                             return Math.max(a, b);
@@ -1813,19 +1837,19 @@ const Dashboard = (props) => {
                         let annualMin = sumOfRain.reduce(function(a, b) {
                             return Math.min(a, b);
                         });
-
+    
                         let annualMaxIndex = sumOfRain.indexOf(annualMax);
                         let annualMinIndex = sumOfRain.indexOf(annualMin);
-
+    
                         let annualMaxYear = year1[annualMaxIndex];
                         let annualMinYear = year1[annualMinIndex];
-
+    
                         mainData.annualMax = annualMax || 'n/a';
                         mainData.annualMaxYear = annualMaxYear || 'n/a';
                         mainData.annualMin = annualMin || 'n/a';
                         mainData.annualMinYear = annualMinYear || 'n/a';
                     }
-
+    
                     // month max, min, month and year name
                     if (Object.keys(sumOfRainfallPerMonth).length) {
                         let monthlyRainValues = Object.values(sumOfRainfallPerMonth);                    
@@ -1834,11 +1858,12 @@ const Dashboard = (props) => {
                         }, 0);
                         let monthlyMaxIndex = monthlyRainValues.indexOf(monthlyMaxOverall);
                         let monthlyMaxDate = arrOfYearAndMonth[monthlyMaxIndex];
-                        monthlyMaxDate = monthlyMaxDate.split('-');
-                        
                         mainData.monthlyMax = monthlyMaxOverall
-                        mainData.monthlyMaxYear = monthlyMaxDate[0];
-                        mainData.monthlyMaxMonth = getMonthlyMaxMonth(Number(monthlyMaxDate[1]));
+                        if (monthlyMaxDate) {
+                            monthlyMaxDate = monthlyMaxDate.split('-');                            
+                            mainData.monthlyMaxYear = monthlyMaxDate[0];
+                            mainData.monthlyMaxMonth = getMonthlyMaxMonth(Number(monthlyMaxDate[1]));
+                        }
                     }
                     
                     mainData.forMonthlyTable = forMonthlyTable;
@@ -1854,7 +1879,7 @@ const Dashboard = (props) => {
                             }, 0)/5;                         
                         }       
                         mainData.annualFiveYearAvg = annualFiveYearAvg || 'n/a';                        
-
+    
                     
                     
                         //autumn 
@@ -1895,7 +1920,7 @@ const Dashboard = (props) => {
                         } else {
                             mainData.dryDaysMaxConsec = 'n/a';
                         }
-
+    
                         //last year data info.
                         mainData.daysWithRain = daysWithRain.length || 'n/a';
                         mainData.daysOfRainGreaterThan10 = daysOfRainGreaterThan10.length || 'n/a'; 
@@ -1905,24 +1930,23 @@ const Dashboard = (props) => {
                     //lineChart data continues
                     mainData.lineChartData = lineChartData;                    
                     mainData.dataYears = year1;
-
-                    //console.log(mainData);
+    
+                    console.log(mainData);
                     
                     //set Main state
-                    setMainState(mainData);                    
-                    
-                    return setIsFetching(false);
-                }
-            }, () => {
-                props.history.push("/auth/signin-1");
-                window.location.reload();
-            });      
-        }
-        if (isFetching) { fetchData();}
+                    return setMainState(mainData);                                                            
+                }             
+                         
+            }).then(() => {
+                return setIsComputing(false);
+            });
+        }       
+                       
+           
         
-    }, [ props, queryCode, weatherType, isFetching, filterControl ]);
+    }, [ props, queryCode, weatherType, isFetching, isComputing, filterControl, codesAndData.codes, codesAndData.data ]);//, filterControl, codes, data ]);
 
-    
+
     const UserChoiceInput = () => (
         <>
         <Row>            
@@ -2070,7 +2094,14 @@ const Dashboard = (props) => {
     
 
     return ( 
-        isFetching ? <Loader /> 
+        isFetching || isComputing ? 
+            <Aux>
+                <Loader />
+                <div>
+                    <span className="spinner-border spinner-border-sm"></span>
+                    Please wait. Intense Calculation may take a while
+                </div>
+            </Aux>
         : (filterControl === 'Daily Cumulative') ?
         <Aux>
             <UserChoiceInput />            
@@ -2287,7 +2318,7 @@ const Dashboard = (props) => {
         : (filterControl === 'Seasonal') ?
         <Aux>        
             <UserChoiceInput />            
-            <Row>                
+            <Row>
                 <Col xl={6}>
                     <RawDataTable seasonal={mainState.forMonthlyFilterTable} />
                 </Col>            
@@ -2296,7 +2327,7 @@ const Dashboard = (props) => {
                     springPerYear={mainState.springPerYear} summerPerYear={mainState.summerPerYear} 
                     autumnPerYear={mainState.autumnPerYear} />}
                 </Col>
-            </Row>           
+            </Row>
         </Aux>
         : (filterControl === 'Seasonal Sort') ?
         <Aux>        
@@ -2495,7 +2526,7 @@ const Dashboard = (props) => {
         <Aux> 
             <UserChoiceInput />                                 
             <Row>
-                <Col md={6} xl={4}>
+                <Col md={6} xl={3}>
                     <Card>
                         <Card.Body>
                             {/*<h6 className='mb-4'>Daily Sales</h6>8*/}
@@ -2669,7 +2700,7 @@ const Dashboard = (props) => {
                         </Card.Body>
                     </Card>
                 </Col>
-                <Col md={6} xl={5}>
+                <Col md={6} xl={3}>
                 <Card className='Recent-Users'>
                         {/*<Card.Header>
                             <Card.Title as='h5'>Recent Users</Card.Title>
@@ -2697,7 +2728,7 @@ const Dashboard = (props) => {
                                     <td>
                                         <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{Number(mainState.annualRainForLastYear).toFixed(1)}</h6>
                                     </td>
-                                    <td><h6 className="text-muted">{(!mainState.annualRainForLastYear || mainState.annualRainForLastYear === 'n/a') ? 'n/a' : decimalToFraction(mainState.annualRainForLastYear / mainState.overallStationRainfall).display}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                    <td><h6 className="text-muted">{(!mainState.annualRainForLastYear || mainState.annualRainForLastYear === 'n/a') ? 'n/a' : Number(mainState.annualRainForLastYear / mainState.overallStationRainfall).toFixed(2)}</h6>{/*  decimalToFraction(mainState.annualRainForLastYear / mainState.overallStationRainfall).display}</h6> <a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                 </tr>
                                 <tr className="unread" style={{visibility: "hidden"}}>
                                     {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -2719,7 +2750,7 @@ const Dashboard = (props) => {
                                     <td>
                                         <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Jan || mainState.Jan === 'n/a') ? 'n/a' : Number(mainState.Jan).toFixed(1)}</h6>
                                     </td>
-                                    <td><h6 className="text-muted">{(!mainState.Jan || mainState.Jan === 'n/a') ? 'n/a' : decimalToFraction(mainState.Jan / mainState.annualRainForLastYear).display}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                    <td><h6 className="text-muted">{(!mainState.Jan || mainState.Jan === 'n/a') ? 'n/a' : Number(mainState.Jan / mainState.annualRainForLastYear).toFixed(2)}</h6>{/* decimalToFraction(mainState.Jan / mainState.annualRainForLastYear).display}</h6> <a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                 </tr>
                                 <tr className="unread">
                                     {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -2730,7 +2761,7 @@ const Dashboard = (props) => {
                                     <td>
                                         <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Feb || mainState.Feb === 'n/a') ? 'n/a' : Number(mainState.Feb).toFixed(1)}</h6>
                                     </td>
-                                    <td><h6 className="text-muted">{(!mainState.Feb || mainState.Feb === 'n/a') ? 'n/a' : decimalToFraction(mainState.Feb / mainState.annualRainForLastYear).display}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                    <td><h6 className="text-muted">{(!mainState.Feb || mainState.Feb === 'n/a') ? 'n/a' : Number(mainState.Feb / mainState.annualRainForLastYear).toFixed(2)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                 </tr>
                                 <tr className="unread">
                                     {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -2741,7 +2772,7 @@ const Dashboard = (props) => {
                                     <td>
                                         <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Mar || mainState.Mar === 'n/a') ? 'n/a' : Number(mainState.Mar).toFixed(1)}</h6>
                                     </td>
-                                    <td><h6 className="text-muted">{(!mainState.Mar || mainState.Mar === 'n/a') ? 'n/a' : decimalToFraction(mainState.Feb / mainState.annualRainForLastYear).display}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                    <td><h6 className="text-muted">{(!mainState.Mar || mainState.Mar === 'n/a') ? 'n/a' : Number(mainState.Feb / mainState.annualRainForLastYear).toFixed(2)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                 </tr>
                                 <tr className="unread">
                                     {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -2752,7 +2783,7 @@ const Dashboard = (props) => {
                                     <td>
                                         <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Apr || mainState.Apr === 'n/a') ? 'n/a' : Number(mainState.Apr).toFixed(1)}</h6>
                                     </td>
-                                    <td><h6 className="text-muted">{(!mainState.Apr || mainState.Apr === 'n/a') ? 'n/a' : decimalToFraction(mainState.Apr / mainState.annualRainForLastYear).display}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                    <td><h6 className="text-muted">{(!mainState.Apr || mainState.Apr === 'n/a') ? 'n/a' : Number(mainState.Apr / mainState.annualRainForLastYear).toFixed(2)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                 </tr>
                                 <tr className="unread">
                                     {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -2763,7 +2794,7 @@ const Dashboard = (props) => {
                                     <td>
                                         <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.May || mainState.May === 'n/a') ? 'n/a' : Number(mainState.May).toFixed(1)}</h6>
                                     </td>
-                                    <td><h6 className="text-muted">{(!mainState.May || mainState.May === 'n/a') ? 'n/a' : decimalToFraction(mainState.May / mainState.annualRainForLastYear).display}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                    <td><h6 className="text-muted">{(!mainState.May || mainState.May === 'n/a') ? 'n/a' : Number(mainState.May / mainState.annualRainForLastYear).toFixed(2)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                 </tr>
                                 <tr className="unread">
                                     {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -2774,7 +2805,7 @@ const Dashboard = (props) => {
                                     <td>
                                         <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Jun || mainState.Jun === 'n/a') ? 'n/a' : Number(mainState.Jun).toFixed(1)}</h6>
                                     </td>
-                                    <td><h6 className="text-muted">{(!mainState.Jun || mainState.Jun === 'n/a') ? 'n/a' : decimalToFraction(mainState.Jun / mainState.annualRainForLastYear).display}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                    <td><h6 className="text-muted">{(!mainState.Jun || mainState.Jun === 'n/a') ? 'n/a' : Number(mainState.Jun / mainState.annualRainForLastYear).toFixed(2)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                 </tr>
                                 <tr className="unread">
                                     {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -2785,7 +2816,7 @@ const Dashboard = (props) => {
                                     <td>
                                         <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Jul || mainState.Jul === 'n/a') ? 'n/a' : Number(mainState.Jul).toFixed(1)}</h6>
                                     </td>
-                                    <td><h6 className="text-muted">{(!mainState.Jul || mainState.Jul === 'n/a') ? 'n/a' : decimalToFraction(mainState.Jul / mainState.annualRainForLastYear).display}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                    <td><h6 className="text-muted">{(!mainState.Jul || mainState.Jul === 'n/a') ? 'n/a' : Number(mainState.Jul / mainState.annualRainForLastYear).toFixed(2)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                 </tr>
                                 <tr className="unread">
                                     {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -2796,7 +2827,7 @@ const Dashboard = (props) => {
                                     <td>
                                         <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Aug || mainState.Aug === 'n/a') ? 'n/a' : Number(mainState.Aug).toFixed(1)}</h6>
                                     </td>
-                                    <td><h6 className="text-muted">{(!mainState.Aug || mainState.Aug === 'n/a') ? 'n/a' : decimalToFraction(mainState.Aug / mainState.annualRainForLastYear).display}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                    <td><h6 className="text-muted">{(!mainState.Aug || mainState.Aug === 'n/a') ? 'n/a' : Number(mainState.Aug / mainState.annualRainForLastYear).toFixed(2)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                 </tr>
                                 <tr className="unread">
                                     {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -2807,7 +2838,7 @@ const Dashboard = (props) => {
                                     <td>
                                         <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Sep || mainState.Sep === 'n/a') ? 'n/a' : Number(mainState.Sep).toFixed(1)}</h6>
                                     </td>
-                                    <td><h6 className="text-muted">{(!mainState.Sep || mainState.Sep === 'n/a') ? 'n/a' : decimalToFraction(mainState.Sep / mainState.annualRainForLastYear).display}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                    <td><h6 className="text-muted">{(!mainState.Sep || mainState.Sep === 'n/a') ? 'n/a' : Number(mainState.Sep / mainState.annualRainForLastYear).toFixed(2)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                 </tr>
                                 <tr className="unread">
                                     {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -2818,7 +2849,7 @@ const Dashboard = (props) => {
                                     <td>
                                         <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Oct || mainState.Oct === 'n/a') ? 'n/a' : Number(mainState.Oct).toFixed(1)}</h6>
                                     </td>
-                                    <td><h6 className="text-muted">{(!mainState.Oct || mainState.Oct === 'n/a') ? 'n/a' : decimalToFraction(mainState.Oct / mainState.annualRainForLastYear).display}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                    <td><h6 className="text-muted">{(!mainState.Oct || mainState.Oct === 'n/a') ? 'n/a' : Number(mainState.Oct / mainState.annualRainForLastYear).toFixed(2)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                 </tr>
                                 <tr className="unread">
                                     {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -2829,7 +2860,7 @@ const Dashboard = (props) => {
                                     <td>
                                         <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Nov || mainState.Nov === 'n/a') ? 'n/a' : Number(mainState.Nov).toFixed(1)}</h6>
                                     </td>
-                                    <td><h6 className="text-muted">{(!mainState.Nov || mainState.Nov === 'n/a') ? 'n/a' : decimalToFraction(mainState.Nov / mainState.annualRainForLastYear).display}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                    <td><h6 className="text-muted">{(!mainState.Nov || mainState.Nov === 'n/a') ? 'n/a' : Number(mainState.Nov / mainState.annualRainForLastYear).toFixed(2)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                 </tr>
                                 <tr className="unread">
                                     {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -2840,7 +2871,7 @@ const Dashboard = (props) => {
                                     <td>
                                         <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Dec || mainState.Dec === 'n/a') ? 'n/a' : Number(mainState.Dec).toFixed(1)}</h6>
                                     </td>
-                                    <td><h6 className="text-muted">{(!mainState.Dec || mainState.Dec === 'n/a') ? 'n/a' : decimalToFraction(mainState.Dec / mainState.annualRainForLastYear).display}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                    <td><h6 className="text-muted">{(!mainState.Dec || mainState.Dec === 'n/a') ? 'n/a' : Number(mainState.Dec / mainState.annualRainForLastYear).toFixed(2)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                 </tr>
                                 <tr className="unread" style={{visibility: "hidden"}}>
                                     {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -2862,7 +2893,7 @@ const Dashboard = (props) => {
                                     <td>
                                         <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{mainState.summer === 'n/a' ? mainState.summer : Number(mainState.summer).toFixed(1)}</h6>
                                     </td>
-                                    <td><h6 className="text-muted">{mainState.summer === 'n/a' ? 'n/a' : decimalToFraction(mainState.summer / mainState.annualRainForLastYear).display}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                    <td><h6 className="text-muted">{mainState.summer === 'n/a' ? 'n/a' : Number(mainState.summer / mainState.annualRainForLastYear).toFixed(2)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                 </tr>
                                 <tr className="unread">
                                     {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -2873,7 +2904,7 @@ const Dashboard = (props) => {
                                     <td>
                                         <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{mainState.autumn === 'n/a' ? mainState.autumn : Number(mainState.autumn).toFixed(1)}</h6>
                                     </td>
-                                    <td><h6 className="text-muted">{mainState.autumn === 'n/a' ? 'n/a' : decimalToFraction(mainState.autumn / mainState.annualRainForLastYear).display}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                    <td><h6 className="text-muted">{mainState.autumn === 'n/a' ? 'n/a' : Number(mainState.autumn / mainState.annualRainForLastYear).toFixed(2)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                 </tr>
                                 <tr className="unread">
                                     {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -2884,7 +2915,7 @@ const Dashboard = (props) => {
                                     <td>
                                         <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{mainState.winter === 'n/a' ? mainState.winter : Number(mainState.winter).toFixed(1)}</h6>
                                     </td>
-                                    <td><h6 className="text-muted">{mainState.winter === 'n/a' ? 'n/a' : decimalToFraction(mainState.winter / mainState.annualRainForLastYear).display}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                    <td><h6 className="text-muted">{mainState.winter === 'n/a' ? 'n/a' : Number(mainState.winter / mainState.annualRainForLastYear).toFixed(2)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                 </tr>
                                 <tr className="unread">
                                     {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -2895,7 +2926,7 @@ const Dashboard = (props) => {
                                     <td>
                                         <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{mainState.spring === 'n/a' ? mainState.spring : Number(mainState.spring).toFixed(1)}</h6>
                                     </td>
-                                    <td><h6 className="text-muted">{mainState.spring === 'n/a' ? 'n/a' : decimalToFraction(mainState.spring / mainState.annualRainForLastYear).display}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                    <td><h6 className="text-muted">{mainState.spring === 'n/a' ? 'n/a' : Number(mainState.spring / mainState.annualRainForLastYear).toFixed(2)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                 </tr>
                                 {/*<tr className="unread">
                                     <td><img className="rounded-circle" style={{width: '40px'}} src={avatar2} alt="activity-user"/></td>
@@ -2946,7 +2977,7 @@ const Dashboard = (props) => {
                         </Card.Body>
                     </Card>
                     </Col>
-                <Col xl={3}>
+                <Col md={12} xl={6}>
                 <Card>
                         <Card.Header>
                             <Card.Title as="h5">Line Chart</Card.Title>

@@ -1,4 +1,4 @@
-export default {
+const menu_items = {
     items: [
         {
             id: 'navigation',
@@ -233,4 +233,5 @@ export default {
             ]
         }
     ]
-}
+};
+export default menu_items;

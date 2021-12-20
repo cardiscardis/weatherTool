@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "http://lite.codedthemes.com/datta-able/react/default/",
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.4",
     "axios": "^0.21.4",
     "bcryptjs": "^2.4.3",
     "bootstrap": "^4.3.1",
@@ -15,7 +16,6 @@
     "jquery": "^3.4.0",
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.3.0",
-    "node-sass": "^4.12.0",
     "path": "^0.12.7",
     "prop-types": "^15.7.2",
     "react": "^16.8.4",
@@ -29,13 +29,14 @@
     "react-reveal": "^1.2.2",
     "react-router": "^5.2.1",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "^3.0.0",
+    "react-scripts": "^5.0.0",
     "react-use-window-sessionstorage": "^1.0.9",
     "react-validation": "^3.0.7",
     "react-window-size": "^1.2.2",
     "recompose": "^0.30.0",
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",
+    "resolve-url-loader": "^4.0.0",
     "sequelize": "^6.6.5",
     "validator": "^13.6.0",
     "zxcvbn": "^4.4.2"
@@ -56,7 +57,13 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "react-to-print": "^2.1.1"
-  },
-  "proxy": "http://localhost:3001"
+    "css-loader": "^6.5.1",
+    "node-sass": "^7.0.0",
+    "postcss-loader": "^6.2.1",
+    "react-to-print": "^2.1.1",
+    "sass-loader": "^12.4.0",
+    "webpack": "^5.65.0",
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.6.0"
+  }  
 }

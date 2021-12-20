@@ -317,7 +317,9 @@ const BootstrapTable = (props) => {
                 </Col>
                 <Col md={4} xl={4}>
                     {annualSortControl1 !== 'Select Year' && annualSortControl2 !== 'Select Year' && arrOfKeys.length && 
-                        <LineChart data={props.lineChartData} 
+                        <LineChart 
+                            data={props.lineChartData} 
+                            m={'annual AVG'}
                         />}
                     {annualSortControl1 !== 'Select Year' && annualSortControl2 !== 'Select Year' && arrOfKeys.length && annualAvg2.length &&
                         <LineChart 
@@ -1118,389 +1120,389 @@ const BootstrapTable = (props) => {
                                     <td>{cr2.r.Dec._31 ? cr2.r.Dec._31 : 'n/a'}</td>
                                 </tr>
                                 <tr>                                    
-                                    <td>{cr.r.Jan._1 ? cr.r.Jan._1 : 'n/a'}</td>
-                                    <td>{cr.r.Jan._2 ? cr.r.Jan._2 : 'n/a'}</td>
-                                    <td>{cr.r.Jan._3 ? cr.r.Jan._3 : 'n/a'}</td>
-                                    <td>{cr.r.Jan._4 ? cr.r.Jan._4 : 'n/a'}</td>
-                                    <td>{cr.r.Jan._5 ? cr.r.Jan._5 : 'n/a'}</td>
-                                    <td>{cr.r.Jan._6 ? cr.r.Jan._6 : 'n/a'}</td>
-                                    <td>{cr.r.Jan._7 ? cr.r.Jan._7 : 'n/a'}</td>
-                                    <td>{cr.r.Jan._8 ? cr.r.Jan._8 : 'n/a'}</td>
-                                    <td>{cr.r.Jan._9 ? cr.r.Jan._9 : 'n/a'}</td>
-                                    <td>{cr.r.Jan._10 ? cr.r.Jan._10 : 'n/a'}</td>
-                                    <td>{cr.r.Jan._11 ? cr.r.Jan._11 : 'n/a'}</td>
-                                    <td>{cr.r.Jan._12 ? cr.r.Jan._12 : 'n/a'}</td>
-                                    <td>{cr.r.Jan._13 ? cr.r.Jan._13 : 'n/a'}</td>
-                                    <td>{cr.r.Jan._14 ? cr.r.Jan._14 : 'n/a'}</td>
-                                    <td>{cr.r.Jan._15 ? cr.r.Jan._15 : 'n/a'}</td>
-                                    <td>{cr.r.Jan._16 ? cr.r.Jan._16 : 'n/a'}</td>
-                                    <td>{cr.r.Jan._17 ? cr.r.Jan._17 : 'n/a'}</td>
-                                    <td>{cr.r.Jan._18 ? cr.r.Jan._18 : 'n/a'}</td>
-                                    <td>{cr.r.Jan._19 ? cr.r.Jan._19 : 'n/a'}</td>
-                                    <td>{cr.r.Jan._20 ? cr.r.Jan._20 : 'n/a'}</td>
-                                    <td>{cr.r.Jan._21 ? cr.r.Jan._21 : 'n/a'}</td>
-                                    <td>{cr.r.Jan._22 ? cr.r.Jan._22 : 'n/a'}</td>
-                                    <td>{cr.r.Jan._23 ? cr.r.Jan._23 : 'n/a'}</td>
-                                    <td>{cr.r.Jan._24 ? cr.r.Jan._24 : 'n/a'}</td>
-                                    <td>{cr.r.Jan._25 ? cr.r.Jan._25 : 'n/a'}</td>
-                                    <td>{cr.r.Jan._26 ? cr.r.Jan._26 : 'n/a'}</td>
-                                    <td>{cr.r.Jan._27 ? cr.r.Jan._27 : 'n/a'}</td>
-                                    <td>{cr.r.Jan._28 ? cr.r.Jan._28 : 'n/a'}</td>
-                                    <td>{cr.r.Jan._29 ? cr.r.Jan._29 : 'n/a'}</td>
-                                    <td>{cr.r.Jan._30 ? cr.r.Jan._30 : 'n/a'}</td>
-                                    <td>{cr.r.Jan._31 ? cr.r.Jan._31 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jan._1 ? cr.r.Jan._1 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jan._2 ? cr.r.Jan._2 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jan._3 ? cr.r.Jan._3 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jan._4 ? cr.r.Jan._4 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jan._5 ? cr.r.Jan._5 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jan._6 ? cr.r.Jan._6 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jan._7 ? cr.r.Jan._7 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jan._8 ? cr.r.Jan._8 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jan._9 ? cr.r.Jan._9 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jan._10 ? cr.r.Jan._10 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jan._11 ? cr.r.Jan._11 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jan._12 ? cr.r.Jan._12 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jan._13 ? cr.r.Jan._13 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jan._14 ? cr.r.Jan._14 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jan._15 ? cr.r.Jan._15 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jan._16 ? cr.r.Jan._16 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jan._17 ? cr.r.Jan._17 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jan._18 ? cr.r.Jan._18 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jan._19 ? cr.r.Jan._19 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jan._20 ? cr.r.Jan._20 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jan._21 ? cr.r.Jan._21 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jan._22 ? cr.r.Jan._22 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jan._23 ? cr.r.Jan._23 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jan._24 ? cr.r.Jan._24 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jan._25 ? cr.r.Jan._25 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jan._26 ? cr.r.Jan._26 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jan._27 ? cr.r.Jan._27 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jan._28 ? cr.r.Jan._28 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jan._29 ? cr.r.Jan._29 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jan._30 ? cr.r.Jan._30 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jan._31 ? cr.r.Jan._31 : 'n/a'}</td>
                                     
-                                    <td>{cr.r.Feb._1 ? cr.r.Feb._1 : 'n/a'}</td>
-                                    <td>{cr.r.Feb._2 ? cr.r.Feb._2 : 'n/a'}</td>
-                                    <td>{cr.r.Feb._3 ? cr.r.Feb._3 : 'n/a'}</td>
-                                    <td>{cr.r.Feb._4 ? cr.r.Feb._4 : 'n/a'}</td>
-                                    <td>{cr.r.Feb._5 ? cr.r.Feb._5 : 'n/a'}</td>
-                                    <td>{cr.r.Feb._6 ? cr.r.Feb._6 : 'n/a'}</td>
-                                    <td>{cr.r.Feb._7 ? cr.r.Feb._7 : 'n/a'}</td>
-                                    <td>{cr.r.Feb._8 ? cr.r.Feb._8 : 'n/a'}</td>
-                                    <td>{cr.r.Feb._9 ? cr.r.Feb._9 : 'n/a'}</td>
-                                    <td>{cr.r.Feb._10 ? cr.r.Feb._10 : 'n/a'}</td>
-                                    <td>{cr.r.Feb._11 ? cr.r.Feb._11 : 'n/a'}</td>
-                                    <td>{cr.r.Feb._12 ? cr.r.Feb._12 : 'n/a'}</td>
-                                    <td>{cr.r.Feb._13 ? cr.r.Feb._13 : 'n/a'}</td>
-                                    <td>{cr.r.Feb._14 ? cr.r.Feb._14 : 'n/a'}</td>
-                                    <td>{cr.r.Feb._15 ? cr.r.Feb._15 : 'n/a'}</td>
-                                    <td>{cr.r.Feb._16 ? cr.r.Feb._16 : 'n/a'}</td>
-                                    <td>{cr.r.Feb._17 ? cr.r.Feb._17 : 'n/a'}</td>
-                                    <td>{cr.r.Feb._18 ? cr.r.Feb._18 : 'n/a'}</td>
-                                    <td>{cr.r.Feb._19 ? cr.r.Feb._19 : 'n/a'}</td>
-                                    <td>{cr.r.Feb._20 ? cr.r.Feb._20 : 'n/a'}</td>
-                                    <td>{cr.r.Feb._21 ? cr.r.Feb._21 : 'n/a'}</td>
-                                    <td>{cr.r.Feb._22 ? cr.r.Feb._22 : 'n/a'}</td>
-                                    <td>{cr.r.Feb._23 ? cr.r.Feb._23 : 'n/a'}</td>
-                                    <td>{cr.r.Feb._24 ? cr.r.Feb._24 : 'n/a'}</td>
-                                    <td>{cr.r.Feb._25 ? cr.r.Feb._25 : 'n/a'}</td>
-                                    <td>{cr.r.Feb._26 ? cr.r.Feb._26 : 'n/a'}</td>
-                                    <td>{cr.r.Feb._27 ? cr.r.Feb._27 : 'n/a'}</td>
-                                    <td>{cr.r.Feb._28 ? cr.r.Feb._28 : 'n/a'}</td>
-                                    <td>{cr.r.Feb._29 ? cr.r.Feb._29 : 'n/a'}</td>
-                                    <td>{cr.r.Feb._30 ? cr.r.Feb._30 : 'n/a'}</td>
-                                    <td>{cr.r.Feb._31 ? cr.r.Feb._31 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Feb._1 ? cr.r.Feb._1 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Feb._2 ? cr.r.Feb._2 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Feb._3 ? cr.r.Feb._3 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Feb._4 ? cr.r.Feb._4 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Feb._5 ? cr.r.Feb._5 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Feb._6 ? cr.r.Feb._6 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Feb._7 ? cr.r.Feb._7 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Feb._8 ? cr.r.Feb._8 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Feb._9 ? cr.r.Feb._9 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Feb._10 ? cr.r.Feb._10 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Feb._11 ? cr.r.Feb._11 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Feb._12 ? cr.r.Feb._12 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Feb._13 ? cr.r.Feb._13 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Feb._14 ? cr.r.Feb._14 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Feb._15 ? cr.r.Feb._15 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Feb._16 ? cr.r.Feb._16 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Feb._17 ? cr.r.Feb._17 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Feb._18 ? cr.r.Feb._18 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Feb._19 ? cr.r.Feb._19 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Feb._20 ? cr.r.Feb._20 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Feb._21 ? cr.r.Feb._21 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Feb._22 ? cr.r.Feb._22 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Feb._23 ? cr.r.Feb._23 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Feb._24 ? cr.r.Feb._24 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Feb._25 ? cr.r.Feb._25 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Feb._26 ? cr.r.Feb._26 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Feb._27 ? cr.r.Feb._27 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Feb._28 ? cr.r.Feb._28 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Feb._29 ? cr.r.Feb._29 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Feb._30 ? cr.r.Feb._30 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Feb._31 ? cr.r.Feb._31 : 'n/a'}</td>
 
-                                    <td>{cr.r.Mar._1 ? cr.r.Mar._1 : 'n/a'}</td>
-                                    <td>{cr.r.Mar._2 ? cr.r.Mar._2 : 'n/a'}</td>
-                                    <td>{cr.r.Mar._3 ? cr.r.Mar._3 : 'n/a'}</td>
-                                    <td>{cr.r.Mar._4 ? cr.r.Mar._4 : 'n/a'}</td>
-                                    <td>{cr.r.Mar._5 ? cr.r.Mar._5 : 'n/a'}</td>
-                                    <td>{cr.r.Mar._6 ? cr.r.Mar._6 : 'n/a'}</td>
-                                    <td>{cr.r.Mar._7 ? cr.r.Mar._7 : 'n/a'}</td>
-                                    <td>{cr.r.Mar._8 ? cr.r.Mar._8 : 'n/a'}</td>
-                                    <td>{cr.r.Mar._9 ? cr.r.Mar._9 : 'n/a'}</td>
-                                    <td>{cr.r.Mar._10 ? cr.r.Mar._10 : 'n/a'}</td>
-                                    <td>{cr.r.Mar._11 ? cr.r.Mar._11 : 'n/a'}</td>
-                                    <td>{cr.r.Mar._12 ? cr.r.Mar._12 : 'n/a'}</td>
-                                    <td>{cr.r.Mar._13 ? cr.r.Mar._13 : 'n/a'}</td>
-                                    <td>{cr.r.Mar._14 ? cr.r.Mar._14 : 'n/a'}</td>
-                                    <td>{cr.r.Mar._15 ? cr.r.Mar._15 : 'n/a'}</td>
-                                    <td>{cr.r.Mar._16 ? cr.r.Mar._16 : 'n/a'}</td>
-                                    <td>{cr.r.Mar._17 ? cr.r.Mar._17 : 'n/a'}</td>
-                                    <td>{cr.r.Mar._18 ? cr.r.Mar._18 : 'n/a'}</td>
-                                    <td>{cr.r.Mar._19 ? cr.r.Mar._19 : 'n/a'}</td>
-                                    <td>{cr.r.Mar._20 ? cr.r.Mar._20 : 'n/a'}</td>
-                                    <td>{cr.r.Mar._21 ? cr.r.Mar._21 : 'n/a'}</td>
-                                    <td>{cr.r.Mar._22 ? cr.r.Mar._22 : 'n/a'}</td>
-                                    <td>{cr.r.Mar._23 ? cr.r.Mar._23 : 'n/a'}</td>
-                                    <td>{cr.r.Mar._24 ? cr.r.Mar._24 : 'n/a'}</td>
-                                    <td>{cr.r.Mar._25 ? cr.r.Mar._25 : 'n/a'}</td>
-                                    <td>{cr.r.Mar._26 ? cr.r.Mar._26 : 'n/a'}</td>
-                                    <td>{cr.r.Mar._27 ? cr.r.Mar._27 : 'n/a'}</td>
-                                    <td>{cr.r.Mar._28 ? cr.r.Mar._28 : 'n/a'}</td>
-                                    <td>{cr.r.Mar._29 ? cr.r.Mar._29 : 'n/a'}</td>
-                                    <td>{cr.r.Mar._30 ? cr.r.Mar._30 : 'n/a'}</td>
-                                    <td>{cr.r.Mar._31 ? cr.r.Mar._31 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Mar._1 ? cr.r.Mar._1 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Mar._2 ? cr.r.Mar._2 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Mar._3 ? cr.r.Mar._3 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Mar._4 ? cr.r.Mar._4 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Mar._5 ? cr.r.Mar._5 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Mar._6 ? cr.r.Mar._6 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Mar._7 ? cr.r.Mar._7 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Mar._8 ? cr.r.Mar._8 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Mar._9 ? cr.r.Mar._9 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Mar._10 ? cr.r.Mar._10 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Mar._11 ? cr.r.Mar._11 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Mar._12 ? cr.r.Mar._12 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Mar._13 ? cr.r.Mar._13 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Mar._14 ? cr.r.Mar._14 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Mar._15 ? cr.r.Mar._15 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Mar._16 ? cr.r.Mar._16 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Mar._17 ? cr.r.Mar._17 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Mar._18 ? cr.r.Mar._18 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Mar._19 ? cr.r.Mar._19 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Mar._20 ? cr.r.Mar._20 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Mar._21 ? cr.r.Mar._21 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Mar._22 ? cr.r.Mar._22 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Mar._23 ? cr.r.Mar._23 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Mar._24 ? cr.r.Mar._24 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Mar._25 ? cr.r.Mar._25 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Mar._26 ? cr.r.Mar._26 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Mar._27 ? cr.r.Mar._27 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Mar._28 ? cr.r.Mar._28 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Mar._29 ? cr.r.Mar._29 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Mar._30 ? cr.r.Mar._30 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Mar._31 ? cr.r.Mar._31 : 'n/a'}</td>
 
-                                    <td>{cr.r.Apr._1 ? cr.r.Apr._1 : 'n/a'}</td>
-                                    <td>{cr.r.Apr._2 ? cr.r.Apr._2 : 'n/a'}</td>
-                                    <td>{cr.r.Apr._3 ? cr.r.Apr._3 : 'n/a'}</td>
-                                    <td>{cr.r.Apr._4 ? cr.r.Apr._4 : 'n/a'}</td>
-                                    <td>{cr.r.Apr._5 ? cr.r.Apr._5 : 'n/a'}</td>
-                                    <td>{cr.r.Apr._6 ? cr.r.Apr._6 : 'n/a'}</td>
-                                    <td>{cr.r.Apr._7 ? cr.r.Apr._7 : 'n/a'}</td>
-                                    <td>{cr.r.Apr._8 ? cr.r.Apr._8 : 'n/a'}</td>
-                                    <td>{cr.r.Apr._9 ? cr.r.Apr._9 : 'n/a'}</td>
-                                    <td>{cr.r.Apr._10 ? cr.r.Apr._10 : 'n/a'}</td>
-                                    <td>{cr.r.Apr._11 ? cr.r.Apr._11 : 'n/a'}</td>
-                                    <td>{cr.r.Apr._12 ? cr.r.Apr._12 : 'n/a'}</td>
-                                    <td>{cr.r.Apr._13 ? cr.r.Apr._13 : 'n/a'}</td>
-                                    <td>{cr.r.Apr._14 ? cr.r.Apr._14 : 'n/a'}</td>
-                                    <td>{cr.r.Apr._15 ? cr.r.Apr._15 : 'n/a'}</td>
-                                    <td>{cr.r.Apr._16 ? cr.r.Apr._16 : 'n/a'}</td>
-                                    <td>{cr.r.Apr._17 ? cr.r.Apr._17 : 'n/a'}</td>
-                                    <td>{cr.r.Apr._18 ? cr.r.Apr._18 : 'n/a'}</td>
-                                    <td>{cr.r.Apr._19 ? cr.r.Apr._19 : 'n/a'}</td>
-                                    <td>{cr.r.Apr._20 ? cr.r.Apr._20 : 'n/a'}</td>
-                                    <td>{cr.r.Apr._21 ? cr.r.Apr._21 : 'n/a'}</td>
-                                    <td>{cr.r.Apr._22 ? cr.r.Apr._22 : 'n/a'}</td>
-                                    <td>{cr.r.Apr._23 ? cr.r.Apr._23 : 'n/a'}</td>
-                                    <td>{cr.r.Apr._24 ? cr.r.Apr._24 : 'n/a'}</td>
-                                    <td>{cr.r.Apr._25 ? cr.r.Apr._25 : 'n/a'}</td>
-                                    <td>{cr.r.Apr._26 ? cr.r.Apr._26 : 'n/a'}</td>
-                                    <td>{cr.r.Apr._27 ? cr.r.Apr._27 : 'n/a'}</td>
-                                    <td>{cr.r.Apr._28 ? cr.r.Apr._28 : 'n/a'}</td>
-                                    <td>{cr.r.Apr._29 ? cr.r.Apr._29 : 'n/a'}</td>
-                                    <td>{cr.r.Apr._30 ? cr.r.Apr._30 : 'n/a'}</td>
-                                    <td>{cr.r.Apr._31 ? cr.r.Apr._31 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Apr._1 ? cr.r.Apr._1 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Apr._2 ? cr.r.Apr._2 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Apr._3 ? cr.r.Apr._3 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Apr._4 ? cr.r.Apr._4 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Apr._5 ? cr.r.Apr._5 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Apr._6 ? cr.r.Apr._6 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Apr._7 ? cr.r.Apr._7 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Apr._8 ? cr.r.Apr._8 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Apr._9 ? cr.r.Apr._9 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Apr._10 ? cr.r.Apr._10 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Apr._11 ? cr.r.Apr._11 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Apr._12 ? cr.r.Apr._12 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Apr._13 ? cr.r.Apr._13 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Apr._14 ? cr.r.Apr._14 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Apr._15 ? cr.r.Apr._15 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Apr._16 ? cr.r.Apr._16 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Apr._17 ? cr.r.Apr._17 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Apr._18 ? cr.r.Apr._18 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Apr._19 ? cr.r.Apr._19 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Apr._20 ? cr.r.Apr._20 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Apr._21 ? cr.r.Apr._21 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Apr._22 ? cr.r.Apr._22 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Apr._23 ? cr.r.Apr._23 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Apr._24 ? cr.r.Apr._24 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Apr._25 ? cr.r.Apr._25 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Apr._26 ? cr.r.Apr._26 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Apr._27 ? cr.r.Apr._27 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Apr._28 ? cr.r.Apr._28 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Apr._29 ? cr.r.Apr._29 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Apr._30 ? cr.r.Apr._30 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Apr._31 ? cr.r.Apr._31 : 'n/a'}</td>
 
-                                    <td>{cr.r.May._1 ? cr.r.May._1 : 'n/a'}</td>
-                                    <td>{cr.r.May._2 ? cr.r.May._2 : 'n/a'}</td>
-                                    <td>{cr.r.May._3 ? cr.r.May._3 : 'n/a'}</td>
-                                    <td>{cr.r.May._4 ? cr.r.May._4 : 'n/a'}</td>
-                                    <td>{cr.r.May._5 ? cr.r.May._5 : 'n/a'}</td>
-                                    <td>{cr.r.May._6 ? cr.r.May._6 : 'n/a'}</td>
-                                    <td>{cr.r.May._7 ? cr.r.May._7 : 'n/a'}</td>
-                                    <td>{cr.r.May._8 ? cr.r.May._8 : 'n/a'}</td>
-                                    <td>{cr.r.May._9 ? cr.r.May._9 : 'n/a'}</td>
-                                    <td>{cr.r.May._10 ? cr.r.May._10 : 'n/a'}</td>
-                                    <td>{cr.r.May._11 ? cr.r.May._11 : 'n/a'}</td>
-                                    <td>{cr.r.May._12 ? cr.r.May._12 : 'n/a'}</td>
-                                    <td>{cr.r.May._13 ? cr.r.May._13 : 'n/a'}</td>
-                                    <td>{cr.r.May._14 ? cr.r.May._14 : 'n/a'}</td>
-                                    <td>{cr.r.May._15 ? cr.r.May._15 : 'n/a'}</td>
-                                    <td>{cr.r.May._16 ? cr.r.May._16 : 'n/a'}</td>
-                                    <td>{cr.r.May._17 ? cr.r.May._17 : 'n/a'}</td>
-                                    <td>{cr.r.May._18 ? cr.r.May._18 : 'n/a'}</td>
-                                    <td>{cr.r.May._19 ? cr.r.May._19 : 'n/a'}</td>
-                                    <td>{cr.r.May._20 ? cr.r.May._20 : 'n/a'}</td>
-                                    <td>{cr.r.May._21 ? cr.r.May._21 : 'n/a'}</td>
-                                    <td>{cr.r.May._22 ? cr.r.May._22 : 'n/a'}</td>
-                                    <td>{cr.r.May._23 ? cr.r.May._23 : 'n/a'}</td>
-                                    <td>{cr.r.May._24 ? cr.r.May._24 : 'n/a'}</td>
-                                    <td>{cr.r.May._25 ? cr.r.May._25 : 'n/a'}</td>
-                                    <td>{cr.r.May._26 ? cr.r.May._26 : 'n/a'}</td>
-                                    <td>{cr.r.May._27 ? cr.r.May._27 : 'n/a'}</td>
-                                    <td>{cr.r.May._28 ? cr.r.May._28 : 'n/a'}</td>
-                                    <td>{cr.r.May._29 ? cr.r.May._29 : 'n/a'}</td>
-                                    <td>{cr.r.May._30 ? cr.r.May._30 : 'n/a'}</td>
-                                    <td>{cr.r.May._31 ? cr.r.May._31 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.May._1 ? cr.r.May._1 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.May._2 ? cr.r.May._2 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.May._3 ? cr.r.May._3 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.May._4 ? cr.r.May._4 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.May._5 ? cr.r.May._5 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.May._6 ? cr.r.May._6 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.May._7 ? cr.r.May._7 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.May._8 ? cr.r.May._8 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.May._9 ? cr.r.May._9 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.May._10 ? cr.r.May._10 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.May._11 ? cr.r.May._11 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.May._12 ? cr.r.May._12 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.May._13 ? cr.r.May._13 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.May._14 ? cr.r.May._14 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.May._15 ? cr.r.May._15 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.May._16 ? cr.r.May._16 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.May._17 ? cr.r.May._17 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.May._18 ? cr.r.May._18 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.May._19 ? cr.r.May._19 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.May._20 ? cr.r.May._20 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.May._21 ? cr.r.May._21 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.May._22 ? cr.r.May._22 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.May._23 ? cr.r.May._23 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.May._24 ? cr.r.May._24 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.May._25 ? cr.r.May._25 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.May._26 ? cr.r.May._26 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.May._27 ? cr.r.May._27 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.May._28 ? cr.r.May._28 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.May._29 ? cr.r.May._29 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.May._30 ? cr.r.May._30 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.May._31 ? cr.r.May._31 : 'n/a'}</td>
 
-                                    <td>{cr.r.Jun._1 ? cr.r.Jun._1 : 'n/a'}</td>
-                                    <td>{cr.r.Jun._2 ? cr.r.Jun._2 : 'n/a'}</td>
-                                    <td>{cr.r.Jun._3 ? cr.r.Jun._3 : 'n/a'}</td>
-                                    <td>{cr.r.Jun._4 ? cr.r.Jun._4 : 'n/a'}</td>
-                                    <td>{cr.r.Jun._5 ? cr.r.Jun._5 : 'n/a'}</td>
-                                    <td>{cr.r.Jun._6 ? cr.r.Jun._6 : 'n/a'}</td>
-                                    <td>{cr.r.Jun._7 ? cr.r.Jun._7 : 'n/a'}</td>
-                                    <td>{cr.r.Jun._8 ? cr.r.Jun._8 : 'n/a'}</td>
-                                    <td>{cr.r.Jun._9 ? cr.r.Jun._9 : 'n/a'}</td>
-                                    <td>{cr.r.Jun._10 ? cr.r.Jun._10 : 'n/a'}</td>
-                                    <td>{cr.r.Jun._11 ? cr.r.Jun._11 : 'n/a'}</td>
-                                    <td>{cr.r.Jun._12 ? cr.r.Jun._12 : 'n/a'}</td>
-                                    <td>{cr.r.Jun._13 ? cr.r.Jun._13 : 'n/a'}</td>
-                                    <td>{cr.r.Jun._14 ? cr.r.Jun._14 : 'n/a'}</td>
-                                    <td>{cr.r.Jun._15 ? cr.r.Jun._15 : 'n/a'}</td>
-                                    <td>{cr.r.Jun._16 ? cr.r.Jun._16 : 'n/a'}</td>
-                                    <td>{cr.r.Jun._17 ? cr.r.Jun._17 : 'n/a'}</td>
-                                    <td>{cr.r.Jun._18 ? cr.r.Jun._18 : 'n/a'}</td>
-                                    <td>{cr.r.Jun._19 ? cr.r.Jun._19 : 'n/a'}</td>
-                                    <td>{cr.r.Jun._20 ? cr.r.Jun._20 : 'n/a'}</td>
-                                    <td>{cr.r.Jun._21 ? cr.r.Jun._21 : 'n/a'}</td>
-                                    <td>{cr.r.Jun._22 ? cr.r.Jun._22 : 'n/a'}</td>
-                                    <td>{cr.r.Jun._23 ? cr.r.Jun._23 : 'n/a'}</td>
-                                    <td>{cr.r.Jun._24 ? cr.r.Jun._24 : 'n/a'}</td>
-                                    <td>{cr.r.Jun._25 ? cr.r.Jun._25 : 'n/a'}</td>
-                                    <td>{cr.r.Jun._26 ? cr.r.Jun._26 : 'n/a'}</td>
-                                    <td>{cr.r.Jun._27 ? cr.r.Jun._27 : 'n/a'}</td>
-                                    <td>{cr.r.Jun._28 ? cr.r.Jun._28 : 'n/a'}</td>
-                                    <td>{cr.r.Jun._29 ? cr.r.Jun._29 : 'n/a'}</td>
-                                    <td>{cr.r.Jun._30 ? cr.r.Jun._30 : 'n/a'}</td>
-                                    <td>{cr.r.Jun._31 ? cr.r.Jun._31 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jun._1 ? cr.r.Jun._1 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jun._2 ? cr.r.Jun._2 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jun._3 ? cr.r.Jun._3 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jun._4 ? cr.r.Jun._4 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jun._5 ? cr.r.Jun._5 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jun._6 ? cr.r.Jun._6 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jun._7 ? cr.r.Jun._7 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jun._8 ? cr.r.Jun._8 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jun._9 ? cr.r.Jun._9 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jun._10 ? cr.r.Jun._10 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jun._11 ? cr.r.Jun._11 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jun._12 ? cr.r.Jun._12 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jun._13 ? cr.r.Jun._13 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jun._14 ? cr.r.Jun._14 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jun._15 ? cr.r.Jun._15 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jun._16 ? cr.r.Jun._16 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jun._17 ? cr.r.Jun._17 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jun._18 ? cr.r.Jun._18 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jun._19 ? cr.r.Jun._19 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jun._20 ? cr.r.Jun._20 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jun._21 ? cr.r.Jun._21 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jun._22 ? cr.r.Jun._22 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jun._23 ? cr.r.Jun._23 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jun._24 ? cr.r.Jun._24 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jun._25 ? cr.r.Jun._25 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jun._26 ? cr.r.Jun._26 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jun._27 ? cr.r.Jun._27 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jun._28 ? cr.r.Jun._28 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jun._29 ? cr.r.Jun._29 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jun._30 ? cr.r.Jun._30 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jun._31 ? cr.r.Jun._31 : 'n/a'}</td>
 
-                                    <td>{cr.r.Jul._1 ? cr.r.Jul._1 : 'n/a'}</td>
-                                    <td>{cr.r.Jul._2 ? cr.r.Jul._2 : 'n/a'}</td>
-                                    <td>{cr.r.Jul._3 ? cr.r.Jul._3 : 'n/a'}</td>
-                                    <td>{cr.r.Jul._4 ? cr.r.Jul._4 : 'n/a'}</td>
-                                    <td>{cr.r.Jul._5 ? cr.r.Jul._5 : 'n/a'}</td>
-                                    <td>{cr.r.Jul._6 ? cr.r.Jul._6 : 'n/a'}</td>
-                                    <td>{cr.r.Jul._7 ? cr.r.Jul._7 : 'n/a'}</td>
-                                    <td>{cr.r.Jul._8 ? cr.r.Jul._8 : 'n/a'}</td>
-                                    <td>{cr.r.Jul._9 ? cr.r.Jul._9 : 'n/a'}</td>
-                                    <td>{cr.r.Jul._10 ? cr.r.Jul._10 : 'n/a'}</td>
-                                    <td>{cr.r.Jul._11 ? cr.r.Jul._11 : 'n/a'}</td>
-                                    <td>{cr.r.Jul._12 ? cr.r.Jul._12 : 'n/a'}</td>
-                                    <td>{cr.r.Jul._13 ? cr.r.Jul._13 : 'n/a'}</td>
-                                    <td>{cr.r.Jul._14 ? cr.r.Jul._14 : 'n/a'}</td>
-                                    <td>{cr.r.Jul._15 ? cr.r.Jul._15 : 'n/a'}</td>
-                                    <td>{cr.r.Jul._16 ? cr.r.Jul._16 : 'n/a'}</td>
-                                    <td>{cr.r.Jul._17 ? cr.r.Jul._17 : 'n/a'}</td>
-                                    <td>{cr.r.Jul._18 ? cr.r.Jul._18 : 'n/a'}</td>
-                                    <td>{cr.r.Jul._19 ? cr.r.Jul._19 : 'n/a'}</td>
-                                    <td>{cr.r.Jul._20 ? cr.r.Jul._20 : 'n/a'}</td>
-                                    <td>{cr.r.Jul._21 ? cr.r.Jul._21 : 'n/a'}</td>
-                                    <td>{cr.r.Jul._22 ? cr.r.Jul._22 : 'n/a'}</td>
-                                    <td>{cr.r.Jul._23 ? cr.r.Jul._23 : 'n/a'}</td>
-                                    <td>{cr.r.Jul._24 ? cr.r.Jul._24 : 'n/a'}</td>
-                                    <td>{cr.r.Jul._25 ? cr.r.Jul._25 : 'n/a'}</td>
-                                    <td>{cr.r.Jul._26 ? cr.r.Jul._26 : 'n/a'}</td>
-                                    <td>{cr.r.Jul._27 ? cr.r.Jul._27 : 'n/a'}</td>
-                                    <td>{cr.r.Jul._28 ? cr.r.Jul._28 : 'n/a'}</td>
-                                    <td>{cr.r.Jul._29 ? cr.r.Jul._29 : 'n/a'}</td>
-                                    <td>{cr.r.Jul._30 ? cr.r.Jul._30 : 'n/a'}</td>
-                                    <td>{cr.r.Jul._31 ? cr.r.Jul._31 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jul._1 ? cr.r.Jul._1 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jul._2 ? cr.r.Jul._2 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jul._3 ? cr.r.Jul._3 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jul._4 ? cr.r.Jul._4 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jul._5 ? cr.r.Jul._5 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jul._6 ? cr.r.Jul._6 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jul._7 ? cr.r.Jul._7 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jul._8 ? cr.r.Jul._8 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jul._9 ? cr.r.Jul._9 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jul._10 ? cr.r.Jul._10 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jul._11 ? cr.r.Jul._11 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jul._12 ? cr.r.Jul._12 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jul._13 ? cr.r.Jul._13 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jul._14 ? cr.r.Jul._14 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jul._15 ? cr.r.Jul._15 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jul._16 ? cr.r.Jul._16 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jul._17 ? cr.r.Jul._17 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jul._18 ? cr.r.Jul._18 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jul._19 ? cr.r.Jul._19 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jul._20 ? cr.r.Jul._20 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jul._21 ? cr.r.Jul._21 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jul._22 ? cr.r.Jul._22 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jul._23 ? cr.r.Jul._23 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jul._24 ? cr.r.Jul._24 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jul._25 ? cr.r.Jul._25 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jul._26 ? cr.r.Jul._26 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jul._27 ? cr.r.Jul._27 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jul._28 ? cr.r.Jul._28 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jul._29 ? cr.r.Jul._29 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jul._30 ? cr.r.Jul._30 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Jul._31 ? cr.r.Jul._31 : 'n/a'}</td>
 
-                                    <td>{cr.r.Aug._1 ? cr.r.Aug._1 : 'n/a'}</td>
-                                    <td>{cr.r.Aug._2 ? cr.r.Aug._2 : 'n/a'}</td>
-                                    <td>{cr.r.Aug._3 ? cr.r.Aug._3 : 'n/a'}</td>
-                                    <td>{cr.r.Aug._4 ? cr.r.Aug._4 : 'n/a'}</td>
-                                    <td>{cr.r.Aug._5 ? cr.r.Aug._5 : 'n/a'}</td>
-                                    <td>{cr.r.Aug._6 ? cr.r.Aug._6 : 'n/a'}</td>
-                                    <td>{cr.r.Aug._7 ? cr.r.Aug._7 : 'n/a'}</td>
-                                    <td>{cr.r.Aug._8 ? cr.r.Aug._8 : 'n/a'}</td>
-                                    <td>{cr.r.Aug._9 ? cr.r.Aug._9 : 'n/a'}</td>
-                                    <td>{cr.r.Aug._10 ? cr.r.Aug._10 : 'n/a'}</td>
-                                    <td>{cr.r.Aug._11 ? cr.r.Aug._11 : 'n/a'}</td>
-                                    <td>{cr.r.Aug._12 ? cr.r.Aug._12 : 'n/a'}</td>
-                                    <td>{cr.r.Aug._13 ? cr.r.Aug._13 : 'n/a'}</td>
-                                    <td>{cr.r.Aug._14 ? cr.r.Aug._14 : 'n/a'}</td>
-                                    <td>{cr.r.Aug._15 ? cr.r.Aug._15 : 'n/a'}</td>
-                                    <td>{cr.r.Aug._16 ? cr.r.Aug._16 : 'n/a'}</td>
-                                    <td>{cr.r.Aug._17 ? cr.r.Aug._17 : 'n/a'}</td>
-                                    <td>{cr.r.Aug._18 ? cr.r.Aug._18 : 'n/a'}</td>
-                                    <td>{cr.r.Aug._19 ? cr.r.Aug._19 : 'n/a'}</td>
-                                    <td>{cr.r.Aug._20 ? cr.r.Aug._20 : 'n/a'}</td>
-                                    <td>{cr.r.Aug._21 ? cr.r.Aug._21 : 'n/a'}</td>
-                                    <td>{cr.r.Aug._22 ? cr.r.Aug._22 : 'n/a'}</td>
-                                    <td>{cr.r.Aug._23 ? cr.r.Aug._23 : 'n/a'}</td>
-                                    <td>{cr.r.Aug._24 ? cr.r.Aug._24 : 'n/a'}</td>
-                                    <td>{cr.r.Aug._25 ? cr.r.Aug._25 : 'n/a'}</td>
-                                    <td>{cr.r.Aug._26 ? cr.r.Aug._26 : 'n/a'}</td>
-                                    <td>{cr.r.Aug._27 ? cr.r.Aug._27 : 'n/a'}</td>
-                                    <td>{cr.r.Aug._28 ? cr.r.Aug._28 : 'n/a'}</td>
-                                    <td>{cr.r.Aug._29 ? cr.r.Aug._29 : 'n/a'}</td>
-                                    <td>{cr.r.Aug._30 ? cr.r.Aug._30 : 'n/a'}</td>
-                                    <td>{cr.r.Aug._31 ? cr.r.Aug._31 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Aug._1 ? cr.r.Aug._1 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Aug._2 ? cr.r.Aug._2 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Aug._3 ? cr.r.Aug._3 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Aug._4 ? cr.r.Aug._4 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Aug._5 ? cr.r.Aug._5 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Aug._6 ? cr.r.Aug._6 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Aug._7 ? cr.r.Aug._7 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Aug._8 ? cr.r.Aug._8 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Aug._9 ? cr.r.Aug._9 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Aug._10 ? cr.r.Aug._10 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Aug._11 ? cr.r.Aug._11 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Aug._12 ? cr.r.Aug._12 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Aug._13 ? cr.r.Aug._13 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Aug._14 ? cr.r.Aug._14 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Aug._15 ? cr.r.Aug._15 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Aug._16 ? cr.r.Aug._16 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Aug._17 ? cr.r.Aug._17 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Aug._18 ? cr.r.Aug._18 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Aug._19 ? cr.r.Aug._19 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Aug._20 ? cr.r.Aug._20 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Aug._21 ? cr.r.Aug._21 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Aug._22 ? cr.r.Aug._22 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Aug._23 ? cr.r.Aug._23 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Aug._24 ? cr.r.Aug._24 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Aug._25 ? cr.r.Aug._25 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Aug._26 ? cr.r.Aug._26 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Aug._27 ? cr.r.Aug._27 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Aug._28 ? cr.r.Aug._28 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Aug._29 ? cr.r.Aug._29 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Aug._30 ? cr.r.Aug._30 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Aug._31 ? cr.r.Aug._31 : 'n/a'}</td>
 
-                                    <td>{cr.r.Sep._1 ? cr.r.Sep._1 : 'n/a'}</td>
-                                    <td>{cr.r.Sep._2 ? cr.r.Sep._2 : 'n/a'}</td>
-                                    <td>{cr.r.Sep._3 ? cr.r.Sep._3 : 'n/a'}</td>
-                                    <td>{cr.r.Sep._4 ? cr.r.Sep._4 : 'n/a'}</td>
-                                    <td>{cr.r.Sep._5 ? cr.r.Sep._5 : 'n/a'}</td>
-                                    <td>{cr.r.Sep._6 ? cr.r.Sep._6 : 'n/a'}</td>
-                                    <td>{cr.r.Sep._7 ? cr.r.Sep._7 : 'n/a'}</td>
-                                    <td>{cr.r.Sep._8 ? cr.r.Sep._8 : 'n/a'}</td>
-                                    <td>{cr.r.Sep._9 ? cr.r.Sep._9 : 'n/a'}</td>
-                                    <td>{cr.r.Sep._10 ? cr.r.Sep._10 : 'n/a'}</td>
-                                    <td>{cr.r.Sep._11 ? cr.r.Sep._11 : 'n/a'}</td>
-                                    <td>{cr.r.Sep._12 ? cr.r.Sep._12 : 'n/a'}</td>
-                                    <td>{cr.r.Sep._13 ? cr.r.Sep._13 : 'n/a'}</td>
-                                    <td>{cr.r.Sep._14 ? cr.r.Sep._14 : 'n/a'}</td>
-                                    <td>{cr.r.Sep._15 ? cr.r.Sep._15 : 'n/a'}</td>
-                                    <td>{cr.r.Sep._16 ? cr.r.Sep._16 : 'n/a'}</td>
-                                    <td>{cr.r.Sep._17 ? cr.r.Sep._17 : 'n/a'}</td>
-                                    <td>{cr.r.Sep._18 ? cr.r.Sep._18 : 'n/a'}</td>
-                                    <td>{cr.r.Sep._19 ? cr.r.Sep._19 : 'n/a'}</td>
-                                    <td>{cr.r.Sep._20 ? cr.r.Sep._20 : 'n/a'}</td>
-                                    <td>{cr.r.Sep._21 ? cr.r.Sep._21 : 'n/a'}</td>
-                                    <td>{cr.r.Sep._22 ? cr.r.Sep._22 : 'n/a'}</td>
-                                    <td>{cr.r.Sep._23 ? cr.r.Sep._23 : 'n/a'}</td>
-                                    <td>{cr.r.Sep._24 ? cr.r.Sep._24 : 'n/a'}</td>
-                                    <td>{cr.r.Sep._25 ? cr.r.Sep._25 : 'n/a'}</td>
-                                    <td>{cr.r.Sep._26 ? cr.r.Sep._26 : 'n/a'}</td>
-                                    <td>{cr.r.Sep._27 ? cr.r.Sep._27 : 'n/a'}</td>
-                                    <td>{cr.r.Sep._28 ? cr.r.Sep._28 : 'n/a'}</td>
-                                    <td>{cr.r.Sep._29 ? cr.r.Sep._29 : 'n/a'}</td>
-                                    <td>{cr.r.Sep._30 ? cr.r.Sep._30 : 'n/a'}</td>
-                                    <td>{cr.r.Sep._31 ? cr.r.Sep._31 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Sep._1 ? cr.r.Sep._1 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Sep._2 ? cr.r.Sep._2 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Sep._3 ? cr.r.Sep._3 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Sep._4 ? cr.r.Sep._4 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Sep._5 ? cr.r.Sep._5 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Sep._6 ? cr.r.Sep._6 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Sep._7 ? cr.r.Sep._7 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Sep._8 ? cr.r.Sep._8 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Sep._9 ? cr.r.Sep._9 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Sep._10 ? cr.r.Sep._10 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Sep._11 ? cr.r.Sep._11 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Sep._12 ? cr.r.Sep._12 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Sep._13 ? cr.r.Sep._13 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Sep._14 ? cr.r.Sep._14 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Sep._15 ? cr.r.Sep._15 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Sep._16 ? cr.r.Sep._16 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Sep._17 ? cr.r.Sep._17 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Sep._18 ? cr.r.Sep._18 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Sep._19 ? cr.r.Sep._19 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Sep._20 ? cr.r.Sep._20 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Sep._21 ? cr.r.Sep._21 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Sep._22 ? cr.r.Sep._22 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Sep._23 ? cr.r.Sep._23 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Sep._24 ? cr.r.Sep._24 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Sep._25 ? cr.r.Sep._25 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Sep._26 ? cr.r.Sep._26 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Sep._27 ? cr.r.Sep._27 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Sep._28 ? cr.r.Sep._28 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Sep._29 ? cr.r.Sep._29 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Sep._30 ? cr.r.Sep._30 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Sep._31 ? cr.r.Sep._31 : 'n/a'}</td>
 
-                                    <td>{cr.r.Oct._1 ? cr.r.Oct._1 : 'n/a'}</td>
-                                    <td>{cr.r.Oct._2 ? cr.r.Oct._2 : 'n/a'}</td>
-                                    <td>{cr.r.Oct._3 ? cr.r.Oct._3 : 'n/a'}</td>
-                                    <td>{cr.r.Oct._4 ? cr.r.Oct._4 : 'n/a'}</td>
-                                    <td>{cr.r.Oct._5 ? cr.r.Oct._5 : 'n/a'}</td>
-                                    <td>{cr.r.Oct._6 ? cr.r.Oct._6 : 'n/a'}</td>
-                                    <td>{cr.r.Oct._7 ? cr.r.Oct._7 : 'n/a'}</td>
-                                    <td>{cr.r.Oct._8 ? cr.r.Oct._8 : 'n/a'}</td>
-                                    <td>{cr.r.Oct._9 ? cr.r.Oct._9 : 'n/a'}</td>
-                                    <td>{cr.r.Oct._10 ? cr.r.Oct._10 : 'n/a'}</td>
-                                    <td>{cr.r.Oct._11 ? cr.r.Oct._11 : 'n/a'}</td>
-                                    <td>{cr.r.Oct._12 ? cr.r.Oct._12 : 'n/a'}</td>
-                                    <td>{cr.r.Oct._13 ? cr.r.Oct._13 : 'n/a'}</td>
-                                    <td>{cr.r.Oct._14 ? cr.r.Oct._14 : 'n/a'}</td>
-                                    <td>{cr.r.Oct._15 ? cr.r.Oct._15 : 'n/a'}</td>
-                                    <td>{cr.r.Oct._16 ? cr.r.Oct._16 : 'n/a'}</td>
-                                    <td>{cr.r.Oct._17 ? cr.r.Oct._17 : 'n/a'}</td>
-                                    <td>{cr.r.Oct._18 ? cr.r.Oct._18 : 'n/a'}</td>
-                                    <td>{cr.r.Oct._19 ? cr.r.Oct._19 : 'n/a'}</td>
-                                    <td>{cr.r.Oct._20 ? cr.r.Oct._20 : 'n/a'}</td>
-                                    <td>{cr.r.Oct._21 ? cr.r.Oct._21 : 'n/a'}</td>
-                                    <td>{cr.r.Oct._22 ? cr.r.Oct._22 : 'n/a'}</td>
-                                    <td>{cr.r.Oct._23 ? cr.r.Oct._23 : 'n/a'}</td>
-                                    <td>{cr.r.Oct._24 ? cr.r.Oct._24 : 'n/a'}</td>
-                                    <td>{cr.r.Oct._25 ? cr.r.Oct._25 : 'n/a'}</td>
-                                    <td>{cr.r.Oct._26 ? cr.r.Oct._26 : 'n/a'}</td>
-                                    <td>{cr.r.Oct._27 ? cr.r.Oct._27 : 'n/a'}</td>
-                                    <td>{cr.r.Oct._28 ? cr.r.Oct._28 : 'n/a'}</td>
-                                    <td>{cr.r.Oct._29 ? cr.r.Oct._29 : 'n/a'}</td>
-                                    <td>{cr.r.Oct._30 ? cr.r.Oct._30 : 'n/a'}</td>
-                                    <td>{cr.r.Oct._31 ? cr.r.Oct._31 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Oct._1 ? cr.r.Oct._1 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Oct._2 ? cr.r.Oct._2 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Oct._3 ? cr.r.Oct._3 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Oct._4 ? cr.r.Oct._4 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Oct._5 ? cr.r.Oct._5 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Oct._6 ? cr.r.Oct._6 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Oct._7 ? cr.r.Oct._7 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Oct._8 ? cr.r.Oct._8 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Oct._9 ? cr.r.Oct._9 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Oct._10 ? cr.r.Oct._10 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Oct._11 ? cr.r.Oct._11 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Oct._12 ? cr.r.Oct._12 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Oct._13 ? cr.r.Oct._13 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Oct._14 ? cr.r.Oct._14 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Oct._15 ? cr.r.Oct._15 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Oct._16 ? cr.r.Oct._16 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Oct._17 ? cr.r.Oct._17 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Oct._18 ? cr.r.Oct._18 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Oct._19 ? cr.r.Oct._19 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Oct._20 ? cr.r.Oct._20 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Oct._21 ? cr.r.Oct._21 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Oct._22 ? cr.r.Oct._22 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Oct._23 ? cr.r.Oct._23 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Oct._24 ? cr.r.Oct._24 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Oct._25 ? cr.r.Oct._25 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Oct._26 ? cr.r.Oct._26 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Oct._27 ? cr.r.Oct._27 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Oct._28 ? cr.r.Oct._28 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Oct._29 ? cr.r.Oct._29 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Oct._30 ? cr.r.Oct._30 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Oct._31 ? cr.r.Oct._31 : 'n/a'}</td>
 
-                                    <td>{cr.r.Nov._1 ? cr.r.Nov._1 : 'n/a'}</td>
-                                    <td>{cr.r.Nov._2 ? cr.r.Nov._2 : 'n/a'}</td>
-                                    <td>{cr.r.Nov._3 ? cr.r.Nov._3 : 'n/a'}</td>
-                                    <td>{cr.r.Nov._4 ? cr.r.Nov._4 : 'n/a'}</td>
-                                    <td>{cr.r.Nov._5 ? cr.r.Nov._5 : 'n/a'}</td>
-                                    <td>{cr.r.Nov._6 ? cr.r.Nov._6 : 'n/a'}</td>
-                                    <td>{cr.r.Nov._7 ? cr.r.Nov._7 : 'n/a'}</td>
-                                    <td>{cr.r.Nov._8 ? cr.r.Nov._8 : 'n/a'}</td>
-                                    <td>{cr.r.Nov._9 ? cr.r.Nov._9 : 'n/a'}</td>
-                                    <td>{cr.r.Nov._10 ? cr.r.Nov._10 : 'n/a'}</td>
-                                    <td>{cr.r.Nov._11 ? cr.r.Nov._11 : 'n/a'}</td>
-                                    <td>{cr.r.Nov._12 ? cr.r.Nov._12 : 'n/a'}</td>
-                                    <td>{cr.r.Nov._13 ? cr.r.Nov._13 : 'n/a'}</td>
-                                    <td>{cr.r.Nov._14 ? cr.r.Nov._14 : 'n/a'}</td>
-                                    <td>{cr.r.Nov._15 ? cr.r.Nov._15 : 'n/a'}</td>
-                                    <td>{cr.r.Nov._16 ? cr.r.Nov._16 : 'n/a'}</td>
-                                    <td>{cr.r.Nov._17 ? cr.r.Nov._17 : 'n/a'}</td>
-                                    <td>{cr.r.Nov._18 ? cr.r.Nov._18 : 'n/a'}</td>
-                                    <td>{cr.r.Nov._19 ? cr.r.Nov._19 : 'n/a'}</td>
-                                    <td>{cr.r.Nov._20 ? cr.r.Nov._20 : 'n/a'}</td>
-                                    <td>{cr.r.Nov._21 ? cr.r.Nov._21 : 'n/a'}</td>
-                                    <td>{cr.r.Nov._22 ? cr.r.Nov._22 : 'n/a'}</td>
-                                    <td>{cr.r.Nov._23 ? cr.r.Nov._23 : 'n/a'}</td>
-                                    <td>{cr.r.Nov._24 ? cr.r.Nov._24 : 'n/a'}</td>
-                                    <td>{cr.r.Nov._25 ? cr.r.Nov._25 : 'n/a'}</td>
-                                    <td>{cr.r.Nov._26 ? cr.r.Nov._26 : 'n/a'}</td>
-                                    <td>{cr.r.Nov._27 ? cr.r.Nov._27 : 'n/a'}</td>
-                                    <td>{cr.r.Nov._28 ? cr.r.Nov._28 : 'n/a'}</td>
-                                    <td>{cr.r.Nov._29 ? cr.r.Nov._29 : 'n/a'}</td>
-                                    <td>{cr.r.Nov._30 ? cr.r.Nov._30 : 'n/a'}</td>
-                                    <td>{cr.r.Nov._31 ? cr.r.Nov._31 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Nov._1 ? cr.r.Nov._1 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Nov._2 ? cr.r.Nov._2 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Nov._3 ? cr.r.Nov._3 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Nov._4 ? cr.r.Nov._4 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Nov._5 ? cr.r.Nov._5 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Nov._6 ? cr.r.Nov._6 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Nov._7 ? cr.r.Nov._7 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Nov._8 ? cr.r.Nov._8 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Nov._9 ? cr.r.Nov._9 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Nov._10 ? cr.r.Nov._10 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Nov._11 ? cr.r.Nov._11 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Nov._12 ? cr.r.Nov._12 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Nov._13 ? cr.r.Nov._13 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Nov._14 ? cr.r.Nov._14 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Nov._15 ? cr.r.Nov._15 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Nov._16 ? cr.r.Nov._16 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Nov._17 ? cr.r.Nov._17 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Nov._18 ? cr.r.Nov._18 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Nov._19 ? cr.r.Nov._19 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Nov._20 ? cr.r.Nov._20 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Nov._21 ? cr.r.Nov._21 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Nov._22 ? cr.r.Nov._22 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Nov._23 ? cr.r.Nov._23 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Nov._24 ? cr.r.Nov._24 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Nov._25 ? cr.r.Nov._25 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Nov._26 ? cr.r.Nov._26 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Nov._27 ? cr.r.Nov._27 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Nov._28 ? cr.r.Nov._28 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Nov._29 ? cr.r.Nov._29 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Nov._30 ? cr.r.Nov._30 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Nov._31 ? cr.r.Nov._31 : 'n/a'}</td>
 
-                                    <td>{cr.r.Dec._1 ? cr.r.Dec._1 : 'n/a'}</td>
-                                    <td>{cr.r.Dec._2 ? cr.r.Dec._2 : 'n/a'}</td>
-                                    <td>{cr.r.Dec._3 ? cr.r.Dec._3 : 'n/a'}</td>
-                                    <td>{cr.r.Dec._4 ? cr.r.Dec._4 : 'n/a'}</td>
-                                    <td>{cr.r.Dec._5 ? cr.r.Dec._5 : 'n/a'}</td>
-                                    <td>{cr.r.Dec._6 ? cr.r.Dec._6 : 'n/a'}</td>
-                                    <td>{cr.r.Dec._7 ? cr.r.Dec._7 : 'n/a'}</td>
-                                    <td>{cr.r.Dec._8 ? cr.r.Dec._8 : 'n/a'}</td>
-                                    <td>{cr.r.Dec._9 ? cr.r.Dec._9 : 'n/a'}</td>
-                                    <td>{cr.r.Dec._10 ? cr.r.Dec._10 : 'n/a'}</td>
-                                    <td>{cr.r.Dec._11 ? cr.r.Dec._11 : 'n/a'}</td>
-                                    <td>{cr.r.Dec._12 ? cr.r.Dec._12 : 'n/a'}</td>
-                                    <td>{cr.r.Dec._13 ? cr.r.Dec._13 : 'n/a'}</td>
-                                    <td>{cr.r.Dec._14 ? cr.r.Dec._14 : 'n/a'}</td>
-                                    <td>{cr.r.Dec._15 ? cr.r.Dec._15 : 'n/a'}</td>
-                                    <td>{cr.r.Dec._16 ? cr.r.Dec._16 : 'n/a'}</td>
-                                    <td>{cr.r.Dec._17 ? cr.r.Dec._17 : 'n/a'}</td>
-                                    <td>{cr.r.Dec._18 ? cr.r.Dec._18 : 'n/a'}</td>
-                                    <td>{cr.r.Dec._19 ? cr.r.Dec._19 : 'n/a'}</td>
-                                    <td>{cr.r.Dec._20 ? cr.r.Dec._20 : 'n/a'}</td>
-                                    <td>{cr.r.Dec._21 ? cr.r.Dec._21 : 'n/a'}</td>
-                                    <td>{cr.r.Dec._22 ? cr.r.Dec._22 : 'n/a'}</td>
-                                    <td>{cr.r.Dec._23 ? cr.r.Dec._23 : 'n/a'}</td>
-                                    <td>{cr.r.Dec._24 ? cr.r.Dec._24 : 'n/a'}</td>
-                                    <td>{cr.r.Dec._25 ? cr.r.Dec._25 : 'n/a'}</td>
-                                    <td>{cr.r.Dec._26 ? cr.r.Dec._26 : 'n/a'}</td>
-                                    <td>{cr.r.Dec._27 ? cr.r.Dec._27 : 'n/a'}</td>
-                                    <td>{cr.r.Dec._28 ? cr.r.Dec._28 : 'n/a'}</td>
-                                    <td>{cr.r.Dec._29 ? cr.r.Dec._29 : 'n/a'}</td>
-                                    <td>{cr.r.Dec._30 ? cr.r.Dec._30 : 'n/a'}</td>
-                                    <td>{cr.r.Dec._31 ? cr.r.Dec._31 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Dec._1 ? cr.r.Dec._1 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Dec._2 ? cr.r.Dec._2 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Dec._3 ? cr.r.Dec._3 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Dec._4 ? cr.r.Dec._4 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Dec._5 ? cr.r.Dec._5 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Dec._6 ? cr.r.Dec._6 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Dec._7 ? cr.r.Dec._7 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Dec._8 ? cr.r.Dec._8 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Dec._9 ? cr.r.Dec._9 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Dec._10 ? cr.r.Dec._10 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Dec._11 ? cr.r.Dec._11 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Dec._12 ? cr.r.Dec._12 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Dec._13 ? cr.r.Dec._13 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Dec._14 ? cr.r.Dec._14 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Dec._15 ? cr.r.Dec._15 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Dec._16 ? cr.r.Dec._16 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Dec._17 ? cr.r.Dec._17 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Dec._18 ? cr.r.Dec._18 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Dec._19 ? cr.r.Dec._19 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Dec._20 ? cr.r.Dec._20 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Dec._21 ? cr.r.Dec._21 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Dec._22 ? cr.r.Dec._22 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Dec._23 ? cr.r.Dec._23 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Dec._24 ? cr.r.Dec._24 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Dec._25 ? cr.r.Dec._25 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Dec._26 ? cr.r.Dec._26 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Dec._27 ? cr.r.Dec._27 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Dec._28 ? cr.r.Dec._28 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Dec._29 ? cr.r.Dec._29 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Dec._30 ? cr.r.Dec._30 : 'n/a'}</td>
+                                    <td>{Object.keys(cr).length && cr.r.Dec._31 ? cr.r.Dec._31 : 'n/a'}</td>
                                 </tr>
                             </tbody>
                         </Table>

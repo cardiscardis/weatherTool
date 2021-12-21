@@ -19,6 +19,14 @@ class UserService {
   getAdminBoard() {
     return axios.get(API_URL + 'admin', { headers: authHeader() });
   }
+
+  getCodes() {
+    return axios.get(API_URL + 'codes');
+  }
+
+  async getWeatherContent(weatherType, stationCode) {
+    return axios.get(API_URL + `${weatherType}/${stationCode}`);    
+  }
 }
 
 export default new UserService();

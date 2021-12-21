@@ -67,7 +67,7 @@ def get_minTemp_data(db: Session, code: str):
         days_of_accumulation = Column(String(50))
         quality = Column(String(50))
 
-    return db.query(MinTempWeatherModel).limit(100).all()
+    return db.query(MinTempWeatherModel).all()
     
 
 def get_maxTemp_data(db: Session, code: str):
@@ -86,7 +86,7 @@ def get_maxTemp_data(db: Session, code: str):
         days_of_accumulation = Column(String(50))
         quality = Column(String(50))
 
-    return db.query(MaxTempWeatherModel).limit(100).all()
+    return db.query(MaxTempWeatherModel).all()
 
 
 
@@ -104,4 +104,4 @@ def get_solar_data(db: Session, code: str):
         day = Column(String(50), primary_key=True)
         solar_exposure = Column(String(50))
 
-    return db.query(SolarWeatherModel).limit(100).all()
+    return db.query(SolarWeatherModel).all()

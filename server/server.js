@@ -1,11 +1,11 @@
 const express = require("express");
 const cors = require("cors");
-const path = require('path');
+//const path = require('path');
 
 const app = express();
 
 const db = require("./app/models");
-const Role = db.role;
+//const Role = db.role;
 
 /*
 db.sequelize.sync({force: true}).then(() => {

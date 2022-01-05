@@ -1,5 +1,6 @@
 import React, { useState, useEffect, memo } from 'react';
 import { Row, Col, Card, Table, Form } from 'react-bootstrap' // Tabs, Tab, Form } from 'react-bootstrap';
+import $ from 'jquery';
 
 import UserService from "../services/user.service.js"
 //import { decimalToFraction } from "../services/decimalToFraction.js"
@@ -19,6 +20,14 @@ import RawDataTable from '../Tables/BootstrapTable';
 //import { setObservableConfig } from 'recompose';
 //import { Slide } from '../slider/index.js';
 //import { data } from 'jquery';
+
+
+let tooltip = $('.nvtooltip');    
+let nvbar = $('.nv-bar');
+let mouseleave = (event, d) => {
+    tooltip.style('opacity', 0);
+}
+nvbar.addEventListener("mouseleave", mouseleave, true);
 
 const getMonthlyMaxMonth = (num) => {
     let month = ''
@@ -2166,7 +2175,7 @@ const Dashboard = (props) => {
             <Aux>
                 <UserChoiceInput />            
                 <Row>
-                    <Col xl={7}>
+                    <Col xl={12} md={12}>
                     {mainState.forAveragesFilterTable ? <RawDataTable 
                         averages={mainState.forAveragesFilterTable}
                         avgPerFiveYears={mainState.avgPerFiveYears}
@@ -2181,7 +2190,7 @@ const Dashboard = (props) => {
                         </div>
                         )}
                     </Col>
-                    <Col xl={3}>
+                    <Col xl={12} md={12}>
                     {mainState.forAveragesFilterTable.length ? <Card>
                         <Card.Header>
                             <Card.Title as="h5">Line Chart</Card.Title>
@@ -2198,7 +2207,7 @@ const Dashboard = (props) => {
                     </Col>
                 </Row>
                 <Row>
-                    <Col xl={6} md={6}>
+                    <Col xl={12} md={12}>
                         {mainState.avgChart1Autumn.length ? <MultiBarChart 
                             winterAvg={mainState.avgChart1Winter} 
                             springAvg={mainState.avgChart1Spring}
@@ -2211,7 +2220,7 @@ const Dashboard = (props) => {
                             </div>
                             )}
                     </Col>
-                    <Col xl={6} md={6}>
+                    <Col xl={12} md={12}>
                         {Object.keys(mainState).length ? <MultiBarChart
                             janAvg={mainState.avgChart3monthJan} 
                             febAvg={mainState.avgChart3monthFeb}
@@ -2419,7 +2428,9 @@ const Dashboard = (props) => {
             <Aux>   
                 <UserChoiceInput />                     
                 <Row>
-                    <RawDataTable data={mainState.data} />
+                    <Col xl={12} md={12}>
+                        <RawDataTable data={mainState.data} />
+                    </Col>                    
                 </Row>
             </Aux>
         : (filterControl === 'Location Tool') ? 
@@ -2699,7 +2710,7 @@ const Dashboard = (props) => {
                             </Card.Body>
                         </Card>
                     </Col>
-                    <Col md={6} xl={3}>
+                    <Col md={6} xl={4}>
                     <Card className='Recent-Users'>
                             {/*<Card.Header>
                                 <Card.Title as='h5'>Recent Users</Card.Title>
@@ -2727,7 +2738,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{Number(mainState.annualRainForLastYear).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{(!mainState.annualRainForLastYear || mainState.annualRainForLastYear === 'n/a') ? 'n/a' : Number(mainState.annualRainForLastYear / mainState.overallStationRainfall).toFixed(2)}</h6>{/*  decimalToFraction(mainState.annualRainForLastYear / mainState.overallStationRainfall).display}</h6> <a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{(!mainState.annualRainForLastYear || mainState.annualRainForLastYear === 'n/a') ? 'n/a' : String(Number(mainState.annualRainForLastYear).toFixed()) + '/' + String(Number(mainState.overallStationRainfall).toFixed())}</h6>{/*  decimalToFraction(mainState.annualRainForLastYear / mainState.overallStationRainfall).display}</h6> <a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     <tr className="unread" style={{visibility: "hidden"}}>
                                         {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -2749,7 +2760,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Jan || mainState.Jan === 'n/a') ? 'n/a' : Number(mainState.Jan).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{(!mainState.Jan || mainState.Jan === 'n/a') ? 'n/a' : Number(mainState.Jan / mainState.annualRainForLastYear).toFixed(2)}</h6>{/* decimalToFraction(mainState.Jan / mainState.annualRainForLastYear).display}</h6> <a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{(!mainState.Jan || mainState.Jan === 'n/a') ? 'n/a' : String(Number(mainState.Jan).toFixed()) + '/' + String(Number(mainState.annualRainForLastYear).toFixed())}</h6>{/* decimalToFraction(mainState.Jan / mainState.annualRainForLastYear).display}</h6> <a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     <tr className="unread">
                                         {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -2760,7 +2771,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Feb || mainState.Feb === 'n/a') ? 'n/a' : Number(mainState.Feb).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{(!mainState.Feb || mainState.Feb === 'n/a') ? 'n/a' : Number(mainState.Feb / mainState.annualRainForLastYear).toFixed(2)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{(!mainState.Feb || mainState.Feb === 'n/a') ? 'n/a' : String(Number(mainState.Feb).toFixed()) + '/' + String(Number(mainState.annualRainForLastYear).toFixed())}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     <tr className="unread">
                                         {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -2771,7 +2782,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Mar || mainState.Mar === 'n/a') ? 'n/a' : Number(mainState.Mar).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{(!mainState.Mar || mainState.Mar === 'n/a') ? 'n/a' : Number(mainState.Feb / mainState.annualRainForLastYear).toFixed(2)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{(!mainState.Mar || mainState.Mar === 'n/a') ? 'n/a' : String(Number(mainState.Feb).toFixed()) + '/' + String(Number(mainState.annualRainForLastYear).toFixed())}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     <tr className="unread">
                                         {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -2782,7 +2793,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Apr || mainState.Apr === 'n/a') ? 'n/a' : Number(mainState.Apr).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{(!mainState.Apr || mainState.Apr === 'n/a') ? 'n/a' : Number(mainState.Apr / mainState.annualRainForLastYear).toFixed(2)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{(!mainState.Apr || mainState.Apr === 'n/a') ? 'n/a' : String(Number(mainState.Apr).toFixed()) + '/' + String(Number(mainState.annualRainForLastYear).toFixed())}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     <tr className="unread">
                                         {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -2793,7 +2804,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.May || mainState.May === 'n/a') ? 'n/a' : Number(mainState.May).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{(!mainState.May || mainState.May === 'n/a') ? 'n/a' : Number(mainState.May / mainState.annualRainForLastYear).toFixed(2)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{(!mainState.May || mainState.May === 'n/a') ? 'n/a' : String(Number(mainState.May).toFixed()) + '/' + String(Number(mainState.annualRainForLastYear).toFixed())}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     <tr className="unread">
                                         {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -2804,7 +2815,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Jun || mainState.Jun === 'n/a') ? 'n/a' : Number(mainState.Jun).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{(!mainState.Jun || mainState.Jun === 'n/a') ? 'n/a' : Number(mainState.Jun / mainState.annualRainForLastYear).toFixed(2)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{(!mainState.Jun || mainState.Jun === 'n/a') ? 'n/a' : String(Number(mainState.Jun).toFixed()) + '/' + String(Number(mainState.annualRainForLastYear).toFixed())}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     <tr className="unread">
                                         {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -2815,7 +2826,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Jul || mainState.Jul === 'n/a') ? 'n/a' : Number(mainState.Jul).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{(!mainState.Jul || mainState.Jul === 'n/a') ? 'n/a' : Number(mainState.Jul / mainState.annualRainForLastYear).toFixed(2)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{(!mainState.Jul || mainState.Jul === 'n/a') ? 'n/a' : String(Number(mainState.Jul).toFixed()) + '/' + String(Number(mainState.annualRainForLastYear).toFixed())}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     <tr className="unread">
                                         {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -2826,7 +2837,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Aug || mainState.Aug === 'n/a') ? 'n/a' : Number(mainState.Aug).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{(!mainState.Aug || mainState.Aug === 'n/a') ? 'n/a' : Number(mainState.Aug / mainState.annualRainForLastYear).toFixed(2)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{(!mainState.Aug || mainState.Aug === 'n/a') ? 'n/a' : String(Number(mainState.Aug).toFixed()) + '/' + String(Number(mainState.annualRainForLastYear).toFixed())}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     <tr className="unread">
                                         {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -2837,7 +2848,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Sep || mainState.Sep === 'n/a') ? 'n/a' : Number(mainState.Sep).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{(!mainState.Sep || mainState.Sep === 'n/a') ? 'n/a' : Number(mainState.Sep / mainState.annualRainForLastYear).toFixed(2)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{(!mainState.Sep || mainState.Sep === 'n/a') ? 'n/a' : String(Number(mainState.Sep).toFixed()) + '/' + String(Number(mainState.annualRainForLastYear).toFixed())}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     <tr className="unread">
                                         {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -2848,7 +2859,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Oct || mainState.Oct === 'n/a') ? 'n/a' : Number(mainState.Oct).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{(!mainState.Oct || mainState.Oct === 'n/a') ? 'n/a' : Number(mainState.Oct / mainState.annualRainForLastYear).toFixed(2)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{(!mainState.Oct || mainState.Oct === 'n/a') ? 'n/a' : String(Number(mainState.Oct).toFixed()) + '/' + String(Number(mainState.annualRainForLastYear).toFixed())}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     <tr className="unread">
                                         {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -2859,7 +2870,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Nov || mainState.Nov === 'n/a') ? 'n/a' : Number(mainState.Nov).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{(!mainState.Nov || mainState.Nov === 'n/a') ? 'n/a' : Number(mainState.Nov / mainState.annualRainForLastYear).toFixed(2)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{(!mainState.Nov || mainState.Nov === 'n/a') ? 'n/a' : String(Number(mainState.Nov).toFixed()) + '/' + String(Number(mainState.annualRainForLastYear).toFixed())}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     <tr className="unread">
                                         {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -2870,7 +2881,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Dec || mainState.Dec === 'n/a') ? 'n/a' : Number(mainState.Dec).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{(!mainState.Dec || mainState.Dec === 'n/a') ? 'n/a' : Number(mainState.Dec / mainState.annualRainForLastYear).toFixed(2)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{(!mainState.Dec || mainState.Dec === 'n/a') ? 'n/a' : String(Number(mainState.Dec).toFixed()) + '/' + String(Number(mainState.annualRainForLastYear).toFixed())}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     <tr className="unread" style={{visibility: "hidden"}}>
                                         {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -2892,7 +2903,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{mainState.summer === 'n/a' ? mainState.summer : Number(mainState.summer).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{mainState.summer === 'n/a' ? 'n/a' : Number(mainState.summer / mainState.annualRainForLastYear).toFixed(2)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{mainState.summer === 'n/a' ? 'n/a' : String(Number(mainState.summer).toFixed()) + '/' + String(Number(mainState.annualRainForLastYear).toFixed())}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     <tr className="unread">
                                         {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -2903,7 +2914,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{mainState.autumn === 'n/a' ? mainState.autumn : Number(mainState.autumn).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{mainState.autumn === 'n/a' ? 'n/a' : Number(mainState.autumn / mainState.annualRainForLastYear).toFixed(2)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{mainState.autumn === 'n/a' ? 'n/a' : String(Number(mainState.autumn).toFixed()) + '/' + String(Number(mainState.annualRainForLastYear).toFixed())}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     <tr className="unread">
                                         {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -2914,7 +2925,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{mainState.winter === 'n/a' ? mainState.winter : Number(mainState.winter).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{mainState.winter === 'n/a' ? 'n/a' : Number(mainState.winter / mainState.annualRainForLastYear).toFixed(2)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{mainState.winter === 'n/a' ? 'n/a' : String(Number(mainState.winter).toFixed()) + '/' + String(Number(mainState.annualRainForLastYear).toFixed())}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     <tr className="unread">
                                         {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -2925,7 +2936,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{mainState.spring === 'n/a' ? mainState.spring : Number(mainState.spring).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{mainState.spring === 'n/a' ? 'n/a' : Number(mainState.spring / mainState.annualRainForLastYear).toFixed(2)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{mainState.spring === 'n/a' ? 'n/a' : String(Number(mainState.spring).toFixed()) + '/' + String(Number(mainState.annualRainForLastYear).toFixed())}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     {/*<tr className="unread">
                                         <td><img className="rounded-circle" style={{width: '40px'}} src={avatar2} alt="activity-user"/></td>
@@ -2976,7 +2987,7 @@ const Dashboard = (props) => {
                             </Card.Body>
                         </Card>
                         </Col>
-                    <Col md={12} xl={6}>
+                    <Col md={12} xl={5}>
                     <Card>
                             <Card.Header>
                                 <Card.Title as="h5">Line Chart</Card.Title>

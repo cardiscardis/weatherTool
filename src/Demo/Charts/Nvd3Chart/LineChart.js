@@ -1,6 +1,8 @@
 import React, { memo } from 'react';
 import NVD3Chart from 'react-nvd3';
 
+let colors = ['#CD5C5C', '#000000', '#FF0000', '#FFFF00', '#00FF00', '#008000', '#008080', '#FF00FF', '#000080', '#800080', '#DFFF00', '#FFA07A', '#CD5C5C'];
+
 function getDatum(p) {    
     let sin = [];            
         //sin2 = [],
@@ -28,73 +30,73 @@ function getDatum(p) {
             {
                 values: p.monthlyGraphs.g_jan,
                 key: 'Jan',
-                color: '#04a9f5',
+                color: '#3383ff',
                 area: true
             },
             {
                 values: p.monthlyGraphs.g_feb,
                 key: 'Feb',
-                color: '#A389D4',
+                color: '#FFC300',
                 area: true
             },
             {
                 values: p.monthlyGraphs.g_mar,
                 key: 'Mar',
-                color: '#04a9f5',
+                color: '#797d7f',
                 area: true
             },
             {
                 values: p.monthlyGraphs.g_apr,
                 key: 'Apr',
-                color: '#A389D4',
+                color: '#f4d03f',
                 area: true
             },
             {
                 values: p.monthlyGraphs.g_may,
                 key: 'May',
-                color: '#04a9f5',
+                color: '#85c1e9',
                 area: true
             },
             {
                 values: p.monthlyGraphs.g_jun,
                 key: 'Jun',
-                color: '#A389D4',
+                color: '#58d68d',
                 area: true
             },
             {
                 values: p.monthlyGraphs.g_jul,
                 key: 'Jul',
-                color: '#04a9f5',
+                color: '#154360',
                 area: true
             },
             {
                 values: p.monthlyGraphs.g_aug,
                 key: 'Aug',
-                color: '#A389D4',
+                color: '#c0392b',
                 area: true
             },
             {
                 values: p.monthlyGraphs.g_sep,
                 key: 'Sep',
-                color: '#04a9f5',
+                color: colors[1],
                 area: true
             },
             {
                 values: p.monthlyGraphs.g_oct,
                 key: 'Oct',
-                color: '#A389D4',
+                color: colors[10],
                 area: true
             },
             {
                 values: p.monthlyGraphs.g_nov,
                 key: 'Nov',
-                color: '#04a9f5',
+                color: colors[8],
                 area: true
             },
             {
                 values: p.monthlyGraphs.g_dec,
                 key: 'Dec',
-                color: '#A389D4',
+                color: "#7dcea0",
                 area: true
             }
         ];
@@ -114,7 +116,7 @@ function getDatum(p) {
             {
                 values: p.aji,
                 key: 'AJ',
-                color: '#04a9f5'                
+                color: colors[1],
             }
         ];
     } else if (p.data && p.totalAvg) {//data={mainState.lineChartData}
@@ -157,11 +159,11 @@ function getDatum(p) {
 const LineChart = (props) => {   
     let data = [];
      if (props.obj) {
-        let obj = Object.keys(props.obj).map((d) => (
+        let obj = Object.keys(props.obj).map((d, i) => (
             {
                 values: props.obj[d],
                 key: d,
-                color: '#04a9f5'
+                color: colors[i],
             }
         ));
 

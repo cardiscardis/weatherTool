@@ -5,6 +5,7 @@ function generateNumber(min, max) {
     return Math.floor(Math.random()*(max-min+1)+min)
 }
 
+
 function getDatum(props) {
     /* 
         dryDays={hdnodYear}
@@ -42,11 +43,11 @@ function getDatum(props) {
 
 
 const MultiBarHorizontalChart = (props) => {        
-        const data = getDatum(props);
-        return (data.length) ? 
-        <div className="pl-5 mr-5">
-            <NVD3Chart type="multiBarHorizontalChart" datum={data} x="x" y="y" height={400} showValues groupSpacing={0.2} />
-        </div>: null;
+    const data = getDatum(props);
+    return (data.length) ? 
+    <div className="pl-5 mr-5">
+        <NVD3Chart type="multiBarHorizontalChart" datum={data} x="x" y="y" height={400} showValues groupSpacing={0.2} />
+    </div>: null;
 }
 
 export default MultiBarHorizontalChart;

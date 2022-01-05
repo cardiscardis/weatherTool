@@ -7,7 +7,7 @@ import LineChart from '../Charts/Nvd3Chart/LineChart'
 import TiltedBarChart from '../Charts/Nvd3Chart/MultiBarHorizontalChart'
 import UcFirst from "../../App/components/UcFirst";
 
-const BootstrapTable = (props) => {    
+const BootstrapTable = (props) => {        
 
     let monthly = props.monthly || []; //monthly data
     let data = props.data || []; //overview
@@ -85,31 +85,35 @@ const BootstrapTable = (props) => {
                 let annualSortControlIndex2 = props.sumOfRainYears.indexOf(`${annualSortControl2}`);
                 
                 if (annualSortControlIndex1 !== -1 && annualSortControlIndex2 !== -1) {                                
+                    let avgResult = [...arrOfKeys];
+                    if (arrOfKeys.includes(`${annualSortControl1}-${annualSortControl2}`)) {
+                        alert('Chosen data already exists');
+                        return false;
+                    } else {
+                        avgResult = [...avgResult, `${annualSortControl1}-${annualSortControl2}`];
+                    }
                     for (let y = annualSortControlIndex1; y <= annualSortControlIndex2; y++) {
                         avgresult += props.sumOfRain[y];                    
                     }
                     avgresult /= (annualSortControlIndex2 - annualSortControlIndex1) + 1;
 
-                    let as2 = [...as];
-                    let avgResult = [...arrOfKeys];
+                    let as2 = [...as];                    
                     let alreadyExists = false;
                     for (let z = 0; z <= as2.length - 1; z++) {                                                
                         annualAvg3.push({x: as2[z].year, y: annualAvg});
                         if (as2[z][`${annualSortControl1}-${annualSortControl2}`] !== undefined) {
                             alreadyExists = true;
                         }
-                        if (alreadyExists) {
-                            alert('Chosen data already exists');
+                        if (alreadyExists) {                            
+                            continue;
                         } else {
                             if (z >= annualSortControlIndex1 && z <= annualSortControlIndex2) {                                                    
                                 as2[z] = {...as[z], [`${annualSortControl1}-${annualSortControl2}`]: Number(avgresult).toFixed(2)};                                                        
                             } else {
                                 as2[z] = {...as[z], [`${annualSortControl1}-${annualSortControl2}`]: '-'};                        
-                            }                           
+                            }                                                       
                         }                           
                     }                                                                
-                    avgResult = [...avgResult, `${annualSortControl1}-${annualSortControl2}`];
-
                     let keys = avgResult;
                     let annualSortArr = as2;
                     let obj = {};
@@ -283,12 +287,12 @@ const BootstrapTable = (props) => {
                             <span className="d-block m-t-5"><code>-1</code> means <code>no data recorded</code></span>
                         </Card.Header>
                         <Card.Body>
-                            {as.length ? <Table striped responsive>
+                            {as.length ? <Table striped responsive className='text-center'>
                                 <thead>
                                 <tr>
                                     <th>#</th>
                                     <th>Year</th>
-                                    <th>Monthly Precipitation Total (millimetres)</th>
+                                    <th>Monthly Precipitation <br /> Total (millimetres)</th>
                                     <th>AVG</th>
                                     {(arrOfKeys && arrOfKeys.length) ? arrOfKeys.map((a, i) => (
                                         <th key={i}>{a}</th>
@@ -1514,7 +1518,7 @@ const BootstrapTable = (props) => {
         : Object.keys(analysisData).length ? 
         <Aux>
             <Row>
-                <Col>
+                <Col xl={12} md={12}>
                     <Card>
                         <Card.Header>
                             <Card.Title as="h5">Data Analysis</Card.Title>
@@ -2182,7 +2186,7 @@ const BootstrapTable = (props) => {
                         </Card.Body>
                     </Card>
                 </Col>
-                <Col>
+                <Col xl={12} md={12}>
                     { 
                         <TiltedBarChart                             
                             dryDays={hdnodYear}
@@ -2785,12 +2789,12 @@ const BootstrapTable = (props) => {
                             <span className="d-block m-t-5"><code>-1</code> means <code>no data recorded</code></span>
                         </Card.Header>
                         <Card.Body>
-                            <Table striped responsive>
+                            <Table striped responsive className='text-center'>
                                 <thead>
                                 <tr>
                                     <th>#</th>                                    
                                     <th>Year</th>                                    
-                                    <th>Monthly Precipitation Total (millimetres)</th>                                                                        
+                                    <th>Monthly Precipitation <br /> Total (millimetres)</th>                                                                        
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -2816,15 +2820,15 @@ const BootstrapTable = (props) => {
                             <span className="d-block m-t-5"><code>-1</code> means <code>no data recorded</code></span>
                         </Card.Header>
                         <Card.Body>
-                            <Table striped responsive>
+                            <Table striped responsive className='text-center'>
                                 <thead>
                                 <tr>
                                     <th>#</th>
                                     <th>Product code</th>
-                                    <th>Bureau of Meteorology station number</th>
+                                    <th>Bureau of Meteorology <br /> station number</th>
                                     <th>Year</th>
                                     <th>Month</th>                                    
-                                    <th>Monthly Precipitation Total (millimetres)</th>                                    
+                                    <th>Monthly Precipitation <br /> Total (millimetres)</th>                                    
                                     <th>Quality</th>
                                 </tr>
                                 </thead>
@@ -2931,17 +2935,17 @@ const BootstrapTable = (props) => {
                             <span className="d-block m-t-5"><code>-1</code> means <code>no data recorded</code></span>
                         </Card.Header>
                         <Card.Body>
-                            <Table striped responsive>
+                            <Table striped responsive className='text-center' style={{width: '100%', maxWidth: '100%'}}>
                                 <thead>
                                 <tr>
                                     <th>#</th>
                                     <th>Product code</th>
-                                    <th>Bureau of Meteorology station number</th>
+                                    <th>Bureau of Meteorology <br /> station number</th>
                                     <th>Year</th>
                                     <th>Month</th>
                                     <th>Day</th>
-                                    <th>Rainfall amount (millimetres)</th>
-                                    <th>Period over which rainfall was measured (days)</th>
+                                    <th>Rainfall amount <br /> (millimetres)</th>
+                                    <th>Period over which <br /> rainfall was measured <br /> (days)</th>
                                     <th>Quality</th>
                                 </tr>
                                 </thead>

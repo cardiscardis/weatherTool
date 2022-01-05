@@ -1,6 +1,8 @@
 import React, {memo} from 'react';
 import NVD3Chart from 'react-nvd3';
 /** */
+let colors = ['#CD5C5C', '#000000', '#FF0000', '#FFFF00', '#00FF00', '#008000', '#008080', '#FF00FF', '#000080', '#800080', '#DFFF00', '#FFA07A', '#CD5C5C'];
+
 function generateNumber(min, max) {
     return Math.floor(Math.random()*(max-min+1)+min)
 }
@@ -31,7 +33,7 @@ function getDatum(props) {
         {
             values: props.summerAvg,
             key: 'Summer',
-            color: '#1de9b6',          
+            color: colors[0]
         },
         {
             values: props.autumnAvg,
@@ -41,24 +43,24 @@ function getDatum(props) {
         }
     ];//
     } else if (props.hAvg && Object.keys(props.hAvg).length) {
-        let hObjs = Object.keys(props.hAvg).map((d) => ({
+        let hObjs = Object.keys(props.hAvg).map((d, i) => ({
             values: props.hAvg[d],
             key: d,
-            color: '#A389D4'            
+            color: colors[i]
         }));        
         return hObjs;
     } else if (props.qAvg && Object.keys(props.qAvg).length) {
-        let qObjs = Object.keys(props.qAvg).map((d) => ({
+        let qObjs = Object.keys(props.qAvg).map((d, i) => ({
             values: props.qAvg[d],
             key: d,                    
-            color: '#A389D4'            
+            color: colors[i]
         }));
         return qObjs;
     } else if (props.avgAnnual && Object.keys(props.avgAnnual).length) {
-        let annualObjs = Object.keys(props.avgAnnual).map((d) => ({
+        let annualObjs = Object.keys(props.avgAnnual).map((d, i) => ({
             values: [props.avgAnnual[d]],
             key: d,
-            color: '#A389D4'            
+            color: colors[i]
         }));        
         return annualObjs;
     } else if (props.janAvg && props.janAvg.length) {                
@@ -72,7 +74,7 @@ function getDatum(props) {
             {
                 values: props.febAvg,
                 key: 'Feb',
-                color: '#04a9f5'
+                color: colors[0]
             },
             {
                 values: props.marAvg,
@@ -87,42 +89,42 @@ function getDatum(props) {
             {
                 values: props.mayAvg,
                 key: 'May',
-                color: '#04a9f5'
+                color: colors[1]
             },
             {
                 values: props.junAvg,
                 key: 'Jun',
-                color: '#1de9b6',          
+                color: colors[2]
             },
             {
                 values: props.julAvg,
                 key: 'Jul',
-                color: '#A389D4'
+                color: colors[3]
             },
             {
                 values: props.augAvg,
                 key: 'Aug',
-                color: '#04a9f5'
+                color: colors[4]
             },
             {
                 values: props.sepAvg,
                 key: 'Sep',
-                color: '#1de9b6',          
+                color: colors[5]
             },
             {
                 values: props.octAvg,
                 key: 'Oct',
-                color: '#A389D4'
+                color: colors[6]
             },
             {
                 values: props.novAvg,
                 key: 'Nov',
-                color: '#04a9f5'
+                color: colors[7]
             },            
             {
                 values: props.decAvg,
                 key: 'Dec',
-                color: '#1de9b6',
+                color: colors[8],
                 area: true
             }
         ];
@@ -146,7 +148,7 @@ function getDatum(props) {
                 {
                     values: props.q4,
                     key: 'Q4',
-                    color: '#1de9b6',
+                    color: colors[0],
                     area: true
                 }
             ];
@@ -178,12 +180,12 @@ function getDatum(props) {
             {
                 values: props.summerPerYear,
                 key: 'Summer',
-                color: '#A389D4'
+                color: colors[0]
             },
             {
                 values: props.autumnPerYear,
                 key: 'Autumn',
-                color: '#04a9f5'
+                color: colors[1]
             }            
         ];
     }  else if (props.monthlyGraphs && Object.keys(props.monthlyGraphs).length) {
@@ -201,53 +203,53 @@ function getDatum(props) {
             {
                 values: props.monthlyGraphs.g_mar,
                 key: 'Mar',
-                color: '#A389D4'
+                color: colors[0]
             },
 
             {
                 values: props.monthlyGraphs.g_apr,
                 key: 'Apr',
-                color: '#04a9f5'
+                color: colors[1]
             },
             {
                 values: props.monthlyGraphs.g_may,
                 key: 'May',
-                color: '#04a9f5'
+                color: colors[2]
             },            
             {
                 values: props.monthlyGraphs.g_jun,
                 key: 'Jun',
-                color: '#A389D4'
+                color: colors[3]
             },
             {
                 values: props.monthlyGraphs.g_jul,
                 key: 'Jul',
-                color: '#04a9f5'
+                color: colors[4]
             },            
             {
                 values: props.monthlyGraphs.g_aug,
                 key: 'Aug',
-                color: '#A389D4'
+                color: colors[5]
             },
             {
                 values: props.monthlyGraphs.g_sep,
                 key: 'Sep',
-                color: '#04a9f5'
+                color: colors[6]
             },            
             {
                 values: props.monthlyGraphs.g_oct,
                 key: 'Oct',
-                color: '#A389D4'
+                color: colors[7]
             },            
             {
                 values: props.monthlyGraphs.g_nov,
                 key: 'Nov',
-                color: '#04a9f5'
+                color: colors[8]
             },            
             {
                 values: props.monthlyGraphs.g_dec,
                 key: 'Dec',
-                color: '#A389D4'
+                color: colors[9]
             }
         ];
     }  else if (props.winter && props.winter.length) {
@@ -263,7 +265,7 @@ function getDatum(props) {
             {
                 values: props.spring,
                 key: 'Spring',
-                color: '#A389D4'
+                color: colors[0]
             }
         ]
     }  else if (props.summer && props.summer.length) {

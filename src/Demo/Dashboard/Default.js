@@ -21,13 +21,11 @@ import RawDataTable from '../Tables/BootstrapTable';
 //import { Slide } from '../slider/index.js';
 //import { data } from 'jquery';
 
-
-let tooltip = $('.nvtooltip');    
-let nvbar = $('.nv-bar');
 let mouseleave = (event, d) => {
-    tooltip.style('opacity', 0);
+    $('.nvtooltip').style('opacity', 0);
 }
-nvbar.addEventListener("mouseleave", mouseleave, true);
+$('.nv-bar').on("mouseleave", mouseleave);
+
 
 const getMonthlyMaxMonth = (num) => {
     let month = ''
@@ -2098,7 +2096,6 @@ const Dashboard = (props) => {
             </div>
         </Aux>
     );*/
-    
 
     return ( 
         isFetching || isComputing ? 
@@ -2113,43 +2110,51 @@ const Dashboard = (props) => {
             <Aux>
                 <UserChoiceInput />            
                 <Row>
-                {analysisControl !== 'Select Year' && <RawDataTable                     
-                        cumulativeRain={mainState.cumulativeRain} 
-                        cumulativeRain2={mainState.cumulativeRain2} 
-                        q={analysisControl}
-                    />}
+                    <Col xl={12} md={12}>
+                        {analysisControl !== 'Select Year' && <RawDataTable                     
+                            cumulativeRain={mainState.cumulativeRain} 
+                            cumulativeRain2={mainState.cumulativeRain2} 
+                            q={analysisControl}
+                        />}    
+                    </Col>                
                 </Row>
             </Aux> 
         : (filterControl === 'Daily Analysis') ?
             <Aux>
                 <UserChoiceInput />            
                 <Row>
-                <Col xl={12} md={12}>
-                    {
-                        analysisControl !== 'Select Year' && <RawDataTable 
-                            forDailyAnalysis={mainState.forDailyAnalysis} 
-                            q={analysisControl} 
-                            janToDecMaxPerYear={mainState.janToDecMaxPerYear} 
-                            hrpmConsec={mainState.hrpmConsec}
-                            hnodConsec={mainState.hnodConsec}
-                            hnodConsec2={mainState.hnodConsec2}
-                            hdnodConsec={mainState.hdnodConsec}
-                            hdnodConsec2={mainState.hdnodConsec2}
-                            nord={mainState.noOfRainDaysAnalysis}
-                            nodd={mainState.noOfDryDaysAnalysis}
-                            nowd25={mainState.noOfWetDaysAnalysis25}
-                            nowd15={mainState.noOfWetDaysAnalysis15}
-                            nowd10={mainState.noOfWetDaysAnalysis10}                        
-                        />
-                    }
+                    <Col xl={12} md={12}>
+                        {
+                            analysisControl !== 'Select Year' && <RawDataTable 
+                                forDailyAnalysis={mainState.forDailyAnalysis} 
+                                q={analysisControl} 
+                                janToDecMaxPerYear={mainState.janToDecMaxPerYear} 
+                                hrpmConsec={mainState.hrpmConsec}
+                                hnodConsec={mainState.hnodConsec}
+                                hnodConsec2={mainState.hnodConsec2}
+                                hdnodConsec={mainState.hdnodConsec}
+                                hdnodConsec2={mainState.hdnodConsec2}
+                                nord={mainState.noOfRainDaysAnalysis}
+                                nodd={mainState.noOfDryDaysAnalysis}
+                                nowd25={mainState.noOfWetDaysAnalysis25}
+                                nowd15={mainState.noOfWetDaysAnalysis15}
+                                nowd10={mainState.noOfWetDaysAnalysis10}                        
+                            />
+                        }
                     </Col>            
                 </Row>
             </Aux>  
         : (filterControl === 'OJ Index Sort') ?
             <Aux>
-                <UserChoiceInput />            
                 <Row>
-                    <RawDataTable oj={mainState.forOJIndexTable} />
+                    <Col xl={12} md={12}>
+                        <UserChoiceInput />            
+                    </Col>
+                </Row>                
+                <Row>
+                    <Col xl={12} md={12}>
+                        <RawDataTable oj={mainState.forOJIndexTable} />
+                    </Col>                    
                 </Row>
                 <Row>
                     <Col xl={12} md={12}>
@@ -2161,9 +2166,15 @@ const Dashboard = (props) => {
             </Aux> 
         : (filterControl === 'OJ Index') ?
             <Aux>
-                <UserChoiceInput />            
                 <Row>
-                    <RawDataTable oj={mainState.forOJIndexTable} cutOff={true} />
+                    <Col xl={12} md={12}>
+                        <UserChoiceInput />            
+                    </Col>
+                </Row>                
+                <Row>
+                    <Col xl={12} md={12}>
+                        <RawDataTable oj={mainState.forOJIndexTable} cutOff={true} />
+                    </Col>                    
                 </Row>
                 <Row>
                     <Col xl={12} md={12}>
@@ -2266,7 +2277,7 @@ const Dashboard = (props) => {
                 </Row>
                 <Row>
                     <Col xl={12} md={12}>
-                        {mainState.avgChart4q1q2q3q4.length ? <MultiBarChart 
+                        {Object.keys(mainState).length ? <MultiBarChart 
                             qAvg={mainState.avgChart4q1q2q3q4}                        
                         />: (
                             <div>
@@ -2352,18 +2363,24 @@ const Dashboard = (props) => {
                 </Row>           
             </Aux>
         : (filterControl === 'H1H2Q1Q4 Sort') ?
-            <Aux>        
-                <UserChoiceInput />   
+            <Aux> 
                 <Row>
-                    <RawDataTable hqSort={mainState.forMonthlyFilterTable} />
+                    <Col xl={12} md={12}>
+                        <UserChoiceInput />   
+                    </Col>                    
+                </Row>                       
+                <Row>
+                    <Col xl={12} md={12}>
+                        <RawDataTable hqSort={mainState.forMonthlyFilterTable} />
+                    </Col>                    
                 </Row>         
                 <Row>                
-                    <Col>
+                    <Col xl={12} md={12}>
                         {mainState.q1.length && <MultiBarChart q1={mainState.q1} q2={mainState.q2} q3={mainState.q3} q4={mainState.q4} />}
                     </Col>
                 </Row>
                 <Row>                
-                    <Col>
+                    <Col xl={12} md={12}>
                         {mainState.h1.length && <MultiBarChart h1={mainState.h1} h2={mainState.h2} />}
                     </Col>
                 </Row>
@@ -2386,13 +2403,14 @@ const Dashboard = (props) => {
                 </Row>
             </Aux>
         : (filterControl === 'Annual Sort') ?
-            <Aux>        
-                <UserChoiceInput />
+            <Aux>
                 <Row>
-                    {/* For slider */}
+                    <Col xl={12} md={12}>
+                        <UserChoiceInput /> 
+                    </Col>
                 </Row>
                 <Row>
-                    <Col md={12} xl={12}>
+                    <Col xl={12} md={12}>
                         {Object.keys(mainState).length && <RawDataTable
                             annualSort={mainState.forAnnualTable}                         
                             annualAvg={mainState.annualAvg}
@@ -2404,7 +2422,7 @@ const Dashboard = (props) => {
                         />}
                     </Col>
                 </Row>
-            </Aux>
+            </Aux>        
         : (filterControl === 'Annual Raw Data') ?
             <Aux> 
                 <UserChoiceInput />       
@@ -2421,7 +2439,9 @@ const Dashboard = (props) => {
             <Aux>
                 <UserChoiceInput />            
                 <Row>
-                    <RawDataTable monthly={mainState.forMonthlyTable} />
+                    <Col xl={12} md={12}>
+                        <RawDataTable monthly={mainState.forMonthlyTable} />
+                    </Col>
                 </Row>
             </Aux>  
         : (filterControl === 'Daily Raw Data') ?

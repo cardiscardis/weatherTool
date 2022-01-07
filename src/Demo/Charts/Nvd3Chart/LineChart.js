@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import NVD3Chart from 'react-nvd3';
 
 let colors = ['#CD5C5C', '#000000', '#FF0000', '#FFFF00', '#00FF00', '#008000', '#008080', '#FF00FF', '#000080', '#800080', '#DFFF00', '#FFA07A', '#CD5C5C'];
@@ -119,6 +119,14 @@ function getDatum(p) {
                 color: colors[1],
             }
         ];
+    } else if (p.l_data) {
+        return [
+            {
+                values: p.l_data,
+                key: p.m,
+                color: '#04a9f5'
+            }
+        ];
     } else if (p.data && p.totalAvg) {//data={mainState.lineChartData}
         //totalAvg= {annualAvg}
         return [
@@ -134,11 +142,21 @@ function getDatum(p) {
             }
         ];
     
-    } else {
+    } else if (p.data) {
+        
         return [
             {
-                values: p.data || sin,
-                key: p.m || 'n/a',
+                values: p.data,
+                key: p.m,
+                color: '#A389D4'
+            }            
+        ];
+    } else {
+        console.log('im here');
+        return [
+            {
+                values: sin,
+                key: 'n/a',
                 color: '#A389D4'
             }
             /*{
@@ -185,7 +203,7 @@ const LineChart = (props) => {
 
     //console.log(data);
     return (
-        <div>
+        data && data.length && <div>
             {
                 React.createElement(NVD3Chart, {
                     xAxis: {
@@ -210,4 +228,4 @@ const LineChart = (props) => {
     )
 }
 
-export default memo(LineChart);
+export default LineChart;

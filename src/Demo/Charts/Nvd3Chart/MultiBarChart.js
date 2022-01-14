@@ -189,6 +189,7 @@ function getDatum(props) {
             }            
         ];
     }  else if (props.monthlyGraphs && Object.keys(props.monthlyGraphs).length) {
+        
         return [
             {
                 values: props.monthlyGraphs.g_jan,
@@ -203,53 +204,53 @@ function getDatum(props) {
             {
                 values: props.monthlyGraphs.g_mar,
                 key: 'Mar',
-                color: colors[0]
+                color: '#CD5C5C'
             },
 
             {
                 values: props.monthlyGraphs.g_apr,
                 key: 'Apr',
-                color: colors[1]
+                color: '#000000'
             },
             {
                 values: props.monthlyGraphs.g_may,
                 key: 'May',
-                color: colors[2]
+                color: '#FF0000'
             },            
             {
                 values: props.monthlyGraphs.g_jun,
                 key: 'Jun',
-                color: colors[3]
+                color: '#a1c3c3'
             },
             {
                 values: props.monthlyGraphs.g_jul,
                 key: 'Jul',
-                color: colors[4]
+                color: '#00FF00'
             },            
             {
                 values: props.monthlyGraphs.g_aug,
                 key: 'Aug',
-                color: colors[5]
+                color: '#008000'
             },
             {
                 values: props.monthlyGraphs.g_sep,
                 key: 'Sep',
-                color: colors[6]
+                color: '#008080'
             },            
             {
                 values: props.monthlyGraphs.g_oct,
                 key: 'Oct',
-                color: colors[7]
+                color: '#FF00FF'
             },            
             {
                 values: props.monthlyGraphs.g_nov,
                 key: 'Nov',
-                color: colors[8]
+                color: '#FFA07A'
             },            
             {
                 values: props.monthlyGraphs.g_dec,
                 key: 'Dec',
-                color: colors[9]
+                color: '#00ebc7'
             }
         ];
     }  else if (props.winter && props.winter.length) {

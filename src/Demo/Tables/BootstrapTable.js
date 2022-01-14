@@ -47,7 +47,13 @@ const BootstrapTable = (props) => {
     let cumulativeRain = props.cumulativeRain || [];
     let cumulativeRain2 = props.cumulativeRain2 || [];         
     let filterControl = props.filterControl || '';    
+    let since1960AnnualTable = props.since1960AnnualTable;
+    let for1960Data = props.for1960Data;
+    let forCoolAndWarmFilterTable = props.forCoolAndWarmFilterTable || {};        
 
+
+    
+    const [ coolAndWarmTableRenderData, setCoolAndWarmTableRenderData ] = useState([]);
     const [ annualSortControl1, setAnnualSortControl1 ] = useState('Select Year');
     const [ annualSortControl2, setAnnualSortControl2 ] = useState('Select Year');    
     const [ as, setAs ] = useState(annualSort);
@@ -55,6 +61,7 @@ const BootstrapTable = (props) => {
     const [ annualAvg2, setAnnualAvg2 ] = useState([]);
     const [ obj, setObj ] = useState([]);
     const [ annualSortHideProp, setAnnualSortHideProp ] = useState(false);
+
 
      const onChange = (e) => {
 //         e.stopPropagation();
@@ -144,7 +151,7 @@ const BootstrapTable = (props) => {
         } else {
             alert('Error! it may be that you have not selected a year range');
         }
-    }
+    }   
 
 
     const UserChoiceInput = () => (
@@ -173,7 +180,128 @@ const BootstrapTable = (props) => {
         </>
     )
 
-    
+
+    async function getForCoolAndWarmTableData() {
+        let forCoolAndWarm = forCoolAndWarmFilterTable['forCoolAndWarmFilterTable'];
+        let forCWAnnualTraversing = forCoolAndWarmFilterTable.forCWAnnualTraversing;
+        let forCWCoolTraversing = forCoolAndWarmFilterTable.forCWCoolTraversing;
+        let forCWWarmTraversing = forCoolAndWarmFilterTable.forCWWarmTraversing;
+
+        if (forCoolAndWarm.length && forCWAnnualTraversing.length) {
+            let start10 = 1; let end10 = 11;
+            let start20 = 1; let end20 = 21;
+            let start30 = 1; let end30 = 31;
+            let start40 = 1; let end40 = 41;
+            let start50 = 1; let end50 = 51;
+            let start60 = 1; let end60 = 61;
+
+            for (let i = 0; i <= forCoolAndWarm.length - 1; i++) {                
+                if (forCoolAndWarm[end10 - 1]) {
+                    let chunkAnnualArr = forCWAnnualTraversing.slice(start10, end10);
+                    let chunkCoolArr = forCWCoolTraversing.slice(start10, end10);
+                    let chunkWarmArr = forCWWarmTraversing.slice(start10, end10);
+                    let chunkAnnualArrAvg = chunkAnnualArr.reduce((a, b) => {return a + b;}, 0) / chunkAnnualArr.length;
+                    let chunkCoolArrAvg = chunkCoolArr.reduce((a, b) => {return a + b;}, 0) / chunkCoolArr.length;
+                    let chunkWarmArrAvg = chunkWarmArr.reduce((a, b) => {return a + b;}, 0) / chunkWarmArr.length;
+                
+                    forCoolAndWarm[end10 - 1] = {...forCoolAndWarm[end10 - 1], tenYrAnnualAvg: chunkAnnualArrAvg, tenYrCoolAvg: chunkCoolArrAvg, tenYrWarmAvg: chunkWarmArrAvg};                    
+                    end10 += 1; start10 += 1;
+                } else {
+                    break;
+                }                
+            }
+
+            for (let i = 0; i <= forCoolAndWarm.length -1; i++) {                
+                if (forCoolAndWarm[end20 - 1]) {
+                    let chunkAnnualArr = forCWAnnualTraversing.slice(start20, end20);
+                    let chunkCoolArr = forCWCoolTraversing.slice(start20, end20);
+                    let chunkWarmArr = forCWWarmTraversing.slice(start20, end20);
+                    let chunkAnnualArrAvg = chunkAnnualArr.reduce((a, b) => {return a + b;}, 0) / chunkAnnualArr.length;
+                    let chunkCoolArrAvg = chunkCoolArr.reduce((a, b) => {return a + b;}, 0) / chunkCoolArr.length;
+                    let chunkWarmArrAvg = chunkWarmArr.reduce((a, b) => {return a + b;}, 0) / chunkWarmArr.length;
+                
+                    forCoolAndWarm[end20 - 1] = {...forCoolAndWarm[end20 - 1], twentyYrAnnualAvg: chunkAnnualArrAvg, twentyYrCoolAvg: chunkCoolArrAvg, twentyYrWarmAvg: chunkWarmArrAvg};                    
+                    end20 += 1; start20 += 1;
+                } else {
+                    break;
+                }
+            }
+
+            for (let i = 0; i <= forCoolAndWarm.length - 1; i++) {                
+                if (forCoolAndWarm[end30 - 1]) {
+                    let chunkAnnualArr = forCWAnnualTraversing.slice(start30, end30);
+                    let chunkCoolArr = forCWCoolTraversing.slice(start30, end30);
+                    let chunkWarmArr = forCWWarmTraversing.slice(start30, end30);
+                    let chunkAnnualArrAvg = chunkAnnualArr.reduce((a, b) => {return a + b;}, 0) / chunkAnnualArr.length;
+                    let chunkCoolArrAvg = chunkCoolArr.reduce((a, b) => {return a + b;}, 0) / chunkCoolArr.length;
+                    let chunkWarmArrAvg = chunkWarmArr.reduce((a, b) => {return a + b;}, 0) / chunkWarmArr.length;
+                
+                    forCoolAndWarm[end30 - 1] = {...forCoolAndWarm[end30 - 1], thirtyYrAnnualAvg: chunkAnnualArrAvg, thirtyYrCoolAvg: chunkCoolArrAvg, thirtyYrWarmAvg: chunkWarmArrAvg};
+                    end30 += 1; start30 += 1;
+                } else {
+                    break;
+                }                
+            }
+
+            for (let i = 0; i <= forCoolAndWarm.length - 1; i++) {                
+                if (forCoolAndWarm[end40 - 1]) {
+                    let chunkAnnualArr = forCWAnnualTraversing.slice(start40, end40);
+                    let chunkCoolArr = forCWCoolTraversing.slice(start40, end40);
+                    let chunkWarmArr = forCWWarmTraversing.slice(start40, end40);
+                    let chunkAnnualArrAvg = chunkAnnualArr.reduce((a, b) => {return a + b;}, 0) / chunkAnnualArr.length;
+                    let chunkCoolArrAvg = chunkCoolArr.reduce((a, b) => {return a + b;}, 0) / chunkCoolArr.length;
+                    let chunkWarmArrAvg = chunkWarmArr.reduce((a, b) => {return a + b;}, 0) / chunkWarmArr.length;
+                
+                    forCoolAndWarm[end40 - 1] = {...forCoolAndWarm[end40 - 1], fortyYrAnnualAvg: chunkAnnualArrAvg, fortyYrCoolAvg: chunkCoolArrAvg, fortyYrWarmAvg: chunkWarmArrAvg};
+                    end40 += 1; start40 += 1;
+                } else {
+                    break;
+                }                
+            }
+
+            for (let i = 0; i <= forCoolAndWarm.length - 1; i++) {                
+                if (forCoolAndWarm[end50 - 1]) {
+                    let chunkAnnualArr = forCWAnnualTraversing.slice(start50, end50);
+                    let chunkCoolArr = forCWCoolTraversing.slice(start50, end50);
+                    let chunkWarmArr = forCWWarmTraversing.slice(start50, end50);
+                    let chunkAnnualArrAvg = chunkAnnualArr.reduce((a, b) => {return a + b;}, 0) / chunkAnnualArr.length;
+                    let chunkCoolArrAvg = chunkCoolArr.reduce((a, b) => {return a + b;}, 0) / chunkCoolArr.length;
+                    let chunkWarmArrAvg = chunkWarmArr.reduce((a, b) => {return a + b;}, 0) / chunkWarmArr.length;
+                
+                    forCoolAndWarm[end50 - 1] = {...forCoolAndWarm[end50 - 1], fiftyYrAnnualAvg: chunkAnnualArrAvg, fiftyYrCoolAvg: chunkCoolArrAvg, fiftyYrWarmAvg: chunkWarmArrAvg};
+                    end50 += 1; start50 += 1;
+                } else {
+                    break;
+                }
+            }
+
+            for (let i = 0; i <= forCoolAndWarm.length - 1; i++) {                
+                if (forCoolAndWarm[end60 - 1]) {
+                    let chunkAnnualArr = forCWAnnualTraversing.slice(start60, end60);
+                    let chunkCoolArr = forCWCoolTraversing.slice(start60, end60);
+                    let chunkWarmArr = forCWWarmTraversing.slice(start60, end60);
+                    let chunkAnnualArrAvg = chunkAnnualArr.reduce((a, b) => {return a + b;}, 0) / chunkAnnualArr.length;
+                    let chunkCoolArrAvg = chunkCoolArr.reduce((a, b) => {return a + b;}, 0) / chunkCoolArr.length;
+                    let chunkWarmArrAvg = chunkWarmArr.reduce((a, b) => {return a + b;}, 0) / chunkWarmArr.length;
+                
+                    forCoolAndWarm[end60 - 1] = {...forCoolAndWarm[end60 - 1], sixtyYrAnnualAvg: chunkAnnualArrAvg, sixtyYrCoolAvg: chunkCoolArrAvg, sixtyYrWarmAvg: chunkWarmArrAvg};
+                    end60 += 1; start60 += 1;
+                } else {
+                    break;
+                }
+            }
+            return await forCoolAndWarm;
+        }
+
+    }
+
+    if (filterControl === 'Cool and Warm' && Object.keys(forCoolAndWarmFilterTable).length) {           
+        getForCoolAndWarmTableData().then((forCoolAndWarmTableData) => {            
+            setCoolAndWarmTableRenderData(forCoolAndWarmTableData);
+        });
+    }
+
+
     let cr = {}, cr2 = {};
     if (cumulativeRain.length && cumulativeRain2.length && analysisYear) {
         cr = cumulativeRain.find((d) => {
@@ -280,10 +408,190 @@ const BootstrapTable = (props) => {
             return a + b;
         }) : 'n/a';
     }  
-
+//for1960Data.since1960PerTenYears
 
     return (
-        as.length ?
+        coolAndWarmTableRenderData.length ?
+        <Aux>
+            <Row>
+                <Col>
+                    <Card>
+                        <Card.Header>
+                            <Card.Title as="h5">Cool and Warm</Card.Title>
+                            <span className="d-block m-t-5"><code>-1</code> means <code>no data recorded</code></span>
+                        </Card.Header>
+                        <Card.Body>
+                            <Table striped responsive className='text-center'>
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Year</th>
+                                    <th>Jan</th>
+                                    <th>Feb</th>
+                                    <th>Mar</th>                                    
+                                    <th>Apr</th>                                    
+                                    <th>May</th>
+                                    <th>Jun</th>
+                                    <th>Jul</th>
+                                    <th>Aug</th>
+                                    <th>Sep</th>
+                                    <th>Oct</th>
+                                    <th>Nov</th>
+                                    <th>Dec</th>
+                                    <th>Annual</th>
+                                    <th>Cool</th>
+                                    <th>Warm</th>
+                                    <th>10 Yr AVG</th>
+                                    <th>20 Yr AVG</th>
+                                    <th>30 Yr AVG</th>
+                                    <th>40 Yr AVG</th>
+                                    <th>50 Yr AVG</th>
+                                    <th>60 Yr AVG</th>
+                                    <th style={{backgroundColor: 'blue'}}>Cool 10</th>
+                                    <th style={{backgroundColor: 'blue'}}>Cool 20</th>
+                                    <th style={{backgroundColor: 'blue'}}>Cool 30</th>
+                                    <th style={{backgroundColor: 'blue'}}>Cool 40</th>
+                                    <th style={{backgroundColor: 'blue'}}>Cool 50</th>
+                                    <th style={{backgroundColor: 'blue'}}>Cool 60</th>
+                                    <th style={{backgroundColor: 'orange'}}>Warm 10</th>
+                                    <th style={{backgroundColor: 'orange'}}>Warm 20</th>
+                                    <th style={{backgroundColor: 'orange'}}>Warm 30</th>
+                                    <th style={{backgroundColor: 'orange'}}>Warm 40</th>
+                                    <th style={{backgroundColor: 'orange'}}>Warm 50</th>
+                                    <th style={{backgroundColor: 'orange'}}>Warm 60</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {coolAndWarmTableRenderData.map((d, i) => (<tr key={i}>
+                                    <th scope="row">{i + 1}</th>
+                                    <td>{d.year || 'n/a'}</td>
+                                    <td>{d.jan ? Number(d.jan).toFixed(2) : '-'}</td>
+                                    <td>{d.feb ? Number(d.feb).toFixed(2) : '-'}</td>
+                                    <td>{d.mar ? Number(d.mar).toFixed(2) : '-'}</td>                                    
+                                    <td>{d.apr ? Number(d.apr).toFixed(2) : '-'}</td>                                    
+                                    <td>{d.may ? Number(d.may).toFixed(2) : '-'}</td>
+                                    <td>{d.jun ? Number(d.jun).toFixed(2) : '-'}</td>
+                                    <td>{d.jul ? Number(d.jul).toFixed(2) : '-'}</td>
+                                    <td>{d.aug ? Number(d.aug).toFixed(2) : '-'}</td>
+                                    <td>{d.sep ? Number(d.sep).toFixed(2) : '-'}</td>
+                                    <td>{d.oct ? Number(d.oct).toFixed(2) : '-'}</td>
+                                    <td>{d.nov ? Number(d.nov).toFixed(2) : '-'}</td>
+                                    <td>{d.dec ? Number(d.dec).toFixed(2) : '-'}</td>
+                                    <td>{d.annual ? Number(d.annual).toFixed(2) : '-'}</td>
+                                    <td>{d.cool ? Number(d.cool).toFixed(2) : '-'}</td>
+                                    <td>{d.warm ? Number(d.warm).toFixed(2) : '-'}</td>
+                                    <td>{d.tenYrAnnualAvg ? Number(d.tenYrAnnualAvg).toFixed(2) : '-'}</td>
+                                    <td>{d.twentyYrAnnualAvg ? Number(d.twentyYrAnnualAvg).toFixed(2) : '-'}</td>
+                                    <td>{d.thirtyYrAnnualAvg ? Number(d.thirtyYrAnnualAvg).toFixed(2) : '-'}</td>
+                                    <td>{d.fortyYrAnnualAvg ? Number(d.fortyYrAnnualAvg).toFixed(2) : '-'}</td>
+                                    <td>{d.fiftyYrAnnualAvg ? Number(d.fiftyYrAnnualAvg).toFixed(2) : '-'}</td>
+                                    <td>{d.sixtyYrAnnualAvg ? Number(d.sixtyYrAnnualAvg).toFixed(2) : '-'}</td>
+                                    <td>{d.tenYrAnnualAvg ? Number(d.tenYrAnnualAvg).toFixed(2) : '-'}</td>
+                                    <td>{d.twentyYrCoolAvg ? Number(d.twentyYrCoolAvg).toFixed(2) : '-'}</td>
+                                    <td>{d.thirtyYrCoolAvg ? Number(d.thirtyYrCoolAvg).toFixed(2) : '-'}</td>
+                                    <td>{d.fortyYrCoolAvg ? Number(d.fortyYrCoolAvg).toFixed(2) : '-'}</td>
+                                    <td>{d.fiftyYrCoolAvg ? Number(d.fiftyYrCoolAvg).toFixed(2) : '-'}</td>
+                                    <td>{d.sixtyYrCoolAvg ? Number(d.sixtyYrCoolAvg).toFixed(2) : '-'}</td>
+                                    <td>{d.tenYrAnnualAvg ? Number(d.tenYrAnnualAvg).toFixed(2) : '-'}</td>
+                                    <td>{d.twentyYrWarmAvg ? Number(d.twentyYrWarmAvg).toFixed(2) : '-'}</td>
+                                    <td>{d.thirtyYrWarmAvg ? Number(d.thirtyYrWarmAvg).toFixed(2) : '-'}</td>
+                                    <td>{d.fortyYrWarmAvg ? Number(d.fortyYrWarmAvg).toFixed(2) : '-'}</td>
+                                    <td>{d.fiftyYrWarmAvg ? Number(d.fiftyYrWarmAvg).toFixed(2) : '-'}</td>
+                                    <td>{d.sixtyYrWarmAvg ? Number(d.sixtyYrWarmAvg).toFixed(2) : '-'}</td>
+                                </tr>))}                                
+                                </tbody>
+                            </Table>
+                        </Card.Body>
+                    </Card>
+                </Col>
+            </Row>
+        </Aux>
+        : for1960Data && Object.keys(for1960Data).length && for1960Data.since1960PerTenYears ?        
+        <Aux>
+            <Row>
+                <Col xl={4} md={4}>
+                    <Card>
+                        <Card.Header>
+                            <Card.Title as="h5">Since 1960</Card.Title>
+                            <span className="d-block m-t-5"><code>-1</code> means <code>no data recorded</code></span>
+                        </Card.Header>
+                        <Card.Body>
+                            <Table striped responsive className='text-center'>
+                                <thead>
+                                <tr>                                    
+                                    <th>Year</th>                                    
+                                    <th>Monthly Precipitation <br /> Total (millimetres)</th>                                                                        
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {since1960AnnualTable.map((d, i) => (Number(d.year) >= 1960 && <tr key={i}>
+                                    <th scope="row">{d.year}</th>                                    
+                                    <td>{d.rainfall_amount}</td>                                                                        
+                                </tr>))}                                
+                                </tbody>
+                            </Table>
+                        </Card.Body>
+                    </Card>
+                </Col>
+                <Col xl={8} md={8}>
+                    <Card>
+                        <Card.Header>
+                            <Card.Title as="h5">Since 1960 #2</Card.Title>
+                            <span className="d-block m-t-5"><code>-1</code> means <code>no data recorded</code></span>
+                        </Card.Header>
+                        <Card.Body>
+                            <Table striped responsive>
+                                <thead>
+                                <tr>
+                                    <th>#</th>                                    
+                                    <th style={{visibility: 'hidden'}}>Year</th>                                    
+                                    <th>10 Year</th> 
+                                    <th>Annual Eq</th>
+                                    <th>Vs AVG</th>
+                                    <th style={{visibility: 'hidden'}}>G/F</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {for1960Data.since1960PerTenYears.map((d, i) => (<tr key={i}>
+                                    <th scope="row">{i + 1}</th>
+                                    <td>{d.year}</td>
+                                    <td>{Number(d.e).toFixed(2)}</td>
+                                    <td>{Number(d.f).toFixed(2)}</td>
+                                    <td>{Number(d.f - for1960Data.fAvg).toFixed(2)}</td>
+                                    <td>{Number((d.f - for1960Data.fAvg) / for1960Data.fAvg).toFixed(2)}</td>                                                                        
+                                </tr>))}   
+                                <tr>
+                                    <td style={{visibility: 'hidden'}}>#</td>
+                                    <td>AVG</td>
+                                    <td>{Number(for1960Data.eAvg).toFixed(2)}</td>
+                                    <td>{Number(for1960Data.fAvg).toFixed(2)}</td>                                    
+                                </tr>
+                                <tr><td style={{visibility: 'hidden'}}>table divider</td></tr>
+                                <tr>
+                                    <td style={{visibility: 'hidden'}}>#</td>
+                                    <td>1960s vs 2010s</td>  
+                                    <td>{Number(for1960Data.e10).toFixed(2) || 'n/a'}</td>  
+                                    <td>{Number(for1960Data.f10).toFixed(2) || 'n/a'}</td>
+                                </tr>                             
+                                <tr><td style={{visibility: 'hidden'}}>table divider</td></tr>
+                                <tr>
+                                    <td style={{visibility: 'hidden'}}>#</td>
+                                    <td>1960 vs 2019</td>
+                                    <td>{Number(for1960Data.e12).toFixed(2) || 'n/a'}</td>
+                                </tr>
+                                <tr>
+                                    <td style={{visibility: 'hidden'}}>#</td>
+                                    <td style={{visibility: 'hidden'}}></td>
+                                    <td>{Number(for1960Data.e13).toFixed(2) || 'n/a'}</td>
+                                </tr>
+                                </tbody>
+                            </Table>
+                        </Card.Body>
+                    </Card>
+                </Col>
+            </Row>
+        </Aux>
+        : as.length ?
         <Aux>
             <Row>
                 <Col xl={12} md={12}>
@@ -2214,7 +2522,7 @@ const BootstrapTable = (props) => {
                 </Col>
             </Row>
         </Aux>
-         : seasonal.length ? 
+        : seasonal.length ? 
          <Aux>
              <Row>
                  <Col>
@@ -2293,7 +2601,7 @@ const BootstrapTable = (props) => {
                  </Col>
              </Row>
          </Aux>
-          : seasonalSort.length ? 
+        : seasonalSort.length ? 
           <Aux>
               <Row>
                   <Col>

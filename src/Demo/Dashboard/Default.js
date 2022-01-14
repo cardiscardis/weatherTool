@@ -9,6 +9,7 @@ import UserService from "../services/user.service.js"
 import Loader from '../../App/layout/Loader'
 import LineChart from "../Charts/Nvd3Chart/LineChart";
 import MultiBarChart from "../Charts/Nvd3Chart/MultiBarChart";
+import Mercator from '../Charts/Mercator';
 //import TiltedBarChart from "../Charts/Nvd3Chart/MultiBarHorizontalChart";
 //import PieChart from "../Charts/Nvd3Chart/PieBasicChart";
 import Aux from "../../hoc/_Aux";
@@ -125,7 +126,8 @@ const Dashboard = (props) => {
             
                 await UserService.getUserBoard().then(async () => {
                     
-                    await UserService.getCodes().then(async (response) => {                        
+                    await UserService.getCodes().then(async (response) => {                                                
+                        console.log(response.data);
                         codes = response.data;
                         return codes;
                     }, (e) => {
@@ -167,19 +169,24 @@ const Dashboard = (props) => {
     
                     //set location
                     if (filterControl === 'Location Tool' || filterControl === 'Overview') {
+                        //set station location
                         let location = codes.find((a) => {
                             return a.code === queryCode;
-                        });
-                        mainData.location = location.station;
+                        });                                            
+                        //set station details
+                        mainData.locationData = location || {};
+                        mainData.location = location.station || 'n/a';
+                        mainData.stationState = location.sub_station || 'n/a';
+                        mainData.district = location.District || 'n/a';
+                        mainData.stationHeight = location.StationHeight || 'n/a'; 
+                        mainData.open = location.Status || 'n/a';
+                        mainData.latitude = location.Latitude || 'n/a';
+                        mainData.longitude = location.Longitude || 'n/a';
                     }                    
                                         
-                    //set station state
-                    if (filterControl === 'Overview') {
-                        let stationState = codes.find((a) => {
-                            return a.state === queryCode;
-                        });
-                        if (stationState) {mainData.stationState = stationState;} else {mainData.stationState = 'n/a';}
-                    }
+                    
+                        
+                    
     
                     //set year opened
                     if (filterControl === 'Overview' || filterControl === 'Location Tool') {
@@ -287,6 +294,8 @@ const Dashboard = (props) => {
     
                     let forMonthlyTable = [], forAnnualTable = [], forMonthlyFilterTable = [], forAveragesFilterTable = [], forOJIndexTable = [];
                     let forAveragesLineChart = [], winterStartDecRainAvg = {};
+
+                    let forCWAnnualTraversing = [], forCWCoolTraversing = [], forCWWarmTraversing = [], forCoolAndWarmFilterTable = [];
     
                     //five year basis array.
                     let fiveYearsArr = [];                    
@@ -311,6 +320,9 @@ const Dashboard = (props) => {
                     let forAvg10_sep = [], forAvg10_oct = [], forAvg10_nov = [], forAvg10_dec = [], forAvg10_annual = [], forAvg10_q1 = [], forAvg10_q2 = [], forAvg10_q3 = [];
                     let forAvg10_q4 = [], forAvg10_h1 = [], forAvg10_h2 = [], forAvg10_winter = [], forAvg10_spring = [], forAvg10_summer = [], forAvg10_autumn = [];
                     let avgPerTenYears = [];
+                    // 10 years interval from 1960
+                    let forSince1960 = [], since1960tenYearStart = '1960', since1960tenYearStart2 = `${year1[0][0]}${year1[0][1]}${year1[0][2]}0`;
+                    let since1960PerTenYears = [], eVals = [], fVals = [], since1960_basis10 = String(Number(since1960tenYearStart2) + 10), b2 = 'n/a', b61 = 'n/a';
                     //50 years interval average per month per year (for averages filter table 2 contents).
                     let forAvg50_jan = [], forAvg50_feb = [], forAvg50_mar = [], forAvg50_apr = [], forAvg50_may = [], forAvg50_jun = [], forAvg50_jul = [], forAvg50_aug = [];
                     let forAvg50_sep = [], forAvg50_oct = [], forAvg50_nov = [], forAvg50_dec = [], forAvg50_annual = [], forAvg50_q1 = [], forAvg50_q2 = [], forAvg50_q3 = [];
@@ -823,7 +835,7 @@ const Dashboard = (props) => {
                                     highestDryNodConsec = {};
                                     //------------------------------------------------------------------------
                                     //month continues...for last day of month
-                                    monthArray.push(Number(arrOfRainfall[k]));                                    
+                                    monthArray.push(Number(arrOfRainfall[k]));
                                     
                                     //Get max on the last day of month
                                     let maxOfMonthlyRain = monthArray.reduce(function(a, b) {
@@ -1059,7 +1071,115 @@ const Dashboard = (props) => {
                         } else {
                             from = Number(year1[i]) - 1
                         }
-    
+
+                        //------------------------------------
+
+                        //since 1960
+                        if (filterControl === 'Since 1960') {
+                            if (Number(year1[i]) === 1960) {                                
+                                b2 = Number(sumOfRainfall);
+                            }
+
+                            if (Number(year1[i]) === 2019) {
+                                b61 = Number(sumOfRainfall);
+                            }
+                            
+                            if (Number(year1[0]) <= 1960 && Number(year1[i]) >= 1960 && Number(year1[i]) <= 2019) {
+                                
+                                //calculate 10 years interval/basis (from 1960).
+                                if (Number(year1[i]) <= Number(since1960tenYearStart) + 9) {                                    
+                                    let ann = Number(sumOfRainfall) || 0;
+
+                                    forSince1960.push(ann || 0);
+                                    if (Number(year1[i]) === Number(since1960tenYearStart) + 9) {                                        
+                                       // let since1960tenYearEnd = year1[since1960_basis10 - 1];
+                                        //let since1960tenYearStartAndEnd = since1960tenYearStart + '-' + since1960tenYearEnd;
+                                        let e = forSince1960.reduce(function(a, b) {return a + b;}, 0);
+                                        let f = e/10;
+                                        since1960PerTenYears.push({//07067823134
+                                            year: since1960tenYearStart + 's',
+                                            e,
+                                            f
+                                        });
+
+                                        eVals.push(e);
+                                        fVals.push(f);
+
+                                        forSince1960 = [];
+        
+                                        since1960tenYearStart = String(Number(since1960tenYearStart) + 10);
+                                        //since1960_basis10 += 10;     
+                                    }
+                                }                                 
+                            } else if (Number(year1[0]) > 1960 && Number(year1[i] <= 2019)) {
+                                if (Number(year1[i]) <= Number(since1960_basis10) - 1) {
+                                    let ann = Number(sumOfRainfall) || 0;
+
+                                    forSince1960.push(ann || 0);
+
+                                    //calculate 10 years interval/basis (for 1960)
+                                    if (Number(year1[i]) === Number(since1960_basis10) - 1) {
+                                        let e = forSince1960.reduce(function(a, b) {return a + b;}, 0);
+                                        let f = e/10;
+                                        since1960PerTenYears.push({
+                                            year: since1960tenYearStart2 + 's',
+                                            e,
+                                            f
+                                        });
+
+                                        eVals.push(e);
+                                        fVals.push(f);
+
+                                        forSince1960 = [];
+        
+                                        since1960tenYearStart2 = since1960_basis10;
+                                        since1960_basis10 = String(Number(since1960_basis10) + 10);
+                                    }                                    
+                                }                                
+                            } 
+                        }
+
+                        //--------------------------------------
+
+                        if (filterControl === 'Cool and Warm') {
+                            //for printing
+                            let jan = janDecRainPerYear.Jan !== undefined ? Number(janDecRainPerYear.Jan) : 'n/a';
+                            let feb = janDecRainPerYear.Feb !== undefined ? Number(janDecRainPerYear.Feb) : 'n/a';
+                            let mar = janDecRainPerYear.Mar !== undefined ? Number(janDecRainPerYear.Mar) : 'n/a';
+                            let apr = janDecRainPerYear.Apr !== undefined ? Number(janDecRainPerYear.Apr) : 'n/a';                            
+                            let may = janDecRainPerYear.May !== undefined ? Number(janDecRainPerYear.May) : 'n/a';
+                            let jun = janDecRainPerYear.Jun !== undefined ? Number(janDecRainPerYear.Jun) : 'n/a';
+                            let jul = janDecRainPerYear.Jul !== undefined ? Number(janDecRainPerYear.Jul) : 'n/a';
+                            let aug = janDecRainPerYear.Aug !== undefined ? Number(janDecRainPerYear.Aug) : 'n/a';
+                            let sep = janDecRainPerYear.Sep !== undefined ? Number(janDecRainPerYear.Sep) : 'n/a';
+                            let oct = janDecRainPerYear.Oct !== undefined ? Number(janDecRainPerYear.Oct) : 'n/a';
+                            let nov = janDecRainPerYear.Nov !== undefined ? Number(janDecRainPerYear.Nov) : 'n/a';
+                            let dec = janDecRainPerYear.Dec !== undefined ? Number(janDecRainPerYear.Dec) : 'n/a';
+
+                            //for calculation
+                            let apr2 = apr !== 'n/a' ? apr : 0;
+                            let oct2 = oct !== 'n/a' ? oct : 0;
+                            let nov2 = nov !== 'n/a' ? nov : 0;
+                            let dec2 = dec !== 'n/a' ? dec : 0;
+                            let jan2 = jan !== 'n/a' ? jan : 0;
+                            let mar2 = mar !== 'n/a' ? mar : 0;
+                            let cool = apr2 + oct2;
+                            let warm = nov2 + dec2 + jan2 + mar2;
+
+                            forCoolAndWarmFilterTable.push({
+                                year: [year1[i]], jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec, annual: Number(sumOfRainfall || 0),
+                                cool, warm
+                            });
+                            
+                            forCWAnnualTraversing.push(Number(sumOfRainfall || 0));
+                            forCWCoolTraversing.push(cool);
+                            forCWWarmTraversing.push(warm);
+
+                            mainData.forCoolAndWarmFilterTable = {forCoolAndWarmFilterTable, forCWAnnualTraversing, forCWCoolTraversing, forCWWarmTraversing};
+                        }
+
+                        //------------------------------
+
                         if (filterControl === 'Averages') {
     
                             let ann = janDecRainPerYearAvg.Jan + janDecRainPerYearAvg.Feb + janDecRainPerYearAvg.Mar + janDecRainPerYearAvg.Apr +
@@ -1658,6 +1778,8 @@ const Dashboard = (props) => {
                             forAveragesLineChart.push({x: year1[i], y: sumOfRainfall/arr.length || 0});
                         }
     
+                        //------------------------------
+                        
                         //for monthly, seasonal and H1H2Q1Q4 filter table
                         if (filterControl === 'Monthly Sort' || filterControl === 'Monthly' || filterControl === 'Seasonal' || filterControl === 'Seasonal Sort' ||
                             filterControl === 'H1H2Q1Q4' || filterControl === 'H1H2Q1Q4 Sort' || filterControl === 'OJ Index' || filterControl === 'OJ Index Sort') {
@@ -1749,6 +1871,29 @@ const Dashboard = (props) => {
                         spring2 = [];
                         summer2 = [];
                         autumn2 = [];  
+                    }
+
+                    if (filterControl === 'Since 1960') {
+                        if (forSince1960.length) {                            
+                            let e = forSince1960.reduce(function(a, b) {return a + b;}, 0);
+                            let f = e/10;
+                            since1960PerTenYears.push({
+                                year: Number(year1[0]) <= 1960 ? since1960tenYearStart + 's' : since1960tenYearStart2 + 's',
+                                e,
+                                f
+                            });
+
+                            eVals.push(e);
+                            fVals.push(f);
+                        } 
+                        
+                        let e10 = since1960PerTenYears[0].e - since1960PerTenYears[since1960PerTenYears.length-1].e;
+                        let f10 = e10 / 10;
+                        let eAvg = eVals.reduce(function(a, b) {return a + b;}, 0)/eVals.length;
+                        let fAvg = fVals.reduce(function(a, b) {return a + b;}, 0)/fVals.length;
+                        let e12 = b2-b61;
+                        let e13 = e12/59;
+                        mainData.for1960Data = {since1960PerTenYears, e10, f10, eAvg, fAvg, e12, e13};
                     }
     
                     mainData.avgChart1Winter = avgChart1Winter; mainData.avgChart1Spring = avgChart1Spring; mainData.avgChart1Summer = avgChart1Summer;
@@ -1887,7 +2032,7 @@ const Dashboard = (props) => {
     
                     
                     
-                        //autumn 
+                        //Seasons 
                         if (winter.length) {
                             mainData.winter = winter.reduce(function(a, b) {
                                 return a + b;
@@ -1991,6 +2136,8 @@ const Dashboard = (props) => {
                     <option>OJ Index Sort</option>
                     <option>Daily Analysis</option>
                     <option>Daily Cumulative</option>
+                    <option>Since 1960</option>
+                    <option>Cool and Warm</option>
                 </Form.Control> 
             </Col>
             <Col md={12} xl={12}>
@@ -2103,7 +2250,7 @@ const Dashboard = (props) => {
                 <Loader />
                 <div>
                     <span className="spinner-border spinner-border-sm"></span>
-                    Please wait. Intense Calculation may take a while
+                    Please wait. Intense calculation may take a while
                 </div>
             </Aux>
         : (filterControl === 'Daily Cumulative') ?
@@ -2143,7 +2290,20 @@ const Dashboard = (props) => {
                         }
                     </Col>            
                 </Row>
-            </Aux>  
+            </Aux>
+        : (filterControl === 'Since 1960') ?
+        <Aux>
+            <UserChoiceInput />            
+            <Row>
+                <Col xl={12} md={12}>
+                    <RawDataTable                     
+                        since1960AnnualTable={mainState.forAnnualTable}
+                        for1960Data={mainState.for1960Data}
+                        filterControl={filterControl}
+                    />    
+                </Col>                
+            </Row>
+        </Aux>  
         : (filterControl === 'OJ Index Sort') ?
             <Aux>
                 <Row>
@@ -2292,7 +2452,10 @@ const Dashboard = (props) => {
             <Aux>
                 <UserChoiceInput />            
                 <Row>
-                    <RawDataTable mon={mainState.forMonthlyFilterTable} />
+                    <Col xl={12} md={12}>
+                        <RawDataTable mon={mainState.forMonthlyFilterTable} />
+                    </Col>
+                    
                 </Row>
                 <Row>
                     <Col xl={12} md={12}>
@@ -2304,17 +2467,39 @@ const Dashboard = (props) => {
                         <MultiBarChart monthlyGraphs={mainState.monthlyGraphs} />
                     </Col>
                 </Row>
-            </Aux>  
+            </Aux>
+        : (filterControl === 'Cool and Warm') ?
+        <Aux>
+            <UserChoiceInput />            
+            <Row>
+                <Col xl={12} md={12}>
+                    <RawDataTable forCoolAndWarmFilterTable={mainState.forCoolAndWarmFilterTable} filterControl={filterControl} />
+                </Col>
+                
+            </Row>
+            <Row>
+                <Col xl={12} md={12}>
+                    <LineChart monthlyGraphs={mainState.monthlyGraphs} />
+                </Col>
+            </Row>
+            <Row>
+                <Col xl={12} md={12}>
+                    <MultiBarChart monthlyGraphs={mainState.monthlyGraphs} />
+                </Col>
+            </Row>
+        </Aux>  
         : (filterControl === 'Monthly Sort') ?
             <Aux>
                 <UserChoiceInput />            
                 <Row>
-                    {mainState.forMonthlyFilterTable ? <RawDataTable mon={mainState.forMonthlyFilterTable} /> : (
-                        <div>
-                            <span className="spinner-border spinner-border-sm"></span>
-                            <span> Please wait. Intense computation may take a while...</span>
-                        </div>
+                    <Col xl={12} md={12}>
+                        {mainState.forMonthlyFilterTable ? <RawDataTable mon={mainState.forMonthlyFilterTable} /> : (
+                            <div>
+                                <span className="spinner-border spinner-border-sm"></span>
+                                <span> Please wait. Intense computation may take a while...</span>
+                            </div>
                         )}
+                    </Col>                     
                 </Row>            
                 <Row>
                     <Col xl={12} md={12}>
@@ -2337,10 +2522,10 @@ const Dashboard = (props) => {
             <Aux>        
                 <UserChoiceInput />            
                 <Row>
-                    <Col xl={6}>
+                    <Col xl={12} md={12}>
                         <RawDataTable seasonal={mainState.forMonthlyFilterTable} />
                     </Col>            
-                    <Col xl={4}>                    
+                    <Col xl={12} md={12}>                    
                     {mainState.winterPerYear.length && <MultiBarChart winterPerYear={mainState.winterPerYear} 
                         springPerYear={mainState.springPerYear} summerPerYear={mainState.summerPerYear} 
                         autumnPerYear={mainState.autumnPerYear} />}
@@ -2457,98 +2642,145 @@ const Dashboard = (props) => {
             <Aux>
                 <UserChoiceInput />           
                 <Row>            
-                    <Col md={12} xl={12}>
+                    <Col md={4} xl={4}>
                     <Card>
-                            <Card.Body>
-                                {/*<h6 className='mb-4'>Daily Sales</h6>8*/}
-                                <div className="row d-flex align-items-center">
-                                    
-                                <div className="col-7">
-                                        <h6 className="f-w-300 d-flex align-items-center m-b-0">{/*<i className="feather icon-arrow-up text-c-green f-30 m-r-5"/>*/} Weather Station</h6>
-                                    </div>
-
-                                    <div className="col-5 text-right">
-                                        <p className="m-b-0">{Object.keys(mainState).length ? mainState.location : 'n/a'}</p>
-                                    </div>
-                                    <hr />
-                                    
-                                    <div className="col-7">
-                                        <h6 className="f-w-300 d-flex align-items-center m-b-0">{/*<i className="feather icon-arrow-up text-c-green f-30 m-r-5"/>*/} Source</h6>
-                                    </div>
-
-                                    <div className="col-5 text-right">
-                                        <p className="m-b-0">{Object.keys(mainState).length ? mainState.source ? mainState.source : 'BOM' : 'n/a'}</p>
-                                    </div>
-                                    <hr />
-                                    <div className="col-7">
-                                        <h6 className="f-w-300 d-flex align-items-center m-b-0">{/*<i className="feather icon-arrow-up text-c-green f-30 m-r-5"/>*/} Station Number</h6>
-                                    </div>
-
-                                    <div className="col-5 text-right">
-                                        <p className="m-b-0">{queryCode ? queryCode : 'n/a'}</p>
-                                    </div>
-                                    <hr />
-                                    <div className="col-7">
-                                        <h6 className="f-w-300 d-flex align-items-center m-b-0">{/*<i className="feather icon-arrow-up text-c-green f-30 m-r-5"/>*/} District</h6>
-                                    </div>
-
-                                    <div className="col-5 text-right">
-                                        <p className="m-b-0">{Object.keys(mainState).length ? mainState.district ? mainState.district: 'n/a' : 'n/a'}</p>
-                                    </div>
-                                    <hr />
-                                    <div className="col-7">
-                                        <h6 className="f-w-300 d-flex align-items-center m-b-0">{/*<i className="feather icon-arrow-up text-c-green f-30 m-r-5"/>*/} Station Height</h6>
-                                    </div>
-
-                                    <div className="col-5 text-right">
-                                        <p className="m-b-0">{Object.keys(mainState).length ? mainState.stationHeight ? mainState.stationHeight: 'n/a' : 'n/a'}</p>
-                                    </div>
-                                    <hr />
-                                    <div className="col-7">
-                                        <h6 className="f-w-300 d-flex align-items-center m-b-0">{/*<i className="feather icon-arrow-up text-c-green f-30 m-r-5"/>*/} Year Opened</h6>
-                                    </div>
-
-                                    <div className="col-5 text-right">
-                                        <p className="m-b-0">{Object.keys(mainState).length ? mainState.yearOpened ? mainState.yearOpened: 'n/a' : 'n/a'}</p>
-                                    </div>
-                                    <hr />
-                                    <div className="col-7">
-                                        <h6 className="f-w-300 d-flex align-items-center m-b-0">{/*<i className="feather icon-arrow-up text-c-green f-30 m-r-5"/>*/} Status</h6>
-                                    </div>
-
-                                    <div className="col-5 text-right">
-                                        <p className="m-b-0">{Object.keys(mainState).length ? mainState.open ? mainState.open : 'n/a' : 'n/a'}</p>
-                                    </div>
-                                    <hr />
-                                    <div className="col-7">
-                                        <h6 className="f-w-300 d-flex align-items-center m-b-0">{/*<i className="feather icon-arrow-up text-c-green f-30 m-r-5"/>*/} Operational (Years)</h6>
-                                    </div>
-
-                                    <div className="col-5 text-right">
-                                        <p className="m-b-0">{Object.keys(mainState).length ? mainState.opYears ? mainState.opYears + 1 : 'n/a' : 'n/a'}</p>
-                                    </div>
-                                    <hr />
-                                    <div className="col-7">
-                                        <h6 className="f-w-300 d-flex align-items-center m-b-0">{/*<i className="feather icon-arrow-up text-c-green f-30 m-r-5"/>*/} Latitude (decimal)</h6>
-                                    </div>
-
-                                    <div className="col-5 text-right">
-                                        <p className="m-b-0">{Object.keys(mainState).length ? mainState.latitude ? mainState.latitude : 'n/a' : 'n/a'}</p>
-                                    </div>
-                                    <hr />
-                                    <div className="col-7">
-                                        <h6 className="f-w-300 d-flex align-items-center m-b-0">{/*<i className="feather icon-arrow-up text-c-green f-30 m-r-5"/>*/} Longitude (decimal)</h6>
-                                    </div>
-
-                                    <div className="col-5 text-right">
-                                        <p className="m-b-0">{Object.keys(mainState).length ? mainState.longitude ? mainState.longitude : 'n/a' : 'n/a'}</p>
-                                    </div>
+                        <Card.Body>
+                            {/*<h6 className='mb-4'>Daily Sales</h6>8*/}
+                            <div className="row d-flex align-items-center">
+                                
+                            <div className="col-7">
+                                    <h6 className="f-w-300 d-flex align-items-center m-b-0">{/*<i className="feather icon-arrow-up text-c-green f-30 m-r-5"/>*/} Weather Station</h6>
                                 </div>
-                                {/*<div className="progress m-t-30" style={{height: '7px'}}>
-                                    <div className="progress-bar progress-c-theme" role="progressbar" style={{width: '50%'}} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"/>
-                                </div>*/}
-                            </Card.Body>
-                        </Card>
+
+                                <div className="col-5 text-right">
+                                    <p className="m-b-0">{Object.keys(mainState).length ? mainState.location : 'n/a'}</p>
+                                </div>
+                                <hr />
+                                
+                                <div className="col-7">
+                                    <h6 className="f-w-300 d-flex align-items-center m-b-0">{/*<i className="feather icon-arrow-up text-c-green f-30 m-r-5"/>*/} Source</h6>
+                                </div>
+
+                                <div className="col-5 text-right">
+                                    <p className="m-b-0">{Object.keys(mainState).length ? mainState.source ? mainState.source : 'BOM' : 'n/a'}</p>
+                                </div>
+                                <hr />
+                                <div className="col-7">
+                                    <h6 className="f-w-300 d-flex align-items-center m-b-0">{/*<i className="feather icon-arrow-up text-c-green f-30 m-r-5"/>*/} Station Number</h6>
+                                </div>
+
+                                <div className="col-5 text-right">
+                                    <p className="m-b-0">{queryCode ? queryCode : 'n/a'}</p>
+                                </div>
+                                <hr />
+                                <div className="col-7">
+                                    <h6 className="f-w-300 d-flex align-items-center m-b-0">{/*<i className="feather icon-arrow-up text-c-green f-30 m-r-5"/>*/} District</h6>
+                                </div>
+
+                                <div className="col-5 text-right">
+                                    <p className="m-b-0">{Object.keys(mainState).length ? mainState.district ? mainState.district: 'n/a' : 'n/a'}</p>
+                                </div>
+                                <hr />
+                                <div className="col-7">
+                                    <h6 className="f-w-300 d-flex align-items-center m-b-0">{/*<i className="feather icon-arrow-up text-c-green f-30 m-r-5"/>*/} Station Height</h6>
+                                </div>
+
+                                <div className="col-5 text-right">
+                                    <p className="m-b-0">{Object.keys(mainState).length ? mainState.stationHeight ? mainState.stationHeight: 'n/a' : 'n/a'}</p>
+                                </div>
+                                <hr />
+                                <div className="col-7">
+                                    <h6 className="f-w-300 d-flex align-items-center m-b-0">{/*<i className="feather icon-arrow-up text-c-green f-30 m-r-5"/>*/} Year Opened</h6>
+                                </div>
+
+                                <div className="col-5 text-right">
+                                    <p className="m-b-0">{Object.keys(mainState).length ? mainState.yearOpened ? mainState.yearOpened: 'n/a' : 'n/a'}</p>
+                                </div>
+                                <hr />
+                                <div className="col-7">
+                                    <h6 className="f-w-300 d-flex align-items-center m-b-0">{/*<i className="feather icon-arrow-up text-c-green f-30 m-r-5"/>*/} Status</h6>
+                                </div>
+
+                                <div className="col-5 text-right">
+                                    <p className="m-b-0">{Object.keys(mainState).length ? mainState.open ? mainState.open : 'n/a' : 'n/a'}</p>
+                                </div>
+                                <hr />
+                                <div className="col-7">
+                                    <h6 className="f-w-300 d-flex align-items-center m-b-0">{/*<i className="feather icon-arrow-up text-c-green f-30 m-r-5"/>*/} Operational (Years)</h6>
+                                </div>
+
+                                <div className="col-5 text-right">
+                                    <p className="m-b-0">{Object.keys(mainState).length ? mainState.opYears ? mainState.opYears + 1 : 'n/a' : 'n/a'}</p>
+                                </div>
+                                <hr />
+                                <div className="col-7">
+                                    <h6 className="f-w-300 d-flex align-items-center m-b-0">{/*<i className="feather icon-arrow-up text-c-green f-30 m-r-5"/>*/} Latitude (decimal)</h6>
+                                </div>
+
+                                <div className="col-5 text-right">
+                                    <p className="m-b-0">{Object.keys(mainState).length ? mainState.latitude ? mainState.latitude : 'n/a' : 'n/a'}</p>
+                                </div>
+                                <hr />
+                                <div className="col-7">
+                                    <h6 className="f-w-300 d-flex align-items-center m-b-0">{/*<i className="feather icon-arrow-up text-c-green f-30 m-r-5"/>*/} Longitude (decimal)</h6>
+                                </div>
+
+                                <div className="col-5 text-right">
+                                    <p className="m-b-0">{Object.keys(mainState).length ? mainState.longitude ? mainState.longitude : 'n/a' : 'n/a'}</p>
+                                </div>
+                            </div>
+                            {/*<div className="progress m-t-30" style={{height: '7px'}}>
+                                <div className="progress-bar progress-c-theme" role="progressbar" style={{width: '50%'}} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"/>
+                            </div>*/}
+                        </Card.Body>
+                    </Card>
+                    </Col>
+                    <Col md={8} xl={8}>
+                        <div className='col-12'>                           
+                            <Card className='Recent-Users'>                                
+                                <Card.Body className='px-0 py-2'>
+                                    <Table responsive hover>                                        
+                                        <tbody>
+                                            <tr className="unread">                                                
+                                                <td>
+                                                    <h6 className="mb-1">Site name</h6>
+                                                    <span className="text-muted">{mainState.stationState}</span>
+                                                </td>
+                                                <td>
+                                                    <h6 className="mb-1">Site number</h6>
+                                                    <span className="text-muted">{queryCode}</span>
+                                                </td>
+                                                <td>
+                                                    <h6 className="mb-1">Commenced</h6>
+                                                    <span className="text-muted">{mainState.yearOpened}</span>
+                                                </td>
+                                            </tr>
+                                            <tr className="unread">                                                
+                                                <td>
+                                                    <h6 className="mb-1">Latitude</h6>
+                                                    <span className="text-muted">{mainState.latitude}</span>
+                                                </td>
+                                                <td>
+                                                    <h6 className="mb-1">Longitude</h6>
+                                                    <span className="text-muted">{mainState.longitude}</span>
+                                                </td>
+                                                <td>
+                                                    <h6 className="mb-1">Elevation</h6>
+                                                    <span className="text-muted">{mainState.stationHeight}</span>
+                                                </td>
+                                                <td>
+                                                    <h6 className="mb-1">Operational Status</h6>
+                                                    <span className="text-muted">{mainState.open}</span>
+                                                </td>
+                                            </tr>                                                                                                                  
+                                        </tbody>
+                                    </Table>
+                                </Card.Body>
+                            </Card>                                                   
+                        </div>
+                        <div className='col-12'>
+                            <Mercator locationData={mainState.locationData} />
+                        </div>                        
                     </Col>
                 </Row>
             </Aux> 
@@ -2574,7 +2806,7 @@ const Dashboard = (props) => {
                                     </div>
 
                                     <div className="col-5 text-right">
-                                        <p className="m-b-0">{Object.keys(mainState).length ? mainState.stationState : 'n/a'}</p>
+                                        <p className="m-b-0">{Object.keys(mainState).length && mainState.district}</p>
                                     </div>
                                     <hr />
                                     <div className="col-7">
@@ -2731,7 +2963,7 @@ const Dashboard = (props) => {
                         </Card>
                     </Col>
                     <Col md={6} xl={4}>
-                    <Card className='Recent-Users'>
+                        <Card className='Recent-Users'>
                             {/*<Card.Header>
                                 <Card.Title as='h5'>Recent Users</Card.Title>
                             </Card.Header>*/}
@@ -3006,15 +3238,15 @@ const Dashboard = (props) => {
                                 </Table>
                             </Card.Body>
                         </Card>
-                        </Col>
+                    </Col>
                     <Col md={12} xl={5}>
-                    <Card>
-                            <Card.Header>
-                                <Card.Title as="h5">Line Chart</Card.Title>
-                            </Card.Header>
-                            <Card.Body>
-                                <LineChart data={mainState.lineChartData} m={'Annual'} />
-                            </Card.Body>
+                        <Card>
+                                <Card.Header>
+                                    <Card.Title as="h5">Line Chart</Card.Title>
+                                </Card.Header>
+                                <Card.Body>
+                                    <LineChart data={mainState.lineChartData} m={'Annual'} />
+                                </Card.Body>
                         </Card>                    
                     </Col>
                     {/*<Col md={6} xl={8}>                        

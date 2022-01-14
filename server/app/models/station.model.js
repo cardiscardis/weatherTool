@@ -5,7 +5,28 @@ module.exports = (sequelize, Sequelize) => {
       },
       sub_station: {
         type: Sequelize.STRING
+      },      
+      /*Latitude: {
+        type: Sequelize.STRING
       },
+      Longitude: {
+        type: Sequelize.STRING
+      },      
+      District: {
+        type: Sequelize.STRING
+      },
+      StationHeight: {
+        type: Sequelize.STRING
+      },
+      Status: {
+        type: Sequelize.STRING
+      },
+      YearOpened: {
+        type: Sequelize.STRING
+      },
+      GPSCoordinates: {
+        type: Sequelize.STRING
+      },*/
       code: {
         type: Sequelize.STRING
       }
@@ -13,6 +34,7 @@ module.exports = (sequelize, Sequelize) => {
         tableName: 'station',
         timestamps: false
     });
-  
+
+    Station.removeAttribute('id');
     return Station;
   };

@@ -49,11 +49,8 @@ const BootstrapTable = (props) => {
     let filterControl = props.filterControl || '';    
     let since1960AnnualTable = props.since1960AnnualTable;
     let for1960Data = props.for1960Data;
-    let forCoolAndWarmFilterTable = props.forCoolAndWarmFilterTable || {};        
-
-
     
-    const [ coolAndWarmTableRenderData, setCoolAndWarmTableRenderData ] = useState([]);
+    const [ coolAndWarmRenderData, setCoolAndWarmRenderData ] = useState({});
     const [ annualSortControl1, setAnnualSortControl1 ] = useState('Select Year');
     const [ annualSortControl2, setAnnualSortControl2 ] = useState('Select Year');    
     const [ as, setAs ] = useState(annualSort);
@@ -61,9 +58,9 @@ const BootstrapTable = (props) => {
     const [ annualAvg2, setAnnualAvg2 ] = useState([]);
     const [ obj, setObj ] = useState([]);
     const [ annualSortHideProp, setAnnualSortHideProp ] = useState(false);
-
-
-     const onChange = (e) => {
+    
+    
+    const onChange = (e) => {
 //         e.stopPropagation();
         if (e.target.name === 'annualSortControl1') {
             if (e.target.value > annualSortControl2) {
@@ -78,9 +75,9 @@ const BootstrapTable = (props) => {
                 setAnnualSortControl2(e.target.value); 
             }
         }
-     } 
+    } 
      
-     const onClick = (e) => {
+    const onClick = (e) => {
         //sorted average        
         
         let annualAvg3 = [];
@@ -151,7 +148,7 @@ const BootstrapTable = (props) => {
         } else {
             alert('Error! it may be that you have not selected a year range');
         }
-    }   
+    }
 
 
     const UserChoiceInput = () => (
@@ -181,8 +178,21 @@ const BootstrapTable = (props) => {
     )
 
 
-    async function getForCoolAndWarmTableData() {
+    React.useEffect(() => {
+        let forCoolAndWarmFilterTable = props.forCoolAndWarmFilterTable || {};
+        let forCoolAndWarmFilterChart1 = {}, forCoolAndWarmFilterChart2 = {};
+
+        //for graph
+        let coolAndWarm_annualAvg_10 = [], coolAndWarm_coolAvg_10 = [], coolAndWarm_warmAvg_10 = [];
+        let coolAndWarm_annualAvg_20 = [], coolAndWarm_coolAvg_20 = [], coolAndWarm_warmAvg_20 = []; 
+        let coolAndWarm_annualAvg_30 = [], coolAndWarm_coolAvg_30 = [], coolAndWarm_warmAvg_30 = []; 
+        let coolAndWarm_annualAvg_40 = [], coolAndWarm_coolAvg_40 = [], coolAndWarm_warmAvg_40 = []; 
+        let coolAndWarm_annualAvg_50 = [], coolAndWarm_coolAvg_50 = [], coolAndWarm_warmAvg_50 = [];
+        let coolAndWarm_annualAvg_60 = [], coolAndWarm_coolAvg_60 = [], coolAndWarm_warmAvg_60 = [];
+
+        async function getForCoolAndWarmTableData() {
         let forCoolAndWarm = forCoolAndWarmFilterTable['forCoolAndWarmFilterTable'];
+        //console.log(forCoolAndWarm);
         let forCWAnnualTraversing = forCoolAndWarmFilterTable.forCWAnnualTraversing;
         let forCWCoolTraversing = forCoolAndWarmFilterTable.forCWCoolTraversing;
         let forCWWarmTraversing = forCoolAndWarmFilterTable.forCWWarmTraversing;
@@ -195,7 +205,7 @@ const BootstrapTable = (props) => {
             let start50 = 1; let end50 = 51;
             let start60 = 1; let end60 = 61;
 
-            for (let i = 0; i <= forCoolAndWarm.length - 1; i++) {                
+            for (let i = 0; i <= forCoolAndWarm.length - 1; i++) {
                 if (forCoolAndWarm[end10 - 1]) {
                     let chunkAnnualArr = forCWAnnualTraversing.slice(start10, end10);
                     let chunkCoolArr = forCWCoolTraversing.slice(start10, end10);
@@ -203,15 +213,19 @@ const BootstrapTable = (props) => {
                     let chunkAnnualArrAvg = chunkAnnualArr.reduce((a, b) => {return a + b;}, 0) / chunkAnnualArr.length;
                     let chunkCoolArrAvg = chunkCoolArr.reduce((a, b) => {return a + b;}, 0) / chunkCoolArr.length;
                     let chunkWarmArrAvg = chunkWarmArr.reduce((a, b) => {return a + b;}, 0) / chunkWarmArr.length;
-                
-                    forCoolAndWarm[end10 - 1] = {...forCoolAndWarm[end10 - 1], tenYrAnnualAvg: chunkAnnualArrAvg, tenYrCoolAvg: chunkCoolArrAvg, tenYrWarmAvg: chunkWarmArrAvg};                    
+                    //for table
+                    forCoolAndWarm[end10 - 1] = {...forCoolAndWarm[end10 - 1], tenYrAnnualAvg: chunkAnnualArrAvg, tenYrCoolAvg: chunkCoolArrAvg, tenYrWarmAvg: chunkWarmArrAvg};
+                    //for graph
+                    coolAndWarm_annualAvg_10.push({x: forCoolAndWarm[end10 -1].year[0], y: chunkAnnualArrAvg});
+                    coolAndWarm_coolAvg_10.push({x: forCoolAndWarm[end10 -1].year[0], y: chunkCoolArrAvg});
+                    coolAndWarm_warmAvg_10.push({x: forCoolAndWarm[end10 -1].year[0], y: chunkWarmArrAvg});
                     end10 += 1; start10 += 1;
                 } else {
                     break;
-                }                
+                }
             }
 
-            for (let i = 0; i <= forCoolAndWarm.length -1; i++) {                
+            for (let i = 0; i <= forCoolAndWarm.length -1; i++) {
                 if (forCoolAndWarm[end20 - 1]) {
                     let chunkAnnualArr = forCWAnnualTraversing.slice(start20, end20);
                     let chunkCoolArr = forCWCoolTraversing.slice(start20, end20);
@@ -219,8 +233,12 @@ const BootstrapTable = (props) => {
                     let chunkAnnualArrAvg = chunkAnnualArr.reduce((a, b) => {return a + b;}, 0) / chunkAnnualArr.length;
                     let chunkCoolArrAvg = chunkCoolArr.reduce((a, b) => {return a + b;}, 0) / chunkCoolArr.length;
                     let chunkWarmArrAvg = chunkWarmArr.reduce((a, b) => {return a + b;}, 0) / chunkWarmArr.length;
-                
-                    forCoolAndWarm[end20 - 1] = {...forCoolAndWarm[end20 - 1], twentyYrAnnualAvg: chunkAnnualArrAvg, twentyYrCoolAvg: chunkCoolArrAvg, twentyYrWarmAvg: chunkWarmArrAvg};                    
+                    //for table
+                    forCoolAndWarm[end20 - 1] = {...forCoolAndWarm[end20 - 1], twentyYrAnnualAvg: chunkAnnualArrAvg, twentyYrCoolAvg: chunkCoolArrAvg, twentyYrWarmAvg: chunkWarmArrAvg};
+                    //for graph
+                    coolAndWarm_annualAvg_20.push({x: forCoolAndWarm[end20 - 1].year[0], y: chunkAnnualArrAvg});
+                    coolAndWarm_coolAvg_20.push({x: forCoolAndWarm[end20 - 1].year[0], y: chunkCoolArrAvg});
+                    coolAndWarm_warmAvg_20.push({x: forCoolAndWarm[end20 - 1].year[0], y: chunkWarmArrAvg});
                     end20 += 1; start20 += 1;
                 } else {
                     break;
@@ -235,8 +253,12 @@ const BootstrapTable = (props) => {
                     let chunkAnnualArrAvg = chunkAnnualArr.reduce((a, b) => {return a + b;}, 0) / chunkAnnualArr.length;
                     let chunkCoolArrAvg = chunkCoolArr.reduce((a, b) => {return a + b;}, 0) / chunkCoolArr.length;
                     let chunkWarmArrAvg = chunkWarmArr.reduce((a, b) => {return a + b;}, 0) / chunkWarmArr.length;
-                
+                    //for table
                     forCoolAndWarm[end30 - 1] = {...forCoolAndWarm[end30 - 1], thirtyYrAnnualAvg: chunkAnnualArrAvg, thirtyYrCoolAvg: chunkCoolArrAvg, thirtyYrWarmAvg: chunkWarmArrAvg};
+                    //for graph
+                    coolAndWarm_annualAvg_30.push({x: forCoolAndWarm[end30 - 1].year[0], y: chunkAnnualArrAvg});
+                    coolAndWarm_coolAvg_30.push({x: forCoolAndWarm[end30 - 1].year[0], y: chunkCoolArrAvg});
+                    coolAndWarm_warmAvg_30.push({x: forCoolAndWarm[end30 - 1].year[0], y: chunkWarmArrAvg});
                     end30 += 1; start30 += 1;
                 } else {
                     break;
@@ -251,8 +273,12 @@ const BootstrapTable = (props) => {
                     let chunkAnnualArrAvg = chunkAnnualArr.reduce((a, b) => {return a + b;}, 0) / chunkAnnualArr.length;
                     let chunkCoolArrAvg = chunkCoolArr.reduce((a, b) => {return a + b;}, 0) / chunkCoolArr.length;
                     let chunkWarmArrAvg = chunkWarmArr.reduce((a, b) => {return a + b;}, 0) / chunkWarmArr.length;
-                
+                    //for table
                     forCoolAndWarm[end40 - 1] = {...forCoolAndWarm[end40 - 1], fortyYrAnnualAvg: chunkAnnualArrAvg, fortyYrCoolAvg: chunkCoolArrAvg, fortyYrWarmAvg: chunkWarmArrAvg};
+                    //for graph
+                    coolAndWarm_annualAvg_40.push({x: forCoolAndWarm[end40 - 1].year[0], y: chunkAnnualArrAvg});
+                    coolAndWarm_coolAvg_40.push({x: forCoolAndWarm[end40 - 1].year[0], y: chunkCoolArrAvg});
+                    coolAndWarm_warmAvg_40.push({x: forCoolAndWarm[end40 - 1].year[0], y: chunkWarmArrAvg});
                     end40 += 1; start40 += 1;
                 } else {
                     break;
@@ -267,8 +293,12 @@ const BootstrapTable = (props) => {
                     let chunkAnnualArrAvg = chunkAnnualArr.reduce((a, b) => {return a + b;}, 0) / chunkAnnualArr.length;
                     let chunkCoolArrAvg = chunkCoolArr.reduce((a, b) => {return a + b;}, 0) / chunkCoolArr.length;
                     let chunkWarmArrAvg = chunkWarmArr.reduce((a, b) => {return a + b;}, 0) / chunkWarmArr.length;
-                
+                    //for table
                     forCoolAndWarm[end50 - 1] = {...forCoolAndWarm[end50 - 1], fiftyYrAnnualAvg: chunkAnnualArrAvg, fiftyYrCoolAvg: chunkCoolArrAvg, fiftyYrWarmAvg: chunkWarmArrAvg};
+                    //for graph
+                    coolAndWarm_annualAvg_50.push({x: forCoolAndWarm[end50 - 1].year[0], y: chunkAnnualArrAvg});
+                    coolAndWarm_coolAvg_50.push({x: forCoolAndWarm[end50 - 1].year[0], y: chunkCoolArrAvg});
+                    coolAndWarm_warmAvg_50.push({x: forCoolAndWarm[end50 - 1].year[0], y: chunkWarmArrAvg});
                     end50 += 1; start50 += 1;
                 } else {
                     break;
@@ -283,8 +313,12 @@ const BootstrapTable = (props) => {
                     let chunkAnnualArrAvg = chunkAnnualArr.reduce((a, b) => {return a + b;}, 0) / chunkAnnualArr.length;
                     let chunkCoolArrAvg = chunkCoolArr.reduce((a, b) => {return a + b;}, 0) / chunkCoolArr.length;
                     let chunkWarmArrAvg = chunkWarmArr.reduce((a, b) => {return a + b;}, 0) / chunkWarmArr.length;
-                
+                    //for table
                     forCoolAndWarm[end60 - 1] = {...forCoolAndWarm[end60 - 1], sixtyYrAnnualAvg: chunkAnnualArrAvg, sixtyYrCoolAvg: chunkCoolArrAvg, sixtyYrWarmAvg: chunkWarmArrAvg};
+                    //for graph
+                    coolAndWarm_annualAvg_60.push({x: forCoolAndWarm[end60 - 1].year[0], y: chunkAnnualArrAvg});
+                    coolAndWarm_coolAvg_60.push({x: forCoolAndWarm[end60 - 1].year[0], y: chunkCoolArrAvg});
+                    coolAndWarm_warmAvg_60.push({x: forCoolAndWarm[end60 - 1].year[0], y: chunkWarmArrAvg});
                     end60 += 1; start60 += 1;
                 } else {
                     break;
@@ -292,14 +326,24 @@ const BootstrapTable = (props) => {
             }
             return await forCoolAndWarm;
         }
+        }
 
-    }
+        if (filterControl === 'Cool and Warm' && Object.keys(forCoolAndWarmFilterTable).length) {           
+            getForCoolAndWarmTableData().then((forCoolAndWarmTableData) => {
+                forCoolAndWarmFilterChart1 = {coolAndWarm_coolAvg_10, coolAndWarm_coolAvg_20, coolAndWarm_coolAvg_30, coolAndWarm_coolAvg_40, coolAndWarm_coolAvg_50, coolAndWarm_coolAvg_60};
+                forCoolAndWarmFilterChart2 = {
+                                                coolAndWarm_annualAvg_10, coolAndWarm_coolAvg_10, coolAndWarm_warmAvg_10, coolAndWarm_annualAvg_20, coolAndWarm_coolAvg_20,
+                                                coolAndWarm_warmAvg_20, coolAndWarm_annualAvg_30, coolAndWarm_coolAvg_30, coolAndWarm_warmAvg_30, coolAndWarm_annualAvg_40,
+                                                coolAndWarm_coolAvg_40, coolAndWarm_warmAvg_40, coolAndWarm_annualAvg_50, coolAndWarm_coolAvg_50, coolAndWarm_warmAvg_50,
+                                                coolAndWarm_annualAvg_60, coolAndWarm_coolAvg_60, coolAndWarm_warmAvg_60
+                                            }
+                let cawData = {forCoolAndWarmTableData, forCoolAndWarmFilterChart1, forCoolAndWarmFilterChart2};
+                //for table
+                setCoolAndWarmRenderData(cawData);
+            });
+        }
+    }, [ filterControl, props.forCoolAndWarmFilterTable ]);
 
-    if (filterControl === 'Cool and Warm' && Object.keys(forCoolAndWarmFilterTable).length) {           
-        getForCoolAndWarmTableData().then((forCoolAndWarmTableData) => {            
-            setCoolAndWarmTableRenderData(forCoolAndWarmTableData);
-        });
-    }
 
 
     let cr = {}, cr2 = {};
@@ -408,10 +452,12 @@ const BootstrapTable = (props) => {
             return a + b;
         }) : 'n/a';
     }  
-//for1960Data.since1960PerTenYears
 
+
+    console.log(coolAndWarmRenderData.forCoolAndWarmFilterChart1);
+    console.log(coolAndWarmRenderData.forCoolAndWarmFilterChart2);
     return (
-        coolAndWarmTableRenderData.length ?
+        coolAndWarmRenderData.forCoolAndWarmTableData && coolAndWarmRenderData.forCoolAndWarmTableData && coolAndWarmRenderData.forCoolAndWarmTableData.length ?
         <Aux>
             <Row>
                 <Col>
@@ -428,8 +474,8 @@ const BootstrapTable = (props) => {
                                     <th>Year</th>
                                     <th>Jan</th>
                                     <th>Feb</th>
-                                    <th>Mar</th>                                    
-                                    <th>Apr</th>                                    
+                                    <th>Mar</th>      
+                                    <th>Apr</th>
                                     <th>May</th>
                                     <th>Jun</th>
                                     <th>Jul</th>
@@ -462,7 +508,7 @@ const BootstrapTable = (props) => {
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {coolAndWarmTableRenderData.map((d, i) => (<tr key={i}>
+                                {coolAndWarmRenderData.forCoolAndWarmTableData && coolAndWarmRenderData.forCoolAndWarmTableData.map((d, i) => (<tr key={i}>
                                     <th scope="row">{i + 1}</th>
                                     <td>{d.year || 'n/a'}</td>
                                     <td>{d.jan ? Number(d.jan).toFixed(2) : '-'}</td>
@@ -505,6 +551,21 @@ const BootstrapTable = (props) => {
                     </Card>
                 </Col>
             </Row>
+            {coolAndWarmRenderData.forCoolAndWarmFilterChart1 && Object.keys(coolAndWarmRenderData.forCoolAndWarmFilterChart1).length && <Row>
+                <Col xl={12} md={12}>
+                    <LineChart coolAndWarm_chart1={coolAndWarmRenderData.forCoolAndWarmFilterChart1} filterControl={filterControl} />
+                </Col>
+            </Row>}
+            {coolAndWarmRenderData.forCoolAndWarmFilterChart2 && Object.keys(coolAndWarmRenderData.forCoolAndWarmFilterChart2).length && <Row>
+                <Col xl={12} md={12}>
+                    <LineChart coolAndWarm_chart2={coolAndWarmRenderData.forCoolAndWarmFilterChart2} filterControl={filterControl} />
+                </Col>
+            </Row>}
+            {props.forCoolAndWarmFilterChart3 && Object.keys(props.forCoolAndWarmFilterChart3).length && <Row>
+                <Col xl={12} md={12}>
+                <LineChart coolAndWarm_chart3={props.forCoolAndWarmFilterChart3} filterControl={filterControl} />
+                </Col>
+            </Row>}
         </Aux>
         : for1960Data && Object.keys(for1960Data).length && for1960Data.since1960PerTenYears ?        
         <Aux>
@@ -592,7 +653,7 @@ const BootstrapTable = (props) => {
             </Row>
         </Aux>
         : as.length ?
-        <Aux>
+        <Aux>            
             <Row>
                 <Col xl={12} md={12}>
                     <UserChoiceInput />
@@ -603,7 +664,7 @@ const BootstrapTable = (props) => {
                     <Card>
                         <Card.Header>
                             <Card.Title as="h5">Annual Sort Raw Data</Card.Title>
-                            <span className="d-block m-t-5"><code>-1</code> means <code>no data recorded</code></span>
+                            <span className="d-block m-t-5"><code>-1</code> means <code>no data recorded</code></span>                           
                         </Card.Header>
                         <Card.Body>
                             {as.length ? <Table striped responsive className='text-center'>
@@ -640,17 +701,17 @@ const BootstrapTable = (props) => {
                 </Col>            
                 {annualSortHideProp && <Col md={6} xl={6}>                    
                     <LineChart 
-                            l_data={props.lineChartData} 
-                            m={'annual AVG'}
+                        l_data={props.lineChartData} 
+                        m={'annual AVG'}
                     />
                     <LineChart 
-                            data={props.lineChartData}
-                            totalAvg={annualAvg2}                         
+                        data={props.lineChartData}
+                        totalAvg={annualAvg2}                         
                     />
                     <LineChart 
-                            data={props.lineChartData}
-                            totalAvg={annualAvg2}
-                            obj={obj}
+                        data={props.lineChartData}
+                        totalAvg={annualAvg2}
+                        obj={obj}
                     />                    
                 </Col>}
             </Row>
@@ -2568,31 +2629,31 @@ const BootstrapTable = (props) => {
                                  {seasonal.map((d, i) => (<tr key={i}>
                                      <th scope="row">{i + 1}</th>
                                      <td>{d.year}</td>
-                                     <td>{d.jan}</td>
-                                     <td>{d.feb}</td>
-                                     <td>{d.mar}</td>                                    
-                                     <td>{d.apr}</td>                                    
-                                     <td>{d.may}</td>
-                                     <td>{d.jun}</td>
-                                     <td>{d.jul}</td>
-                                     <td>{d.aug}</td>
-                                     <td>{d.sep}</td>
-                                     <td>{d.oct}</td>
-                                     <td>{d.nov}</td>
-                                     <td>{d.dec}</td>
-                                     <td>{d.annual}</td>
+                                     <td>{Number(d.jan).toFixed(2) || -1}</td>
+                                     <td>{Number(d.feb).toFixed(2) || -1}</td>
+                                     <td>{Number(d.mar).toFixed(2) || -1}</td>                                    
+                                     <td>{Number(d.apr).toFixed(2) || -1}</td>                                    
+                                     <td>{Number(d.may).toFixed(2) || -1}</td>
+                                     <td>{Number(d.jun).toFixed(2) || -1}</td>
+                                     <td>{Number(d.jul).toFixed(2) || -1}</td>
+                                     <td>{Number(d.aug).toFixed(2) || -1}</td>
+                                     <td>{Number(d.sep).toFixed(2) || -1}</td>
+                                     <td>{Number(d.oct).toFixed(2) || -1}</td>
+                                     <td>{Number(d.nov).toFixed(2) || -1}</td>
+                                     <td>{Number(d.dec).toFixed(2) || -1}</td>
+                                     <td>{Number(d.annual).toFixed(2) || -1}</td>
                                      <td>{d.from}</td>
                                      <td>{d.to}</td>
-                                     <td>{d.q1}</td>
-                                     <td>{d.q2}</td>
-                                     <td>{d.q3}</td>
-                                     <td>{d.q4}</td>
-                                     <td>{d.h1}</td>
-                                     <td>{d.h2}</td>
-                                     <td>{d.winter}</td>
-                                     <td>{d.spring}</td>
-                                     <td>{d.summer}</td>
-                                     <td>{d.autumn}</td>                                     
+                                     <td>{Number(d.q1).toFixed(2) || -1}</td>
+                                     <td>{Number(d.q2).toFixed(2) || -1}</td>
+                                     <td>{Number(d.q3).toFixed(2) || -1}</td>
+                                     <td>{Number(d.q4).toFixed(2) || -1}</td>
+                                     <td>{Number(d.h1).toFixed(2) || -1}</td>
+                                     <td>{Number(d.h2).toFixed(2) || -1}</td>
+                                     <td>{Number(d.winter).toFixed(2) || -1}</td>
+                                     <td>{Number(d.spring).toFixed(2) || -1}</td>
+                                     <td>{Number(d.summer).toFixed(2) || -1}</td>
+                                     <td>{Number(d.autumn).toFixed(2) || -1}</td>                                     
                                  </tr>))}                                
                                  </tbody>
                              </Table>
@@ -2760,25 +2821,25 @@ const BootstrapTable = (props) => {
                                 {hq.map((d, i) => (<tr key={i}>
                                     <th scope="row">{i + 1}</th>
                                     <td>{d.year}</td>
-                                    <td>{d.jan}</td>
-                                    <td>{d.feb}</td>
-                                    <td>{d.mar}</td>                                    
-                                    <td>{d.apr}</td>                                    
-                                    <td>{d.may}</td>
-                                    <td>{d.jun}</td>
-                                    <td>{d.jul}</td>
-                                    <td>{d.aug}</td>
-                                    <td>{d.sep}</td>
-                                    <td>{d.oct}</td>
-                                    <td>{d.nov}</td>
-                                    <td>{d.dec}</td>
-                                    <td>{d.annual}</td>
-                                    <td>{d.q1}</td>
-                                    <td>{d.q2}</td>
-                                    <td>{d.q3}</td>
-                                    <td>{d.q4}</td>
-                                    <td>{d.h1}</td>
-                                    <td>{d.h2}</td>                                    
+                                    <td>{Number(d.jan).toFixed(2) || -1}</td>
+                                    <td>{Number(d.feb).toFixed(2) || -1}</td>
+                                    <td>{Number(d.mar).toFixed(2) || -1}</td>                                    
+                                    <td>{Number(d.apr).toFixed(2) || -1}</td>                                    
+                                    <td>{Number(d.may).toFixed(2) || -1}</td>
+                                    <td>{Number(d.jun).toFixed(2) || -1}</td>
+                                    <td>{Number(d.jul).toFixed(2) || -1}</td>
+                                    <td>{Number(d.aug).toFixed(2) || -1}</td>
+                                    <td>{Number(d.sep).toFixed(2) || -1}</td>
+                                    <td>{Number(d.oct).toFixed(2) || -1}</td>
+                                    <td>{Number(d.nov).toFixed(2) || -1}</td>
+                                    <td>{Number(d.dec).toFixed(2) || -1}</td>
+                                    <td>{Number(d.annual).toFixed(2) || -1}</td>
+                                    <td>{Number(d.q1).toFixed(2) || -1}</td>
+                                    <td>{Number(d.q2).toFixed(2) || -1}</td>
+                                    <td>{Number(d.q3).toFixed(2) || -1}</td>
+                                    <td>{Number(d.q4).toFixed(2) || -1}</td>
+                                    <td>{Number(d.h1).toFixed(2) || -1}</td>
+                                    <td>{Number(d.h2).toFixed(2) || -1}</td>                                    
                                 </tr>))}                                
                                 </tbody>
                             </Table>
@@ -3074,19 +3135,19 @@ const BootstrapTable = (props) => {
                                 {mon.map((d, i) => (<tr key={i}>
                                     <th scope="row">{i + 1}</th>
                                     <td>{d.year}</td>
-                                    <td>{d.jan}</td>
-                                    <td>{d.feb}</td>
-                                    <td>{d.mar}</td>                                    
-                                    <td>{d.apr}</td>                                    
-                                    <td>{d.may}</td>
-                                    <td>{d.jun}</td>
-                                    <td>{d.jul}</td>
-                                    <td>{d.aug}</td>
-                                    <td>{d.sep}</td>
-                                    <td>{d.oct}</td>
-                                    <td>{d.nov}</td>
-                                    <td>{d.dec}</td>
-                                    <td>{d.annual}</td>
+                                    <td>{Number(d.jan).toFixed(2) || -1}</td>
+                                    <td>{Number(d.feb).toFixed(2) || -1}</td>
+                                    <td>{Number(d.mar).toFixed(2) || -1}</td>                                    
+                                    <td>{Number(d.apr).toFixed(2) || -1}</td>                                    
+                                    <td>{Number(d.may).toFixed(2) || -1}</td>
+                                    <td>{Number(d.jun).toFixed(2) || -1}</td>
+                                    <td>{Number(d.jul).toFixed(2) || -1}</td>
+                                    <td>{Number(d.aug).toFixed(2) || -1}</td>
+                                    <td>{Number(d.sep).toFixed(2) || -1}</td>
+                                    <td>{Number(d.oct).toFixed(2) || -1}</td>
+                                    <td>{Number(d.nov).toFixed(2) || -1}</td>
+                                    <td>{Number(d.dec).toFixed(2) || -1}</td>
+                                    <td>{Number(d.annual).toFixed(2) || -1}</td>
                                 </tr>))}                                
                                 </tbody>
                             </Table>

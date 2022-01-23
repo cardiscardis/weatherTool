@@ -9,6 +9,7 @@ import UserService from "../services/user.service.js"
 import Loader from '../../App/layout/Loader'
 import LineChart from "../Charts/Nvd3Chart/LineChart";
 import MultiBarChart from "../Charts/Nvd3Chart/MultiBarChart";
+import LinePlusBarChart from '../Charts/Nvd3Chart/LinePlusBarChart';
 import Mercator from '../Charts/Mercator';
 //import TiltedBarChart from "../Charts/Nvd3Chart/MultiBarHorizontalChart";
 //import PieChart from "../Charts/Nvd3Chart/PieBasicChart";
@@ -18,12 +19,13 @@ import Aux from "../../hoc/_Aux";
 //import avatar2 from '../../assets/images/user/avatar-2.jpg';
 //import avatar3 from '../../assets/images/user/avatar-3.jpg';
 import RawDataTable from '../Tables/BootstrapTable';
+import SortTable from '../Tables/SortTable';
 //import { setObservableConfig } from 'recompose';
 //import { Slide } from '../slider/index.js';
 //import { data } from 'jquery';
 
 let mouseleave = (event, d) => {
-    $('.nvtooltip').style('opacity', 0);
+    $('.nvtooltip').hide();
 }
 $('.nv-bar').on("mouseleave", mouseleave);
 
@@ -72,6 +74,7 @@ const getMonthlyMaxMonth = (num) => {
     }
     return month;
 }
+
 
 const Dashboard = (props) => {  
         
@@ -296,6 +299,9 @@ const Dashboard = (props) => {
                     let forAveragesLineChart = [], winterStartDecRainAvg = {};
 
                     let forCWAnnualTraversing = [], forCWCoolTraversing = [], forCWWarmTraversing = [], forCoolAndWarmFilterTable = [];
+                    let coolAndWarm_jan = [], coolAndWarm_feb = [], coolAndWarm_mar = [], coolAndWarm_apr = [], coolAndWarm_may = [], coolAndWarm_jun = [];
+                    let coolAndWarm_jul = [], coolAndWarm_aug = [], coolAndWarm_sep = [], coolAndWarm_oct = [], coolAndWarm_nov = [], coolAndWarm_dec = [];
+                    let coolAndWarm_annual = [], coolAndWarm_cool = [], coolAndWarm_warm = [];
     
                     //five year basis array.
                     let fiveYearsArr = [];                    
@@ -1175,7 +1181,23 @@ const Dashboard = (props) => {
                             forCWCoolTraversing.push(cool);
                             forCWWarmTraversing.push(warm);
 
-                            mainData.forCoolAndWarmFilterTable = {forCoolAndWarmFilterTable, forCWAnnualTraversing, forCWCoolTraversing, forCWWarmTraversing};
+                            coolAndWarm_jan.push({x: year1[i], y: jan});
+                            coolAndWarm_feb.push({x: year1[i], y: feb});
+                            coolAndWarm_mar.push({x: year1[i], y: mar});
+                            coolAndWarm_apr.push({x: year1[i], y: apr});
+                            coolAndWarm_may.push({x: year1[i], y: may});
+                            coolAndWarm_jun.push({x: year1[i], y: jun});
+                            coolAndWarm_jul.push({x: year1[i], y: jul});
+                            coolAndWarm_aug.push({x: year1[i], y: aug});
+                            coolAndWarm_sep.push({x: year1[i], y: sep});
+                            coolAndWarm_oct.push({x: year1[i], y: oct});
+                            coolAndWarm_nov.push({x: year1[i], y: nov});
+                            coolAndWarm_dec.push({x: year1[i], y: dec});
+                            coolAndWarm_annual.push({x: year1[i], y: Number(sumOfRainfall || 0)});
+                            coolAndWarm_cool.push({x: year1[i], y: cool});
+                            coolAndWarm_warm.push({x: year1[i], y: warm});
+
+                            mainData.forCoolAndWarmFilterTable = {forCoolAndWarmFilterTable, forCWAnnualTraversing, forCWCoolTraversing, forCWWarmTraversing};                            
                         }
 
                         //------------------------------
@@ -1785,19 +1807,19 @@ const Dashboard = (props) => {
                             filterControl === 'H1H2Q1Q4' || filterControl === 'H1H2Q1Q4 Sort' || filterControl === 'OJ Index' || filterControl === 'OJ Index Sort') {
                             forMonthlyFilterTable.push({
                                 year: [year1[i]], 
-                                jan: Number(janDecRainPerYear.Jan).toFixed(2) || -1, 
-                                feb: Number(janDecRainPerYear.Feb).toFixed(2) || -1,
-                                mar: Number(janDecRainPerYear.Mar).toFixed(2) || -1, 
-                                apr: Number(janDecRainPerYear.Apr).toFixed(2) || -1,
-                                may: Number(janDecRainPerYear.May).toFixed(2) || -1,
-                                jun: Number(janDecRainPerYear.Jun).toFixed(2) || -1,
-                                jul: Number(janDecRainPerYear.Jul).toFixed(2) || -1,
-                                aug: Number(janDecRainPerYear.Aug).toFixed(2) || -1,
-                                sep: Number(janDecRainPerYear.Sep).toFixed(2) || -1,
-                                oct: Number(janDecRainPerYear.Oct).toFixed(2) || -1,
-                                nov: Number(janDecRainPerYear.Nov).toFixed(2) || -1,
-                                dec: Number(janDecRainPerYear.Dec).toFixed(2) || -1,
-                                annual: Number(sumOfRainfall).toFixed(2) || -1,
+                                jan: Number(janDecRainPerYear.Jan) || 0, 
+                                feb: Number(janDecRainPerYear.Feb) || 0,
+                                mar: Number(janDecRainPerYear.Mar) || 0, 
+                                apr: Number(janDecRainPerYear.Apr) || 0,
+                                may: Number(janDecRainPerYear.May) || 0,
+                                jun: Number(janDecRainPerYear.Jun) || 0,
+                                jul: Number(janDecRainPerYear.Jul) || 0,
+                                aug: Number(janDecRainPerYear.Aug) || 0,
+                                sep: Number(janDecRainPerYear.Sep) || 0,
+                                oct: Number(janDecRainPerYear.Oct) || 0,
+                                nov: Number(janDecRainPerYear.Nov) || 0,
+                                dec: Number(janDecRainPerYear.Dec) || 0,
+                                annual: Number(sumOfRainfall) || 0,
                                 from,
                                 to: year1[i],
                                 q1: Number(sumOfQ1PerYear).toFixed(2) || -1,
@@ -1960,7 +1982,7 @@ const Dashboard = (props) => {
                     mainData.winterPerYear = winter_1;
                     mainData.springPerYear = spring_1;
                     mainData.summerPerYear = summer_1;
-                    mainData.autumnPerYear = autumn_1;
+                    mainData.autumnPerYear = autumn_1;                    
                     
                     //per year
                     let sumOfRainYears = Object.keys(sumOfRainfallPerYear);
@@ -2080,6 +2102,12 @@ const Dashboard = (props) => {
                     //lineChart data continues
                     mainData.lineChartData = lineChartData;                    
                     mainData.dataYears = year1;
+
+                    //for cool and warm linechart
+                    mainData.forCoolAndWarmFilterChart3 = {
+                        coolAndWarm_jan, coolAndWarm_feb, coolAndWarm_mar, coolAndWarm_apr, coolAndWarm_may, coolAndWarm_jun, coolAndWarm_jul, 
+                        coolAndWarm_aug, coolAndWarm_sep, coolAndWarm_oct, coolAndWarm_nov, coolAndWarm_dec, coolAndWarm_annual, coolAndWarm_cool, coolAndWarm_warm
+                    }
     
                     console.log(mainData);
                     
@@ -2096,6 +2124,12 @@ const Dashboard = (props) => {
         
     }, [ props, queryCode, weatherType, isFetching, isComputing, filterControl, codesAndData.codes, codesAndData.data ]);//, filterControl, codes, data ]);
 
+    //homes.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+
+   /** const afterSortHandle = (data) => {
+        setMainState({...mainState, data});
+    }*/ 
+   
 
     const UserChoiceInput = () => (
         <>
@@ -2138,6 +2172,7 @@ const Dashboard = (props) => {
                     <option>Daily Cumulative</option>
                     <option>Since 1960</option>
                     <option>Cool and Warm</option>
+                    <option>Test Select Year</option>
                 </Form.Control> 
             </Col>
             <Col md={12} xl={12}>
@@ -2266,6 +2301,7 @@ const Dashboard = (props) => {
                     </Col>                
                 </Row>
             </Aux> 
+
         : (filterControl === 'Daily Analysis') ?
             <Aux>
                 <UserChoiceInput />            
@@ -2303,6 +2339,15 @@ const Dashboard = (props) => {
                     />    
                 </Col>                
             </Row>
+        </Aux> 
+        : (filterControl === 'Test Select Year') ?
+        <Aux>
+            <UserChoiceInput />            
+            <Row>
+                <Col xl={12} md={12}>
+                    <LinePlusBarChart />
+                </Col>                
+            </Row>
         </Aux>  
         : (filterControl === 'OJ Index Sort') ?
             <Aux>
@@ -2312,17 +2357,24 @@ const Dashboard = (props) => {
                     </Col>
                 </Row>                
                 <Row>
-                    <Col xl={12} md={12}>
-                        <RawDataTable oj={mainState.forOJIndexTable} />
-                    </Col>                    
-                </Row>
+                    <Col xl={12} md={12}>                        
+                        <SortTable 
+                            filterControl={filterControl}
+                            ojs={mainState.forOJIndexTable} 
+                            ojiControl={ojiControl}
+                            ojiChartData={mainState.oji}
+                            sjiChartData={mainState.sji}
+                            ajiChartData={mainState.aji}
+                        />                        
+                    </Col>
+                </Row> 
                 <Row>
                     <Col xl={12} md={12}>
                         {ojiControl === 'OJ' && <LineChart data={mainState.oji} m={'OJ'} />}
                         {ojiControl === 'SJ' && <LineChart data={mainState.sji} m={'SJ'} />}
-                        {ojiControl === 'AJ' && <LineChart data={mainState.aji} m={'AJ'}  />}
+                        {ojiControl === 'AJ' && <LineChart data={mainState.aji} m={'AJ'} />}
                     </Col>
-                </Row>
+                </Row>               
             </Aux> 
         : (filterControl === 'OJ Index') ?
             <Aux>
@@ -2452,10 +2504,9 @@ const Dashboard = (props) => {
             <Aux>
                 <UserChoiceInput />            
                 <Row>
-                    <Col xl={12} md={12}>
+                    <Col xl={12} md={12}>                        
                         <RawDataTable mon={mainState.forMonthlyFilterTable} />
-                    </Col>
-                    
+                    </Col>                    
                 </Row>
                 <Row>
                     <Col xl={12} md={12}>
@@ -2473,32 +2524,34 @@ const Dashboard = (props) => {
             <UserChoiceInput />            
             <Row>
                 <Col xl={12} md={12}>
-                    <RawDataTable forCoolAndWarmFilterTable={mainState.forCoolAndWarmFilterTable} filterControl={filterControl} />
+                    <RawDataTable 
+                        forCoolAndWarmFilterTable={mainState.forCoolAndWarmFilterTable}
+                        filterControl={filterControl}
+                        forCoolAndWarmFilterChart3={mainState.forCoolAndWarmFilterChart3}
+                    />
                 </Col>
-                
-            </Row>
-            <Row>
-                <Col xl={12} md={12}>
-                    <LineChart monthlyGraphs={mainState.monthlyGraphs} />
-                </Col>
-            </Row>
-            <Row>
-                <Col xl={12} md={12}>
-                    <MultiBarChart monthlyGraphs={mainState.monthlyGraphs} />
-                </Col>
-            </Row>
+            </Row>            
         </Aux>  
         : (filterControl === 'Monthly Sort') ?
             <Aux>
                 <UserChoiceInput />            
                 <Row>
                     <Col xl={12} md={12}>
-                        {mainState.forMonthlyFilterTable ? <RawDataTable mon={mainState.forMonthlyFilterTable} /> : (
+                        {mainState.forMonthlyFilterTable ? <SortTable 
+                            filterControl={filterControl}
+                            ms={mainState.forMonthlyFilterTable} 
+                        />: (
                             <div>
                                 <span className="spinner-border spinner-border-sm"></span>
                                 <span> Please wait. Intense computation may take a while...</span>
                             </div>
                         )}
+                        {/*mainState.forMonthlyFilterTable ? <RawDataTable mon={mainState.forMonthlyFilterTable} /> : (
+                            <div>
+                                <span className="spinner-border spinner-border-sm"></span>
+                                <span> Please wait. Intense computation may take a while...</span>
+                            </div>
+                        )*/}
                     </Col>                     
                 </Row>            
                 <Row>
@@ -2537,7 +2590,11 @@ const Dashboard = (props) => {
                 <UserChoiceInput />            
                 <Row>                
                     <Col xl={12} md={12}>
-                        <RawDataTable seasonalSort={mainState.forMonthlyFilterTable} />
+                        <SortTable 
+                            filterControl={filterControl}
+                            ss={mainState.forMonthlyFilterTable} 
+                        />
+                        {/*<RawDataTable seasonalSort={mainState.forMonthlyFilterTable} filterControl={filterControl} />*/}
                     </Col>            
                     <Col xl={12} md={12}>
                         {seasonControl === 'Winter' && <MultiBarChart winter={mainState.winterPerYear} />}
@@ -2556,19 +2613,25 @@ const Dashboard = (props) => {
                 </Row>                       
                 <Row>
                     <Col xl={12} md={12}>
-                        <RawDataTable hqSort={mainState.forMonthlyFilterTable} />
+                        <SortTable 
+                            filterControl={filterControl}
+                            hqs={mainState.forMonthlyFilterTable}
+                            setMainState={setMainState} 
+                            mainState={mainState}                                                      
+                        />
+                        {/*<RawDataTable hqSort={mainState.forMonthlyFilterTable} />*/}
                     </Col>                    
-                </Row>         
+                </Row>  
                 <Row>                
                     <Col xl={12} md={12}>
-                        {mainState.q1.length && <MultiBarChart q1={mainState.q1} q2={mainState.q2} q3={mainState.q3} q4={mainState.q4} />}
+                        {mainState && mainState.q1 && mainState.q1.length && <MultiBarChart q1={mainState.q1} q2={mainState.q2} q3={mainState.q3} q4={mainState.q4} />}
                     </Col>
                 </Row>
                 <Row>                
                     <Col xl={12} md={12}>
-                        {mainState.h1.length && <MultiBarChart h1={mainState.h1} h2={mainState.h2} />}
+                        {mainState && mainState.h1 && mainState.h1.length && <MultiBarChart h1={mainState.h1} h2={mainState.h2} />}
                     </Col>
-                </Row>
+                </Row>              
             </Aux>
         : (filterControl === 'H1H2Q1Q4') ?
             <Aux>        

@@ -254,6 +254,7 @@ function getDatum(props) {
             }
         ];
     }  else if (props.winter && props.winter.length) {
+        console.log(props.winter);
         return [
             {
                 values: props.winter,
@@ -298,7 +299,8 @@ function getDatum(props) {
 
 
 
-const MultiBarChart = (props) => {    
+const MultiBarChart = (props) => {   
+    console.log(props.winter);
         const data = getDatum(props);       
         return (data && data.length) ? <NVD3Chart type="multiBarChart" datum={data} x="x" y="y" height={300} showValues groupSpacing={0.2} />: null;
 }

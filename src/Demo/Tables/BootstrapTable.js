@@ -5,6 +5,7 @@ import Aux from "../../hoc/_Aux";
 import PieChart from '../Charts/Nvd3Chart/PieBasicChart'
 import LineChart from '../Charts/Nvd3Chart/LineChart'
 import TiltedBarChart from '../Charts/Nvd3Chart/MultiBarHorizontalChart'
+import LinePlusBarChart from '../Charts/Nvd3Chart/LinePlusBarChart';
 import UcFirst from "../../App/components/UcFirst";
 
 const BootstrapTable = (props) => {        
@@ -49,7 +50,17 @@ const BootstrapTable = (props) => {
     let filterControl = props.filterControl || '';    
     let since1960AnnualTable = props.since1960AnnualTable;
     let for1960Data = props.for1960Data;
+    //let testSelectDataProp = [...props.testSelectData];
+    //console.log(testSelectDataProp)
     
+
+    let testSelectData1 = React.useMemo(() => {return props.testSelectData && props.testSelectData.length ? [...props.testSelectData] : []},[props.testSelectData]);
+    const [ testSelectData, setTestSelectData ] = useState([...testSelectData1]);
+    const [ testSelectControl, setTestSelectControl ] = useState('Select Year');
+    const [ testSelectGraphData, setTestSelectGraphData ] = useState(
+        [{x: testSelectData1.length ? testSelectData1[0].yearFrom : 0, y: 0}, {x: testSelectData1.length ? testSelectData1[(testSelectData1.length-1)].yearFrom : 0, y: props.annualAvg && Number(props.annualAvg)}]
+    );
+
     const [ coolAndWarmRenderData, setCoolAndWarmRenderData ] = useState({});
     const [ annualSortControl1, setAnnualSortControl1 ] = useState('Select Year');
     const [ annualSortControl2, setAnnualSortControl2 ] = useState('Select Year');    
@@ -74,7 +85,35 @@ const BootstrapTable = (props) => {
             } else {
                 setAnnualSortControl2(e.target.value); 
             }
-        }
+        } else if (e.target.name === 'testSelectControl') {            
+
+            if (filterControl === 'Test Select Year' && e.target.value !== 'Select Year') {
+                //let tsd = [...testSelectData1];
+                let barData = [];                
+                let ojData = props.ojiSelect2;
+                let testSelectTableData = testSelectData1 && testSelectData1.length && [...testSelectData1].map((d, i) => {                    
+                    //table data
+                    return {yearFrom: d.yearFrom === e.target.value ? d.yearFrom : '-', oj: d.oj, value: d.yearFrom === e.target.value ? d.oj : '-'}                    
+                });
+                
+                //graph data
+                if (ojData && ojData.length) {
+                    for (let d of ojData) {
+                        const yearSplit = e.target.value.split('-');
+                        if (d.x === `${yearSplit[0]}.${yearSplit[1][0]}${yearSplit[1][1]}`) barData.push({x: d.x, y: Number(d.y)});
+                        else if ((ojData.length - 1)%2 === 0 && d.x === ojData[(ojData.length - 1)/2].x) barData.push({x: d.x, y: Number(props.annualAvg)});
+                        else if ((ojData.length - 1)%2 !== 0 && d.x === ojData[Math.floor((ojData.length - 1)/2)].x) barData.push({x: d.x, y: Number(props.annualAvg)});                        
+                        else  barData.push({x: d.x, y: 0})// = [{x: d.yearFrom, y: Number(d.oj)}, {x: testSelectData1 && testSelectData1.length && testSelectData1[(testSelectData1.length-1)].yearFrom, y: props.annualAvg && Number(props.annualAvg)}];
+                    }                    
+                }    
+                
+                
+                if (testSelectTableData.length) setTestSelectData(testSelectTableData);
+                setTestSelectControl(e.target.value);
+                if (barData && barData.length) setTestSelectGraphData(barData);
+                return false;
+            }
+        } 
     } 
      
     const onClick = (e) => {
@@ -140,20 +179,28 @@ const BootstrapTable = (props) => {
                     setArrOfKeys(avgResult);                        
                     setAnnualAvg2(annualAvg3);                    
                     setAnnualSortHideProp(true);
-                    
+                    return false;                    
                 } else {
                     alert('Error! Wrong Selection!!');
+                    return false;
                 }
             }        
         } else {
             alert('Error! it may be that you have not selected a year range');
-        }
+            return false;
+        }                
     }
 
 
     const UserChoiceInput = () => (
         <>
-        <Row>                   
+        <Row>      
+        {(filterControl === 'Test Select Year') && <Col md={6} xl={12}>
+                <Form.Control size="lg" as="select" className="mb-3 col-12" name='testSelectControl' value={testSelectControl} onChange={(e) => {onChange(e)}}>
+                <option>Select Year</option>
+                {testSelectData1 && testSelectData1.length && [...testSelectData1].map((d, i) => <option key={i}>{d.yearFrom}</option>)}                    
+            </Form.Control>
+            </Col>}             
             {(filterControl === 'Annual Sort') && <Col md={6} xl={4}>{'From:  '}
                 <Form.Control size="lg" as="select" className="mb-3 col-12" name='annualSortControl1' value={annualSortControl1} onChange={(e) => {onChange(e)}}>
                 <option>Select Year</option>
@@ -179,6 +226,7 @@ const BootstrapTable = (props) => {
 
 
     React.useEffect(() => {
+
         let forCoolAndWarmFilterTable = props.forCoolAndWarmFilterTable || {};
         let forCoolAndWarmFilterChart1 = {}, forCoolAndWarmFilterChart2 = {};
 
@@ -326,7 +374,7 @@ const BootstrapTable = (props) => {
             }
             return await forCoolAndWarm;
         }
-        }
+        }        
 
         if (filterControl === 'Cool and Warm' && Object.keys(forCoolAndWarmFilterTable).length) {           
             getForCoolAndWarmTableData().then((forCoolAndWarmTableData) => {
@@ -341,10 +389,9 @@ const BootstrapTable = (props) => {
                 //for table
                 setCoolAndWarmRenderData(cawData);
             });
-        }
+        }        
     }, [ filterControl, props.forCoolAndWarmFilterTable ]);
-
-
+   
 
     let cr = {}, cr2 = {};
     if (cumulativeRain.length && cumulativeRain2.length && analysisYear) {
@@ -453,9 +500,7 @@ const BootstrapTable = (props) => {
         }) : 'n/a';
     }  
 
-
-    console.log(coolAndWarmRenderData.forCoolAndWarmFilterChart1);
-    console.log(coolAndWarmRenderData.forCoolAndWarmFilterChart2);
+    
     return (
         coolAndWarmRenderData.forCoolAndWarmTableData && coolAndWarmRenderData.forCoolAndWarmTableData && coolAndWarmRenderData.forCoolAndWarmTableData.length ?
         <Aux>
@@ -2736,7 +2781,48 @@ const BootstrapTable = (props) => {
                         </Card.Body>
                     </Card>
                 </Col>
-            </Row>
+            </Row>            
+        </Aux>
+        : testSelectData.length ? 
+        <Aux>
+            <Row>
+                <Col xl={12} md={12}>
+                    <UserChoiceInput />            
+                </Col>
+            </Row> 
+            <Row>
+                <Col xl={4} md={4}>
+                    <Card>
+                        <Card.Header>
+                            <Card.Title as="h5">Test Select Year Data</Card.Title>
+                            <span className="d-block m-t-5"><code>-1</code> means <code>no data recorded</code></span>
+                        </Card.Header>
+                        <Card.Body>
+                            <Table striped responsive className='text-center'>
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>From</th>
+                                    <th>OJ</th>
+                                    <th>Selected Value</th>                                   
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {testSelectData && testSelectData.length && testSelectData.map((d, i) => (<tr key={i}>
+                                    <th scope="row">{i + 1}</th>
+                                    <td>{d.yearFrom}</td>
+                                    <td>{Number(d.oj).toFixed(2)}</td>                                    
+                                    <td>{(d.value && d.value !== '-') ? Number(d.value).toFixed(2) : d.value}</td>
+                                </tr>))}                                
+                                </tbody>
+                            </Table>
+                        </Card.Body>
+                    </Card>
+                </Col>
+                {Object.keys(testSelectGraphData).length && <Col xl={8} md={8}>
+                    {testSelectControl !== 'Select Year' && <LinePlusBarChart testSelectGraphData={testSelectGraphData} ojiSelect={[...props.ojiSelect]} />}
+                </Col>}
+            </Row>            
         </Aux>
         : hqSort.length ? 
         <Aux>

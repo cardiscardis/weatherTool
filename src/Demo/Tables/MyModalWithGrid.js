@@ -10,11 +10,12 @@ const SortOrderControlComponent = (props) => {
       <div className="card" style={{height: 'auto', borderBottom: '0.5px solid gray'}}>
         <div className="card-body">                    
           <Row>
-              <Col md={6} xl={6}>{'Sort Data'}
+              <Col md={6} xl={6}>{'Order By:'}
                   <Form.Control size="md" as="select" className="mb-3 col-12" name={props.data && props.data.sortFieldID} value={props.data && props.data.sortFieldVal} onChange={(e) => props.onChange(e)}>
                       {filtercontrol === 'Annual Sort' ?                       
                           <><option>Select</option>
-                          <option>Precipitationr</option></>
+                          <option>year</option>
+                          <option>rainfall_amount</option></>
                       : filtercontrol === 'H1H2Q1Q4 Sort' ? 
                           <><option>Select</option>
                           <option>q1</option>
@@ -55,7 +56,7 @@ const SortOrderControlComponent = (props) => {
                           <option>oj</option></> : null}
                   </Form.Control>
               </Col>
-              <Col md={6} xl={6}>{'Sort Type'}
+              <Col md={6} xl={6}>{'Sort Type:'}
                   <Form.Control size="md" as="select" className="mb-3 col-12" name={props.data && props.data.sortTypeID} value={props.data && props.data.sortTypeVal} onChange={(e) => props.onChange(e)}>
                       <option>Ascending</option>
                       <option>Descending</option>

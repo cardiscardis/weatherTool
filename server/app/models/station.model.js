@@ -6,7 +6,7 @@ module.exports = (sequelize, Sequelize) => {
       sub_station: {
         type: Sequelize.STRING
       },      
-      /*Latitude: {
+      Latitude: {
         type: Sequelize.STRING
       },
       Longitude: {
@@ -26,7 +26,7 @@ module.exports = (sequelize, Sequelize) => {
       },
       GPSCoordinates: {
         type: Sequelize.STRING
-      },*/
+      },
       code: {
         type: Sequelize.STRING
       }

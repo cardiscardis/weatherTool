@@ -4,7 +4,7 @@ import Aux from "../../../../../../../../hoc/_Aux";
 import DEMO from "../../../../../../../../store/constant";
 const images = require.context('../../../../../../../../assets/images/user', true);
 
-const friend = (props) => {
+const Friend = (props) => {
     let photo = images(`./${props.data.photo}`);
     let timeClass = ['d-block'];
     if (props.data.status) {
@@ -35,4 +35,4 @@ const friend = (props) => {
     );
 };
 
-export default friend;
+export default Friend;

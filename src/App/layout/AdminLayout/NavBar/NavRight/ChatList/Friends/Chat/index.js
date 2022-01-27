@@ -6,7 +6,7 @@ import Messages from './Messages';
 import Aux from "../../../../../../../../hoc/_Aux";
 import DEMO from "../../../../../../../../store/constant";
 
-const chat = (props) => {
+const Chat = (props) => {
     let chatClass = ['header-chat'];
     if (props.chatOpen && props.listOpen) {
         chatClass = [...chatClass, 'open'];
@@ -64,4 +64,4 @@ const chat = (props) => {
     );
 };
 
-export default chat;
+export default Chat;

@@ -4,7 +4,7 @@ import Aux from "../../../../../../../../../hoc/_Aux";
 import DEMO from "../../../../../../../../../store/constant";
 const images = require.context('../../../../../../../../../assets/images/user', true);
 
-const messages = (props) => {
+const Messages = (props) => {
     let image = '';
     if (props.message.type) {
         image = (
@@ -36,4 +36,4 @@ const messages = (props) => {
     );
 };
 
-export default messages;
+export default Messages;

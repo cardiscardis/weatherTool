@@ -74,7 +74,13 @@ const getMonthlyMaxMonth = (num) => {
     return month;
 }
 
-
+function rankDuplicate(arr) {
+    const sorted = [...new Set(arr)].sort((a, b) => b - a);
+    const rank = new Map(sorted.map((x, i) => [x, i + 1]));
+    return arr.map((x) => rank.get(x));
+  }
+  
+  
 const Dashboard = (props) => {  
         
     const [ weatherType, setWeatherType ] = useState('Rainfall');
@@ -368,6 +374,10 @@ const Dashboard = (props) => {
                     //for daily analysis
                     let arrOfEachMonthRainPerYear = [], arrOfEachMonthRainPerYear2 = [];
                     
+                    //for rank
+                    let rank = {};
+                    let rank_annual = [], rank_jan = [], rank_feb = [], rank_mar = [], rank_apr = [], rank_may = [], rank_jun = [], rank_jul = [];
+                    let rank_aug = [], rank_sep = [], rank_oct = [], rank_nov = [], rank_dec = [], rank_winter = [], rank_summer = [], rank_autumn = [], rank_spring = [];
     
                     //main loop
                     for (let i = 0; i <= year1.length-1; i++) {
@@ -391,6 +401,9 @@ const Dashboard = (props) => {
                         
                         let janDecRainPerYear = {};
                         let janDecRainPerYearAvg = {};
+
+                        //for Rank
+                        //let janDecRainPerYearRank = {};
     
                         //for aj, sj and oj
                         let ad = [], sd = [], od = [];
@@ -454,7 +467,7 @@ const Dashboard = (props) => {
                                 }
                             
     
-                            //consec dry days per year
+                                //consec dry days per year
                             
                                 if (arrOfRainfall[k] === 0) {                               
                                     if (arrOfRainfall[k] === arrOfRainfall[k + 1]) {
@@ -608,22 +621,23 @@ const Dashboard = (props) => {
                             //seasonal
                             //season data for each other year including last
                             if (filterControl === 'Monthly Sort' || filterControl === 'Monthly' || filterControl === 'Seasonal' || filterControl === 'Seasonal Sort' ||
-                            filterControl === 'H1H2Q1Q4' || filterControl === 'H1H2Q1Q4 Sort' || filterControl === 'OJ Index' || filterControl === 'Test Select Year' || filterControl === 'OJ Index Sort') {
+                            filterControl === 'H1H2Q1Q4' || filterControl === 'H1H2Q1Q4 Sort' || filterControl === 'OJ Index' || filterControl === 'Test Select Year' || 
+                            filterControl === 'OJ Index Sort' || filterControl === 'Overview') {
                                 if (y[1] === '1' || y[1] === '2') {
-                                    winter2.push(Number(arrOfRainfall[k]));
+                                    winter2.push(arrOfRainfall[k] !==undefined ? Number(arrOfRainfall[k]):0);
                                 }                                                                
                                 if (y[1] === '3' || y[1] === '4' || y[1] === '5') {
-                                    spring2.push(Number(arrOfRainfall[k]));
+                                    spring2.push(arrOfRainfall[k] !==undefined ? Number(arrOfRainfall[k]):0);
                                 }         
                                 if (y[1] === '6' || y[1] === '7' || y[1] === '8') {
-                                    summer2.push(Number(arrOfRainfall[k]));
+                                    summer2.push(arrOfRainfall[k] !==undefined ? Number(arrOfRainfall[k]):0);
                                 }         
                                 if (y[1] === '9' || y[1] === '10' || y[1] === '11') {
-                                    autumn2.push(Number(arrOfRainfall[k]));
+                                    autumn2.push(arrOfRainfall[k] !==undefined ? Number(arrOfRainfall[k]):0);
                                 }
                                 //next year's winter begins
                                 if (y[1] === '12') {
-                                    winter_cc.push(Number(arrOfRainfall[k]));
+                                    winter_cc.push(arrOfRainfall[k] !==undefined ? Number(arrOfRainfall[k]):0);
                                 }
     
                                 //--------------------------------------------
@@ -853,10 +867,14 @@ const Dashboard = (props) => {
                                     let sumOfMonthlyRain = monthArray.reduce(function(a, b) {
                                         return a + b;
                                     }, 0);
+                                    //console.log(sumOfMonthlyRain)
                                     sumOfRainfallPerMonth[arrOfYearAndMonth[k]] = sumOfMonthlyRain;
     
                                     //preparing monthly filter
                                     janDecRainPerYear[getMonthlyMaxMonth(Number(y[1]))] = sumOfMonthlyRain;
+                                    //for rank
+                                    //janDecRainPerYearRank[getMonthlyMaxMonth(Number(y[1]))] = sumOfMonthlyRain || 0;
+
                                     janDecRainPerYearAvg[getMonthlyMaxMonth(Number(y[1]))] = Number(Number(sumOfMonthlyRain/monthArray.length).toFixed(2));
     
                                     //for averages Filter Table                                    
@@ -1880,6 +1898,28 @@ const Dashboard = (props) => {
                                 }
                             }*/
                         }
+
+                        if (filterControl === "Overview") {                            
+                            rank_winter.push(sumOfWinterPerYear||0);
+                            rank_spring.push(sumOfSpringPerYear||0);
+                            rank_summer.push(sumOfSummerPerYear||0);
+                            rank_autumn.push(sumOfAutumnPerYear||0);
+                            //winter_cc
+                            rank_jan.push(janDecRainPerYear.Jan !== undefined ? Number(janDecRainPerYear.Jan):0);
+                            rank_feb.push(janDecRainPerYear.Feb !== undefined ? Number(janDecRainPerYear.Feb):0);
+                            rank_mar.push(janDecRainPerYear.Mar !== undefined ? Number(janDecRainPerYear.Mar):0);
+                            rank_apr.push(janDecRainPerYear.Apr !== undefined ? Number(janDecRainPerYear.Apr):0);
+                            rank_may.push(janDecRainPerYear.May !== undefined ? Number(janDecRainPerYear.May):0);
+                            rank_jun.push(janDecRainPerYear.Jun !== undefined ? Number(janDecRainPerYear.Jun):0);
+                            rank_jul.push(janDecRainPerYear.Jul !== undefined ? Number(janDecRainPerYear.Jul):0);
+                            rank_aug.push(janDecRainPerYear.Aug !== undefined ? Number(janDecRainPerYear.Aug):0);
+                            rank_sep.push(janDecRainPerYear.Sep !== undefined ? Number(janDecRainPerYear.Sep):0);
+                            rank_oct.push(janDecRainPerYear.Oct !== undefined ? Number(janDecRainPerYear.Oct):0);
+                            rank_nov.push(janDecRainPerYear.Nov !== undefined ? Number(janDecRainPerYear.Nov):0);
+                            rank_dec.push(janDecRainPerYear.Dec !== undefined ? Number(janDecRainPerYear.Dec):0);
+
+                            rank_annual.push(sumOfRainfall || 0);
+                        }
                         
     
                         //reset arrays
@@ -1893,6 +1933,30 @@ const Dashboard = (props) => {
                         spring2 = [];
                         summer2 = [];
                         autumn2 = [];  
+                    }
+
+                    if (filterControl === 'Overview') {                        
+                        rank.winter = rankDuplicate(rank_winter);
+                        rank.summer = rankDuplicate(rank_summer);
+                        rank.autumn = rankDuplicate(rank_autumn);
+                        rank.spring = rankDuplicate(rank_spring);
+
+                        rank.jan = rankDuplicate(rank_jan);
+                        rank.feb = rankDuplicate(rank_feb);
+                        rank.mar = rankDuplicate(rank_mar);
+                        rank.apr = rankDuplicate(rank_apr);
+                        rank.may = rankDuplicate(rank_may);
+                        rank.jun = rankDuplicate(rank_jun);
+                        rank.jul = rankDuplicate(rank_jul);
+                        rank.aug = rankDuplicate(rank_aug);
+                        rank.sep = rankDuplicate(rank_sep);
+                        rank.oct = rankDuplicate(rank_oct);
+                        rank.nov = rankDuplicate(rank_nov);
+                        rank.dec = rankDuplicate(rank_dec);
+
+                        rank.annual = rankDuplicate(rank_annual);
+                        mainData.rank = rank;
+                        //console.log(rank)
                     }
 
                     if (filterControl === 'Since 1960') {
@@ -3025,7 +3089,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{Number(mainState.annualRainForLastYear).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{(!mainState.annualRainForLastYear || mainState.annualRainForLastYear === 'n/a') ? 'n/a' : String(Number(mainState.annualRainForLastYear).toFixed()) + '/' + String(Number(mainState.overallStationRainfall).toFixed())}</h6>{/*  decimalToFraction(mainState.annualRainForLastYear / mainState.overallStationRainfall).display}</h6> <a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{(!mainState || !mainState.rank || !mainState.rank.annual || !mainState.rank.annual[mainState.rank.annual.length - 1]) ? 'n/a' : String(mainState.rank.annual[mainState.rank.annual.length -1]) + '/' + String(mainState.opYears)}</h6>{/*  decimalToFraction(mainState.annualRainForLastYear / mainState.overallStationRainfall).display}</h6> <a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     <tr className="unread" style={{visibility: "hidden"}}>
                                         {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -3047,7 +3111,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Jan || mainState.Jan === 'n/a') ? 'n/a' : Number(mainState.Jan).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{(!mainState.Jan || mainState.Jan === 'n/a') ? 'n/a' : String(Number(mainState.Jan).toFixed()) + '/' + String(Number(mainState.annualRainForLastYear).toFixed())}</h6>{/* decimalToFraction(mainState.Jan / mainState.annualRainForLastYear).display}</h6> <a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{(!mainState || !mainState.rank || !mainState.rank.jan || !mainState.rank.jan[mainState.rank.jan.length - 1]) ? 'n/a' : String(mainState.rank.jan[mainState.rank.jan.length -1]) + '/' + String(mainState.opYears)}</h6>{/* decimalToFraction(mainState.Jan / mainState.annualRainForLastYear).display}</h6> <a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     <tr className="unread">
                                         {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -3058,7 +3122,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Feb || mainState.Feb === 'n/a') ? 'n/a' : Number(mainState.Feb).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{(!mainState.Feb || mainState.Feb === 'n/a') ? 'n/a' : String(Number(mainState.Feb).toFixed()) + '/' + String(Number(mainState.annualRainForLastYear).toFixed())}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{(!mainState || !mainState.rank || !mainState.rank.feb || !mainState.rank.feb[mainState.rank.feb.length - 1]) ? 'n/a' : String(mainState.rank.feb[mainState.rank.feb.length -1]) + '/' + String(mainState.opYears)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     <tr className="unread">
                                         {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -3069,7 +3133,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Mar || mainState.Mar === 'n/a') ? 'n/a' : Number(mainState.Mar).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{(!mainState.Mar || mainState.Mar === 'n/a') ? 'n/a' : String(Number(mainState.Feb).toFixed()) + '/' + String(Number(mainState.annualRainForLastYear).toFixed())}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{(!mainState || !mainState.rank || !mainState.rank.mar || !mainState.rank.mar[mainState.rank.mar.length - 1]) ? 'n/a' : String(mainState.rank.mar[mainState.rank.mar.length -1]) + '/' + String(mainState.opYears)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     <tr className="unread">
                                         {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -3080,7 +3144,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Apr || mainState.Apr === 'n/a') ? 'n/a' : Number(mainState.Apr).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{(!mainState.Apr || mainState.Apr === 'n/a') ? 'n/a' : String(Number(mainState.Apr).toFixed()) + '/' + String(Number(mainState.annualRainForLastYear).toFixed())}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{(!mainState || !mainState.rank || !mainState.rank.apr || !mainState.rank.apr[mainState.rank.apr.length - 1]) ? 'n/a' : String(mainState.rank.apr[mainState.rank.apr.length -1]) + '/' + String(mainState.opYears)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     <tr className="unread">
                                         {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -3091,7 +3155,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.May || mainState.May === 'n/a') ? 'n/a' : Number(mainState.May).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{(!mainState.May || mainState.May === 'n/a') ? 'n/a' : String(Number(mainState.May).toFixed()) + '/' + String(Number(mainState.annualRainForLastYear).toFixed())}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{(!mainState || !mainState.rank || !mainState.rank.may || !mainState.rank.may[mainState.rank.may.length - 1]) ? 'n/a' : String(mainState.rank.may[mainState.rank.may.length -1]) + '/' + String(mainState.opYears)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     <tr className="unread">
                                         {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -3102,7 +3166,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Jun || mainState.Jun === 'n/a') ? 'n/a' : Number(mainState.Jun).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{(!mainState.Jun || mainState.Jun === 'n/a') ? 'n/a' : String(Number(mainState.Jun).toFixed()) + '/' + String(Number(mainState.annualRainForLastYear).toFixed())}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{(!mainState || !mainState.rank || !mainState.rank.jun || !mainState.rank.jun[mainState.rank.jun.length - 1]) ? 'n/a' : String(mainState.rank.jun[mainState.rank.jun.length -1]) + '/' + String(mainState.opYears)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     <tr className="unread">
                                         {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -3113,7 +3177,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Jul || mainState.Jul === 'n/a') ? 'n/a' : Number(mainState.Jul).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{(!mainState.Jul || mainState.Jul === 'n/a') ? 'n/a' : String(Number(mainState.Jul).toFixed()) + '/' + String(Number(mainState.annualRainForLastYear).toFixed())}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{(!mainState || !mainState.rank || !mainState.rank.jul || !mainState.rank.jul[mainState.rank.jul.length - 1]) ? 'n/a' : String(mainState.rank.jul[mainState.rank.jul.length -1]) + '/' + String(mainState.opYears)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     <tr className="unread">
                                         {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -3124,7 +3188,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Aug || mainState.Aug === 'n/a') ? 'n/a' : Number(mainState.Aug).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{(!mainState.Aug || mainState.Aug === 'n/a') ? 'n/a' : String(Number(mainState.Aug).toFixed()) + '/' + String(Number(mainState.annualRainForLastYear).toFixed())}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{(!mainState || !mainState.rank || !mainState.rank.aug || !mainState.rank.aug[mainState.rank.aug.length - 1]) ? 'n/a' : String(mainState.rank.aug[mainState.rank.aug.length -1]) + '/' + String(mainState.opYears)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     <tr className="unread">
                                         {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -3135,7 +3199,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Sep || mainState.Sep === 'n/a') ? 'n/a' : Number(mainState.Sep).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{(!mainState.Sep || mainState.Sep === 'n/a') ? 'n/a' : String(Number(mainState.Sep).toFixed()) + '/' + String(Number(mainState.annualRainForLastYear).toFixed())}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{(!mainState || !mainState.rank || !mainState.rank.sep || !mainState.rank.sep[mainState.rank.sep.length - 1]) ? 'n/a' : String(mainState.rank.sep[mainState.rank.sep.length -1]) + '/' + String(mainState.opYears)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     <tr className="unread">
                                         {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -3146,7 +3210,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Oct || mainState.Oct === 'n/a') ? 'n/a' : Number(mainState.Oct).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{(!mainState.Oct || mainState.Oct === 'n/a') ? 'n/a' : String(Number(mainState.Oct).toFixed()) + '/' + String(Number(mainState.annualRainForLastYear).toFixed())}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{(!mainState || !mainState.rank || !mainState.rank.oct || !mainState.rank.oct[mainState.rank.oct.length - 1]) ? 'n/a' : String(mainState.rank.oct[mainState.rank.oct.length -1]) + '/' + String(mainState.opYears)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     <tr className="unread">
                                         {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -3157,7 +3221,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Nov || mainState.Nov === 'n/a') ? 'n/a' : Number(mainState.Nov).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{(!mainState.Nov || mainState.Nov === 'n/a') ? 'n/a' : String(Number(mainState.Nov).toFixed()) + '/' + String(Number(mainState.annualRainForLastYear).toFixed())}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{(!mainState || !mainState.rank || !mainState.rank.nov || !mainState.rank.nov[mainState.rank.nov.length - 1]) ? 'n/a' : String(mainState.rank.nov[mainState.rank.nov.length -1]) + '/' + String(mainState.opYears)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     <tr className="unread">
                                         {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -3168,7 +3232,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{(!mainState.Dec || mainState.Dec === 'n/a') ? 'n/a' : Number(mainState.Dec).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{(!mainState.Dec || mainState.Dec === 'n/a') ? 'n/a' : String(Number(mainState.Dec).toFixed()) + '/' + String(Number(mainState.annualRainForLastYear).toFixed())}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{(!mainState || !mainState.rank || !mainState.rank.dec || !mainState.rank.dec[mainState.rank.dec.length - 1]) ? 'n/a' : String(mainState.rank.dec[mainState.rank.dec.length -1]) + '/' + String(mainState.opYears)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     <tr className="unread" style={{visibility: "hidden"}}>
                                         {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -3190,7 +3254,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{mainState.summer === 'n/a' ? mainState.summer : Number(mainState.summer).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{mainState.summer === 'n/a' ? 'n/a' : String(Number(mainState.summer).toFixed()) + '/' + String(Number(mainState.annualRainForLastYear).toFixed())}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{(!mainState || !mainState.rank || !mainState.rank.summer || !mainState.rank.summer[mainState.rank.summer.length - 1]) ? 'n/a' : String(mainState.rank.summer[mainState.rank.summer.length -1]) + '/' + String(mainState.opYears)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     <tr className="unread">
                                         {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -3201,7 +3265,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{mainState.autumn === 'n/a' ? mainState.autumn : Number(mainState.autumn).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{mainState.autumn === 'n/a' ? 'n/a' : String(Number(mainState.autumn).toFixed()) + '/' + String(Number(mainState.annualRainForLastYear).toFixed())}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{(!mainState || !mainState.rank || !mainState.rank.autumn || !mainState.rank.autumn[mainState.rank.autumn.length - 1]) ? 'n/a' : String(mainState.rank.autumn[mainState.rank.autumn.length -1]) + '/' + String(mainState.opYears)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     <tr className="unread">
                                         {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -3212,7 +3276,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{mainState.winter === 'n/a' ? mainState.winter : Number(mainState.winter).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{mainState.winter === 'n/a' ? 'n/a' : String(Number(mainState.winter).toFixed()) + '/' + String(Number(mainState.annualRainForLastYear).toFixed())}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{(!mainState || !mainState.rank || !mainState.rank.mar || !mainState.rank.winter[mainState.rank.winter.length - 1]) ? 'n/a' : String(mainState.rank.winter[mainState.rank.winter.length -1]) + '/' + String(mainState.opYears)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     <tr className="unread">
                                         {/*<td><img className="rounded-circle" style={{width: '40px'}} src={avatar1} alt="activity-user"/></td>*/}
@@ -3223,7 +3287,7 @@ const Dashboard = (props) => {
                                         <td>
                                             <h6 className="text-muted">{/*<i className="fa fa-circle text-c-green f-10 m-r-15"/>*/}{mainState.spring === 'n/a' ? mainState.spring : Number(mainState.spring).toFixed(1)}</h6>
                                         </td>
-                                        <td><h6 className="text-muted">{mainState.spring === 'n/a' ? 'n/a' : String(Number(mainState.spring).toFixed()) + '/' + String(Number(mainState.annualRainForLastYear).toFixed())}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
+                                        <td><h6 className="text-muted">{(!mainState || !mainState.rank || !mainState.rank.spring || !mainState.rank.spring[mainState.rank.spring.length - 1]) ? 'n/a' : String(mainState.rank.spring[mainState.rank.spring.length -1]) + '/' + String(mainState.opYears)}</h6>{/*<a href={DEMO.BLANK_LINK} className="label theme-bg2 text-white f-12">Reject</a><a href={DEMO.BLANK_LINK} className="label theme-bg text-white f-12">Approve</a>*/}</td>
                                     </tr>
                                     {/*<tr className="unread">
                                         <td><img className="rounded-circle" style={{width: '40px'}} src={avatar2} alt="activity-user"/></td>

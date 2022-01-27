@@ -1,6 +1,7 @@
 import React from 'react';
 import NVD3Chart from 'react-nvd3';
 //import * as d3 from 'd3';
+//import $ from 'jquery';
 //import './linePlusBar.css';
 
 const LinePlusBarChart = (props) => {    
@@ -25,7 +26,19 @@ const LinePlusBarChart = (props) => {
             series.values = series.values.map(function(d) { return {x: d[0], y: d[1] } });
             return series;
     });*/
-    console.log([testdata]);
+    //console.log([testdata]);
+
+    /**
+     * 
+     *   $('.nv-chart').attr('id', 'nvc');
+    let chartData = d3.select('#nvc svg').datum(testdata);
+    chartData.transition().duration(500)//.call(chart);
+
+    //nv.utils.windowResize(chart.update);
+
+    //.load(window.location.href+" #nvc>*","");//import d3 from 'd3';
+     */
+  
 /*
     useEffect(() => {
         let chart = '';
@@ -64,7 +77,7 @@ const LinePlusBarChart = (props) => {
     })
     */
     
-    return <NVD3Chart type="linePlusBarChart" datum={testdata} x="x" y="y" height={300} focusEnable={false} />;
+    return <NVD3Chart type="linePlusBarChart" id={'lpbc'} datum={testdata} x="x" y="y" height={300} focusEnable={false} update={true} />;
 }
 
 export default LinePlusBarChart;

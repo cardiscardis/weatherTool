@@ -1,5 +1,6 @@
 import React, { memo, useState } from 'react';
 import {Button, OverlayTrigger, Tooltip, Row, Col, Card, Table, Form} from 'react-bootstrap';
+//import $ from 'jquery';
 
 import Aux from "../../hoc/_Aux";
 import PieChart from '../Charts/Nvd3Chart/PieBasicChart'
@@ -88,6 +89,7 @@ const BootstrapTable = (props) => {
         } else if (e.target.name === 'testSelectControl') {            
 
             if (filterControl === 'Test Select Year' && e.target.value !== 'Select Year') {
+                //$('.nv-chart').remove();
                 //let tsd = [...testSelectData1];
                 let barData = [];                
                 let ojData = props.ojiSelect2;
@@ -104,13 +106,15 @@ const BootstrapTable = (props) => {
                         else if ((ojData.length - 1)%2 === 0 && d.x === ojData[(ojData.length - 1)/2].x) barData.push({x: d.x, y: Number(props.annualAvg)});
                         else if ((ojData.length - 1)%2 !== 0 && d.x === ojData[Math.floor((ojData.length - 1)/2)].x) barData.push({x: d.x, y: Number(props.annualAvg)});                        
                         else  barData.push({x: d.x, y: 0})// = [{x: d.yearFrom, y: Number(d.oj)}, {x: testSelectData1 && testSelectData1.length && testSelectData1[(testSelectData1.length-1)].yearFrom, y: props.annualAvg && Number(props.annualAvg)}];
-                    }                    
-                }    
-                
+                    }
+                }
                 
                 if (testSelectTableData.length) setTestSelectData(testSelectTableData);
                 setTestSelectControl(e.target.value);
                 if (barData && barData.length) setTestSelectGraphData(barData);
+                
+                //$('.nv-chart').html($('.nv-chart').html())
+                //$(".nv-chart").load(window.location.href+" .nv-chart>*","");
                 return false;
             }
         } 

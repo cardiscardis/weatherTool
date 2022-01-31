@@ -54,7 +54,10 @@ const initialState = {
             Winter: '',
             Spring: ''
         }
-    }
+    },
+    weatherType: 'Rainfall',
+    isFetching: true,
+    isComputing: true
 };
 
 const reducer = (state = initialState, action) => {
@@ -132,6 +135,43 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 layout: action.layout
             };
+        case actionTypes.ON_WEATHER_TYPE_CHANGE:
+            if (action.weatherType === 'Rainfall') {
+                return {
+                    ...state,
+                    weatherType: 'Rainfall'
+                };    
+            } else if (action.weatherType === 'Minimum Temperature') {
+                return {
+                    ...state,
+                    weatherType: 'Minimum Temperature'
+                };
+            } else if (action.weatherType === 'Maximum Temperature') {
+                return {
+                    ...state,
+                    weatherType: 'Maximum Temperature'
+                };
+            } else if (action.weatherType === 'Solar Exposure') {
+                return {
+                    ...state,
+                    weatherType: "Solar Exposure"
+                };
+            } else {
+                return {
+                    ...state,
+                    weatherType: ''
+                };
+            };
+        case actionTypes.SET_IS_FETCHING:
+            return {
+                ...state,
+                isFetching: action.isFetchingStatus
+            };
+        case actionTypes.SET_IS_COMPUTING:
+            return {
+                ...state,
+                isComputing: action.isComputingStatus
+            };            
         default:
             return state;
     }

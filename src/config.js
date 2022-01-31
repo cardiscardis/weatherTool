@@ -7,8 +7,8 @@ const config = {
     layoutType: 'menu-light', // menu-dark, (menu-light, dark are not available in lite version)
     navIconColor: false,
     headerBackColor: 'header-default', // header-default, (header-blue, header-red, header-purple, header-lightblue, header-dark are not available in lite version)
-    navBackColor: 'navbar-default', // navbar-default, (navbar-blue, navbar-red, navbar-purple, navbar-lightblue, navbar-dark are not available in lite version)
-    navBrandColor: 'brand-default', // brand-default, (brand-blue, brand-red, brand-purple, brand-lightblue, brand-dark are not available in lite version)
+    navBackColor: 'navbar-dark bg-secondary', // navbar-default, (navbar-blue, navbar-red, navbar-purple, navbar-lightblue, navbar-dark are not available in lite version)
+    navBrandColor: 'brand-dark', // brand-default, (brand-blue, brand-red, brand-purple, brand-lightblue, brand-dark are not available in lite version)
     navBackImage: false, // not available in lite version
     rtlLayout: false, // not available in lite version
     navFixedLayout: true,

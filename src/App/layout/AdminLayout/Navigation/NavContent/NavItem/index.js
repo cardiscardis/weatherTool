@@ -43,16 +43,16 @@ class NavItem extends Component {
         let mainContent = '';
         if (this.props.layout === 'horizontal') {
             mainContent = (
-                <li onClick={this.props.onItemLeave}>{subContent}</li>
+                <li id={this.props.item.id} onClick={(e) => this.props.onItemLeave(e)}>{subContent}</li>
             );
         } else {
             if (this.props.windowWidth < 992) {
                 mainContent = (
-                    <li className={this.props.item.classes} onClick={this.props.onItemClick}>{subContent}</li>
+                    <li id={this.props.item.id} className={this.props.item.classes} onClick={(e) => this.props.onItemClick(e)}>{subContent}</li>
                 );
             } else {
                 mainContent = (
-                    <li className={this.props.item.classes}>{subContent}</li>
+                    <li id={this.props.item.id} className={this.props.item.classes} onClick={(e) => this.props.onClick(e)}>{subContent}</li>
                 );
             }
         }
@@ -74,8 +74,37 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onItemClick: () => dispatch({type: actionTypes.COLLAPSE_MENU}),
-        onItemLeave: () => dispatch({type: actionTypes.NAV_CONTENT_LEAVE})
+        onItemClick: (e) => {
+            console.log('onitemclick')
+            if (e.currentTarget.id === 'rainfall') dispatch({type: actionTypes.ON_WEATHER_TYPE_CHANGE, weatherType: 'Rainfall'});
+            else if (e.currentTarget.id === 'min_temp') dispatch({type: actionTypes.ON_WEATHER_TYPE_CHANGE, weatherType: 'Minimum Temperature'});
+            else if (e.currentTarget.id === 'max_temp') dispatch({type: actionTypes.ON_WEATHER_TYPE_CHANGE, weatherType: 'Maximum Temperature'});
+            else if (e.currentTarget.id === 'solar') dispatch({type: actionTypes.ON_WEATHER_TYPE_CHANGE, weatherType: 'Solar Exposure'});
+            dispatch({type: actionTypes.SET_IS_FETCHING, isFetchingStatus: true});
+            dispatch({type: actionTypes.SET_IS_COMPUTING, isComputingStatus: true});
+            dispatch({type: actionTypes.COLLAPSE_MENU});
+        },
+        onItemLeave: (e) => {
+            console.log('onitemleave')
+            if (e.currentTarget.id === 'rainfall') dispatch({type: actionTypes.ON_WEATHER_TYPE_CHANGE, weatherType: 'Rainfall'});
+            else if (e.currentTarget.id === 'min_temp') dispatch({type: actionTypes.ON_WEATHER_TYPE_CHANGE, weatherType: 'Minimum Temperature'});
+            else if (e.currentTarget.id === 'max_temp') dispatch({type: actionTypes.ON_WEATHER_TYPE_CHANGE, weatherType: 'Maximum Temperature'});
+            else if (e.currentTarget.id === 'solar') dispatch({type: actionTypes.ON_WEATHER_TYPE_CHANGE, weatherType: 'Solar Exposure'});
+            dispatch({type: actionTypes.SET_IS_FETCHING, isFetchingStatus: true})
+            dispatch({type: actionTypes.SET_IS_COMPUTING, isComputingStatus: true});            
+            dispatch({type: actionTypes.NAV_CONTENT_LEAVE})
+        },
+        onClick: (e) => {
+            console.log(e.currentTarget.id)
+            if (e.currentTarget.id === 'rainfall') dispatch({type: actionTypes.ON_WEATHER_TYPE_CHANGE, weatherType: 'Rainfall'});            
+            else if (e.currentTarget.id === 'min_temp') dispatch({type: actionTypes.ON_WEATHER_TYPE_CHANGE, weatherType: 'Minimum Temperature'});            
+            else if (e.currentTarget.id === 'max_temp') dispatch({type: actionTypes.ON_WEATHER_TYPE_CHANGE, weatherType: 'Maximum Temperature'});
+            else if (e.currentTarget.id === 'solar') dispatch({type: actionTypes.ON_WEATHER_TYPE_CHANGE, weatherType: 'Solar Exposure'});
+            dispatch({type: actionTypes.SET_IS_FETCHING, isFetchingStatus: true})
+            dispatch({type: actionTypes.SET_IS_COMPUTING, isComputingStatus: true});
+            
+            
+        }
     }
 };
 

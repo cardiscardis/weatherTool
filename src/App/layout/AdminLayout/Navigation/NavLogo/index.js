@@ -10,10 +10,10 @@ const navLogo = (props) => {
 
     return (
         <Aux>
-            <div className="navbar-brand header-logo">
+            <div className="navbar-brand header-logo bg-secondary">
                  <a href={DEMO.BLANK_LINK} className="b-brand">
                     <div className="b-bg">
-                        <i className="feather icon-trending-up" />
+                        <i className="feather icon-cloud-rain" />
                     </div>
                     <span className="b-title">Weather Tool</span>
                  </a>

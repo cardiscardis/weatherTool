@@ -1,8 +1,10 @@
 import React, { useState, useEffect, memo } from 'react';
 import { Row, Col, Card, Table, Form } from 'react-bootstrap' // Tabs, Tab, Form } from 'react-bootstrap';
+import {connect} from 'react-redux';
 import $ from 'jquery';
 
 import UserService from "../services/user.service.js"
+import * as actionTypes from "../../store/actions";
 //import { decimalToFraction } from "../services/decimalToFraction.js"
 //import FastService from "../services/fast.service.js"
 
@@ -83,83 +85,91 @@ function rankDuplicate(arr) {
   
 const Dashboard = (props) => {  
         
-    const [ weatherType, setWeatherType ] = useState('Rainfall');
-    const [ queryCode, setQueryCode ] = useState('68005');
-    const [ isFetching, setIsFetching ] = useState(true);
-    const [ mainState, setMainState ] = useState({});     
+    
+    let weatherType = props.weatherType;
+    let isFetching = props.isFetching;    
+    let setIsFetching = props.setIsFetching;
+    let isComputing = props.isComputing;
+    let setIsComputing = props.setIsComputing;
+
+    //const [ weatherType, setWeatherType ] = useState('Rainfall');
+    //const [ isFetching, setIsFetching ] = useState(true);
+    //const [ isComputing, setIsComputing ] = useState(true);
+    const [ queryCode, setQueryCode ] = useState('68005 (Bowral)');
+    const [ mainState, setMainState ] = useState({});
     const [ filterControl, setFilterControl ] = useState('Overview');
     const [ seasonControl, setSeasonControl ] = useState('Summer');
     const [ monthlyControl, setMonthlyControl ] = useState('February');
     const [ ojiControl, setOjiControl ] = useState('OJ');
-    const [ analysisControl, setAnalysisControl ] = useState('Select Year');    
-    const [ codesAndData, setCodesAndData ] = useState({});
-    const [ isComputing, setIsComputing ] = useState(true);    
+    const [ analysisControl, setAnalysisControl ] = useState('Select Year');
+    const [ codesAndData, setCodesAndData ] = useState({});    
     
 
     const onChange = (e) => {
+        //e.preventDe
         e.stopPropagation();        
         setIsComputing(true);
         if (e.target.name === 'queryCode') {
             setQueryCode(e.target.value);
             setIsFetching(true);
+            return false;
         } 
-        if (e.target.name === 'weatherType') {
+        /*if (e.target.name === 'weatherType') {
             setWeatherType(e.target.value); 
             setIsFetching(true);
-        } 
+        } */
         if (e.target.name === 'seasonControl') {
-            setSeasonControl(e.target.value);
+            return setSeasonControl(e.target.value);            
         } 
         if (e.target.name === 'monthlyControl') {
-            setMonthlyControl(e.target.value);             
+            return setMonthlyControl(e.target.value);            
         } 
         if (e.target.name === 'ojiControl') {
-            setOjiControl(e.target.value);
+            return setOjiControl(e.target.value);            
         } 
         if (e.target.name === 'analysisControl') {
-            setAnalysisControl(e.target.value);            
+            return setAnalysisControl(e.target.value);
         } 
         if (e.target.name === 'filterControl') {
-            setFilterControl(e.target.value);            
+            return setFilterControl(e.target.value);
         }
     }   
  
 
-    useEffect(() => {        
-        //get station codes and weather data from api       
+    useEffect(() => {
+        //get station codes and weather data from api
         async function fetchData() {
             if (isFetching) {
                 let codes = [];
-                let data = [];
+                let data = [];               
             
                 await UserService.getUserBoard().then(async () => {
-                    
-                    await UserService.getCodes().then(async (response) => {                                                
-                        console.log(response.data);
+                    await UserService.getCodes().then(async (response) => {
                         codes = response.data;
                         return codes;
                     }, (e) => {
                         console.log(e);
-                        alert('Error Fetching Data! Please Reload The Page To Continue');
+                        alert('Error Fetching Data! Please Reload The Page To Continue...');
                         return setIsFetching(false); 
                     });
-                    await UserService.getWeatherContent(weatherType, queryCode).then(async (response) => {
+                    const qc = await queryCode.split(' ');
+                    await UserService.getWeatherContent(weatherType, qc[0]).then(async (response) => {
                         data = await response.data;
                         return data;
                     }, (e) => {
                         console.log(e);
-                        alert('Error Fetching Data! Please Reload The Page To Continue');
+                        alert('Error Fetching Data! Please Reload The Page To Continue...');
                         return setIsFetching(false); 
                     });
                     let ans = { codes, data };
                     //return ans;
                     setCodesAndData(ans);
-                    return setIsFetching(false); 
+                    return setIsFetching(false);
                 }, () => {
                     props.history.push("/auth/signin-1");
                     return window.location.reload();
-                });                
-            }
+                });
+            } else return false;
         }
         
         //-----------------------------------------------
@@ -167,9 +177,10 @@ const Dashboard = (props) => {
             fetchData().then(() => {
                 let codes = codesAndData.codes;
                 let data = codesAndData.data;
+                //let qc = codesAndData.qc;
             
                 let mainData = {};
-                if (codes.length && data.length) {
+                if (codes && data && codes.length && data.length) {
                     mainData.category = "Renewables";
                     mainData.data = [...data];
                     //set station codes for form render
@@ -178,9 +189,10 @@ const Dashboard = (props) => {
                     //set location
                     if (filterControl === 'Location Tool' || filterControl === 'Overview') {
                         //set station location
+                        const qc = queryCode.split(' ');
                         let location = codes.find((a) => {
-                            return a.code === queryCode;
-                        });                                            
+                            return a.code === qc[0];
+                        });
                         //set station details
                         mainData.locationData = location || {};
                         mainData.location = location.station || 'n/a';
@@ -2177,16 +2189,13 @@ const Dashboard = (props) => {
                     
                     //set Main state
                     return setMainState(mainData);                                                            
-                }             
+                } else return false;
                          
             }).then(() => {
                 return setIsComputing(false);
             });
-        }       
-                       
-           
-        
-    }, [ props, queryCode, weatherType, isFetching, isComputing, filterControl, codesAndData.codes, codesAndData.data ]);//, filterControl, codes, data ]);
+        }
+    }, [ props, queryCode, weatherType, isFetching, isComputing, filterControl, codesAndData.codes, codesAndData.data, setIsFetching, setIsComputing ]);//, filterControl, codes, data ]);
 
     //homes.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
 
@@ -2194,23 +2203,23 @@ const Dashboard = (props) => {
         <>
         <Row>            
             <Col md={12} xl={12}>
-                <h5>Choose weather type and station number to get started. Also change the filter to visualize data differently</h5>
+                <h5>Choose weather type and station number to get started. Also change the filter to visualize data differently.</h5>
             </Col>
-            <Col md={4}>
+            {/*<Col md={4}>
                 <Form.Control size="lg" as="select" className="mb-3" name='weatherType' value={weatherType} onChange={(e) => {onChange(e)}}>
                     <option>Rainfall</option>
                     <option>Minimum Temperature</option>
                     <option>Maximum Temperature</option>
                     <option>Solar Exposure</option>
                 </Form.Control>
-            </Col>
-            <Col md={4}>
+    </Col>*/}
+            <Col md={6} xl={6}>
                 <Form.Control size="lg" as="select" className="mb-3" name='queryCode' value={queryCode} onChange={(e) => {onChange(e)}}>
                     {Object.keys(mainState).length &&
-                        mainState.stationCodes.map((c, i) => (<option key={i}>{c.code}</option>))}                            
+                        mainState.stationCodes.map((c, i) => (<option key={i}>{`${c.code} (${c.sub_station})`}</option>))}
                 </Form.Control>                                        
             </Col>
-            <Col md={4}>
+            <Col md={6} xl={6}>
                 <Form.Control size="lg" as="select" className="mb-3" name='filterControl' value={filterControl} onChange={(e) => {onChange(e)}}>
                     <option>Overview</option>
                     <option>Location Tool</option>
@@ -2344,7 +2353,7 @@ const Dashboard = (props) => {
                 <Loader />
                 <div>
                     <span className="spinner-border spinner-border-sm"></span>
-                    Please wait. Intense calculation may take a while
+                    Please wait. Intense calculation may take a while...
                 </div>
             </Aux>
         : (filterControl === 'Daily Cumulative') ?
@@ -3560,5 +3569,24 @@ const Dashboard = (props) => {
     );
 }
 
+const mapStateToProps = state => {
+    return {
+        weatherType: state.weatherType,
+        isComputing: state.isComputing,
+        isFetching: state.isFetching
+    }
+};
 
-export default memo(Dashboard);
+const mapDispatchToProps = dispatch => {
+    return {
+        setIsFetching: (isFetchingStatus) => {            
+            dispatch({type: actionTypes.SET_IS_FETCHING, isFetchingStatus});
+        },
+        setIsComputing: (isComputingStatus) => {
+            dispatch({type: actionTypes.SET_IS_COMPUTING, isComputingStatus});
+        }
+    }
+}
+
+export default memo(connect(mapStateToProps, mapDispatchToProps)(Dashboard));
+//withRouter(connect(mapStateToProps, mapDispatchToProps) (windowSize(NavItem)));

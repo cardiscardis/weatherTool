@@ -2,7 +2,7 @@ const menu_items = {
     items: [
         {
             id: 'navigation',
-            title: 'Navigation',
+            title: 'Main Menu',
             type: 'group',
             icon: 'icon-navigation',
             children: [
@@ -15,6 +15,43 @@ const menu_items = {
                 }
             ]
         },
+        {
+            id: 'weathertools',
+            title: 'Weather Tools',
+            type: 'group',
+            icon: 'icon-charts',
+            children: [
+                {
+                    id: 'rainfall',
+                    title: 'Rain Fall',
+                    type: 'item',
+                    icon: 'feather icon-cloud-rain',
+                    url: '#'
+                },
+                {
+                    id: 'min_temp',
+                    title: 'Minimum Temperature',
+                    type: 'item',
+                    icon: 'feather icon-toggle-left',
+                    url: '#'
+                },
+                {
+                    id: 'max_temp',
+                    title: 'Maximum Temperature',
+                    type: 'item',
+                    icon: 'feather icon-toggle-right',
+                    url: '#'
+                },
+                {
+                    id: 'solar',
+                    title: 'Solar Exposure',
+                    type: 'item',
+                    icon: 'feather icon-sun',
+                    url: '#'
+                }
+            ]
+        }
+
 /*        {
             id: 'ui-element',
             title: 'UI ELEMENT',
@@ -88,7 +125,9 @@ const menu_items = {
                     url: '/tables/bootstrap'
                 }
             ]
-        },
+        },*/
+
+        /*
         {
             id: 'chart-maps',
             title: 'Chart & Maps',
@@ -111,7 +150,8 @@ const menu_items = {
                 }
             ]
         },*/
-        {
+        
+        /*{
             id: 'pages',
             title: 'Pages',
             type: 'group',
@@ -153,7 +193,7 @@ const menu_items = {
                     url: '/sample-page',
                     classes: 'nav-item',
                     icon: 'feather icon-sidebar'
-                },*/
+                },
                 {
                     id: 'docs',
                     title: 'Documentation',
@@ -229,9 +269,9 @@ const menu_items = {
                         title: 'v1.0',
                         type: 'label-primary'
                     }
-                }*/
+                }
             ]
-        }
+        }*/
     ]
 };
 export default menu_items;

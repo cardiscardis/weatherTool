@@ -8,8 +8,8 @@ import App from './App/index';
 import * as serviceWorker from './serviceWorker';
 import reducer from './store/reducer';
 import config from './config';
-import './Demo/slider/styles/App.css';
-import './Demo/slider/styles/Slider.css';
+//import './Demo/slider/styles/App.css';
+//import './Demo/slider/styles/Slider.css';
 
 const store = createStore(reducer);
 

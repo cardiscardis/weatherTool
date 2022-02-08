@@ -1,5 +1,17 @@
 import React from 'react';
-import NVD3Chart from 'react-nvd3';
+//import NVD3Chart from 'react-nvd3';
+import {
+    ComposedChart,
+    Line,    
+    Bar,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    Legend,
+    ResponsiveContainer    
+  } from "recharts";
+
 //import * as d3 from 'd3';
 //import $ from 'jquery';
 //import './linePlusBar.css';
@@ -11,7 +23,56 @@ const LinePlusBarChart = (props) => {
 //$(element+' .nv-axis g text').attr('transform', 'translate(0, 5)')
 //********************************************************* */
 
-    var testdata = [
+  /**
+   * const data = [
+    {
+      name: "Page A",
+      uv: 590,
+      pv: 800,
+      amt: 1400,
+      cnt: 490
+    },
+    {
+      name: "Page B",
+      uv: 868,
+      pv: 967,
+      amt: 1506,
+      cnt: 590
+    },
+    {
+      name: "Page C",
+      uv: 1397,
+      pv: 1098,
+      amt: 989,
+      cnt: 350
+    },
+    {
+      name: "Page D",
+      uv: 1480,
+      pv: 1200,
+      amt: 1228,
+      cnt: 480
+    },
+    {
+      name: "Page E",
+      uv: 1520,
+      pv: 1108,
+      amt: 1100,
+      cnt: 460
+    },
+    {
+      name: "Page F",
+      uv: 1400,
+      pv: 680,
+      amt: 1700,
+      cnt: 380
+    }
+  ];
+   */
+  
+  /*
+    let testdata = [];
+    testdata = [
         {
             "key" : "Selected OJ Vs. LTA",
             "bar": true,
@@ -22,10 +83,11 @@ const LinePlusBarChart = (props) => {
             "key" : "OJ" ,
             "values" : props.ojiSelect
         }
-    ]/*.map(function(series) {
-            series.values = series.values.map(function(d) { return {x: d[0], y: d[1] } });
+    ].map(function(series) {
+            series.values = [...series.values]//.map(function(d) { return {x: d[0], y: d[1] } });
             return series;
-    });*/
+    });
+    */
     //console.log([testdata]);
 
     /**
@@ -77,7 +139,54 @@ const LinePlusBarChart = (props) => {
     })
     */
     
-    return <NVD3Chart type="linePlusBarChart" id={'lpbc'} datum={testdata} x="x" y="y" height={300} focusEnable={false} update={true} />;
+    /**
+     * (
+        React.createElement(NVD3Chart, {
+            xAxis: {
+                tickFormat: function(d){ return d; },
+                axisLabel: 'Year'
+            },
+            yAxis: {
+                axisLabel: 'Amount',
+                tickFormat: function(d) {return parseFloat(d).toFixed(2); }
+            },
+            type:'linePlusBarChart',
+            datum: testdata,
+            x: 'x',
+            y: 'y',
+            height: 300,
+            focusEnable:false,
+            renderEnd: function(){
+                console.log('renderEnd');
+            }
+        })  
+    );
+     */
+    const data = props.testSelectGraphData;
+    console.log(data);
+    return (
+        <ResponsiveContainer width="100%" height={400}>
+        <ComposedChart          
+          data={data}
+          margin={{
+            top: 20,
+            right: 5,
+            bottom: 20,
+            left: 0
+          }}
+        >
+          <CartesianGrid stroke="#d3d3d3" strokeDasharray="5 5"/>
+          <XAxis dataKey="x" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          {/*<Area type="monotone" dataKey="amt" fill="#8884d8" stroke="#8884d8" />*/}
+          <Bar dataKey="Selected_OJ_Vs_LTA" barSize={20} fill="red" />
+          <Line type="monotone" dataKey="OJ" stroke="blue" />
+          {/*<Scatter dataKey="cnt" fill="red" />*/}
+        </ComposedChart>
+        </ResponsiveContainer>
+      );//    return <NVD3Chart type="linePlusBarChart" id={'lpbc'} datum={testdata} x="x" y="y" height={300} focusEnable={false} update={true} />;
 }
 
 export default LinePlusBarChart;

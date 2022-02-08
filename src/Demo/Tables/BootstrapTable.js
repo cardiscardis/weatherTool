@@ -1,5 +1,6 @@
 import React, { memo, useState } from 'react';
 import {Button, OverlayTrigger, Tooltip, Row, Col, Card, Table, Form} from 'react-bootstrap';
+import InfiniteScroll from 'react-infinite-scroll-component';
 //import $ from 'jquery';
 
 import Aux from "../../hoc/_Aux";
@@ -59,7 +60,8 @@ const BootstrapTable = (props) => {
     const [ testSelectData, setTestSelectData ] = useState([...testSelectData1]);
     const [ testSelectControl, setTestSelectControl ] = useState('Select Year');
     const [ testSelectGraphData, setTestSelectGraphData ] = useState(
-        [{x: testSelectData1.length ? testSelectData1[0].yearFrom : 0, y: 0}, {x: testSelectData1.length ? testSelectData1[(testSelectData1.length-1)].yearFrom : 0, y: props.annualAvg && Number(props.annualAvg)}]
+        //
+        [{x: testSelectData1.length ? testSelectData1[0].yearFrom : 0, bar_y: 0}, {x: testSelectData1.length ? testSelectData1[(testSelectData1.length-1)].yearFrom : 0, bar_y: props.annualAvg && Number(props.annualAvg)}]
     );
 
     const [ coolAndWarmRenderData, setCoolAndWarmRenderData ] = useState({});
@@ -71,6 +73,13 @@ const BootstrapTable = (props) => {
     const [ obj, setObj ] = useState([]);
     const [ annualSortHideProp, setAnnualSortHideProp ] = useState(false);
     
+    //for daily raw data infinite scrolling
+    const [count, setCount] = useState({
+        prev: 0,
+        next: 10
+      })
+      const [hasMore, setHasMore] = useState(true);
+      const [current, setCurrent] = useState(data.slice(count.prev, count.next));
     
     const onChange = (e) => {
 //         e.stopPropagation();
@@ -102,10 +111,11 @@ const BootstrapTable = (props) => {
                 if (ojData && ojData.length) {
                     for (let d of ojData) {
                         const yearSplit = e.target.value.split('-');
-                        if (d.x === `${yearSplit[0]}.${yearSplit[1][0]}${yearSplit[1][1]}`) barData.push({x: d.x, y: Number(d.y)});
-                        else if ((ojData.length - 1)%2 === 0 && d.x === ojData[(ojData.length - 1)/2].x) barData.push({x: d.x, y: Number(props.annualAvg)});
-                        else if ((ojData.length - 1)%2 !== 0 && d.x === ojData[Math.floor((ojData.length - 1)/2)].x) barData.push({x: d.x, y: Number(props.annualAvg)});                        
-                        else  barData.push({x: d.x, y: 0})// = [{x: d.yearFrom, y: Number(d.oj)}, {x: testSelectData1 && testSelectData1.length && testSelectData1[(testSelectData1.length-1)].yearFrom, y: props.annualAvg && Number(props.annualAvg)}];
+                        const yearSplit2 = d.x.split('.')
+                        if (d.x === `${yearSplit[0]}.${yearSplit[1][0]}${yearSplit[1][1]}`) barData.push({x: `${yearSplit[0]}-${yearSplit[1][0]}${yearSplit[1][1]}`, OJ: Number(d.y), Selected_OJ_Vs_LTA: Number(d.y)});
+                        else if ((ojData.length - 1)%2 === 0 && d.x === ojData[(ojData.length - 1)/2].x) barData.push({x: `${yearSplit2[0]}-${yearSplit2[1][0]}${yearSplit2[1][1]}`, OJ: Number(d.y), Selected_OJ_Vs_LTA: Number(props.annualAvg)});
+                        else if ((ojData.length - 1)%2 !== 0 && d.x === ojData[Math.floor((ojData.length - 1)/2)].x) barData.push({x: `${yearSplit2[0]}-${yearSplit2[1][0]}${yearSplit2[1][1]}`, OJ: Number(d.y), Selected_OJ_Vs_LTA: Number(props.annualAvg)});                        
+                        else  barData.push({x: `${yearSplit2[0]}-${yearSplit2[1][0]}${yearSplit2[1][1]}`, Selected_OJ_Vs_LTA: 0, OJ: Number(d.y)})// = [{x: d.yearFrom, y: Number(d.oj)}, {x: testSelectData1 && testSelectData1.length && testSelectData1[(testSelectData1.length-1)].yearFrom, y: props.annualAvg && Number(props.annualAvg)}];
                     }
                 }
                 
@@ -396,6 +406,19 @@ const BootstrapTable = (props) => {
         }        
     }, [ filterControl, props.forCoolAndWarmFilterTable ]);
    
+    
+        
+    const getMoreData = () => {
+    if (current.length === data.length) {
+        setHasMore(false);
+        return;
+    }
+    setTimeout(() => {
+        setCurrent(current.concat(data.slice(count.prev + 10, count.next + 10)))
+    }, 2000)
+    setCount((prevState) => ({ prev: prevState.prev + 10, next: prevState.next + 10 }))
+    }
+    
 
     let cr = {}, cr2 = {};
     if (cumulativeRain.length && cumulativeRain2.length && analysisYear) {
@@ -668,7 +691,7 @@ const BootstrapTable = (props) => {
                                     <td>{Number(d.e).toFixed(2)}</td>
                                     <td>{Number(d.f).toFixed(2)}</td>
                                     <td>{Number(d.f - for1960Data.fAvg).toFixed(2)}</td>
-                                    <td>{Number((d.f - for1960Data.fAvg) / for1960Data.fAvg).toFixed(2)}</td>                                                                        
+                                    <td>{`${Number(((d.f - for1960Data.fAvg) / for1960Data.fAvg) * 100).toFixed(2)} %`}</td>
                                 </tr>))}   
                                 <tr>
                                     <td style={{visibility: 'hidden'}}>#</td>
@@ -3402,6 +3425,12 @@ const BootstrapTable = (props) => {
                             <span className="d-block m-t-5"><code>-1</code> means <code>no data recorded</code></span>
                         </Card.Header>
                         <Card.Body>
+                            <InfiniteScroll
+                            dataLength={current.length}
+                            next={getMoreData}
+                            hasMore={hasMore}
+                            loader={<h4>Loading...</h4>}
+                            >
                             <Table striped responsive className='text-center' style={{width: '100%', maxWidth: '100%'}}>
                                 <thead>
                                 <tr>
@@ -3417,7 +3446,7 @@ const BootstrapTable = (props) => {
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {data.map((d, i) => (<tr key={i}>
+                                {current && current.map(((d, i) => (<tr key={i}>
                                     <th scope="row">{i}</th>
                                     <td>{d.product_code}</td>
                                     <td>{d.station_number}</td>
@@ -3427,7 +3456,7 @@ const BootstrapTable = (props) => {
                                     <td>{d.rainfall_amount}</td>
                                     <td>{d.measure_in_days}</td>
                                     <td>{d.quality}</td>
-                                </tr>))}
+                                </tr>)))}
                                 {/*<tr>
                                     <th scope="row">2</th>
                                     <td>Jacob</td>
@@ -3442,6 +3471,7 @@ const BootstrapTable = (props) => {
                                 </tr>*/}
                                 </tbody>
                             </Table>
+                            </InfiniteScroll>
                         </Card.Body>
                     </Card>
                 </Col>

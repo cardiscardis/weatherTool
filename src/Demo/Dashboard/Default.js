@@ -390,6 +390,9 @@ const Dashboard = (props) => {
                     let rank = {};
                     let rank_annual = [], rank_jan = [], rank_feb = [], rank_mar = [], rank_apr = [], rank_may = [], rank_jun = [], rank_jul = [];
                     let rank_aug = [], rank_sep = [], rank_oct = [], rank_nov = [], rank_dec = [], rank_winter = [], rank_summer = [], rank_autumn = [], rank_spring = [];
+
+                    //for Cool and Warm 
+                    let scw = [];
     
                     //main loop
                     for (let i = 0; i <= year1.length-1; i++) {
@@ -412,10 +415,8 @@ const Dashboard = (props) => {
                         }
                         
                         let janDecRainPerYear = {};
-                        let janDecRainPerYearAvg = {};
-
-                        //for Rank
-                        //let janDecRainPerYearRank = {};
+                        //let janDecRainPerNextYear = {};
+                        let janDecRainPerYearAvg = {};                        
     
                         //for aj, sj and oj
                         let ad = [], sd = [], od = [];
@@ -457,7 +458,7 @@ const Dashboard = (props) => {
                         //loop through each year
                         for (let k = start; k <= end - 1; k++) {
                             //calculate yearly
-                            arr.push(arrOfRainfall[k]);  
+                            arr.push(arrOfRainfall[k]);
     
                             //calculate five years interval/basis.
                             if (filterControl === 'Overview') {
@@ -536,7 +537,7 @@ const Dashboard = (props) => {
                             //Populate each day of each month of each year. For Data Analysis
                             if (filterControl === 'Daily Analysis') {
                                 if (data[k].day === 1 ) {
-                                    ones[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);
+                                    ones[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);                                    
                                 }
                                 if (data[k].day === 2) {
                                     twos[getMonthlyMaxMonth(Number(data[k].month))] = Number(arrOfRainfall[k]);
@@ -884,8 +885,7 @@ const Dashboard = (props) => {
     
                                     //preparing monthly filter
                                     janDecRainPerYear[getMonthlyMaxMonth(Number(y[1]))] = sumOfMonthlyRain;
-                                    //for rank
-                                    //janDecRainPerYearRank[getMonthlyMaxMonth(Number(y[1]))] = sumOfMonthlyRain || 0;
+                                    //janDecRainPerYear[getMonthlyMaxMonth(Number(y[1]))] = sumOfMonthlyRain;                                    
 
                                     janDecRainPerYearAvg[getMonthlyMaxMonth(Number(y[1]))] = Number(Number(sumOfMonthlyRain/monthArray.length).toFixed(2));
     
@@ -1176,7 +1176,37 @@ const Dashboard = (props) => {
 
                         //--------------------------------------
 
-                        if (filterControl === 'Cool and Warm') {
+                        if (filterControl === 'Cool and Warm') {      
+                            if (!isComputing) setIsComputing(true);
+                            let nextYearJanToMar=[];                            
+                            
+                            //get january to march next year data for warm
+                            //start looping from next year                            
+                            //start of next year
+                            scw.push(arr.length);
+                            let scw2 = scw.reduce((a,b) => a+b,0);
+                            let startCW = scw2;
+                            let endCW = startCW + 100;
+                            //weatherType: rainfall_amount, min_temp_celsius, max_temp_celsius, solar_exposure
+                            for(let b = startCW; b <= endCW; b++) {
+                                //console.log(data[b].year + ':' +  (Number(year1[i]) + 1))
+                                if(data[b] && data[b].year === Number(year1[i]) + 1 && (data[b].month === 1 || data[b].month === 2 || data[b].month === 3)) {
+                                    if (weatherType === 'Rainfall') {
+                                        nextYearJanToMar.push(data[b].rainfall_amount !== -1?data[b].rainfall_amount:0)                                        
+                                    } else if (weatherType === 'Minimum Temperature') {
+                                        nextYearJanToMar.push(data[b].min_temp_celsius !== -1?data[b].min_temp_celsius:0)
+                                    } else if (weatherType === 'Maximum Temperature') {
+                                        nextYearJanToMar.push(data[b].max_temp_celsius !== -1?data[b].max_temp_celsius:0)
+                                    } else if (weatherType === 'Solar Exposure') {
+                                        nextYearJanToMar.push(data[b].solar_exposure !== -1?data[b].solar_exposure:0)
+                                    }
+                                } else break;
+                            };   
+                            if (isComputing) setIsComputing(false);
+                            
+                            let sumOfnextYearJanToMar = nextYearJanToMar.reduce((a, b) => a+b, 0);                            
+                            //console.log(sumOfnextYearJanToMar)
+                            
                             //for printing
                             let jan = janDecRainPerYear.Jan !== undefined ? Number(janDecRainPerYear.Jan) : 'n/a';
                             let feb = janDecRainPerYear.Feb !== undefined ? Number(janDecRainPerYear.Feb) : 'n/a';
@@ -1191,15 +1221,19 @@ const Dashboard = (props) => {
                             let nov = janDecRainPerYear.Nov !== undefined ? Number(janDecRainPerYear.Nov) : 'n/a';
                             let dec = janDecRainPerYear.Dec !== undefined ? Number(janDecRainPerYear.Dec) : 'n/a';
 
-                            //for calculation
+                            //for calculation                            
                             let apr2 = apr !== 'n/a' ? apr : 0;
+                            let may2 = may !== 'n/a' ? may : 0;
+                            let jun2 = jun !== 'n/a' ? jun : 0;
+                            let jul2 = jul !== 'n/a' ? jul : 0;
+                            let aug2 = aug !== 'n/a' ? aug : 0;
+                            let sep2 = sep !== 'n/a' ? sep : 0;
                             let oct2 = oct !== 'n/a' ? oct : 0;
                             let nov2 = nov !== 'n/a' ? nov : 0;
-                            let dec2 = dec !== 'n/a' ? dec : 0;
-                            let jan2 = jan !== 'n/a' ? jan : 0;
-                            let mar2 = mar !== 'n/a' ? mar : 0;
-                            let cool = apr2 + oct2;
-                            let warm = nov2 + dec2 + jan2 + mar2;
+                            let dec2 = dec !== 'n/a' ? dec : 0;                           
+                            
+                            let cool = apr2 + may2 + jun2 + jul2 + aug2 + sep2 + oct2;
+                            let warm = nov2 + dec2 + sumOfnextYearJanToMar;
 
                             forCoolAndWarmFilterTable.push({
                                 year: [year1[i]], jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec, annual: Number(sumOfRainfall || 0),
@@ -2818,7 +2852,7 @@ const Dashboard = (props) => {
                                 </div>
 
                                 <div className="col-5 text-right">
-                                    <p className="m-b-0">{Object.keys(mainState).length ? mainState.opYears ? mainState.opYears + 1 : 'n/a' : 'n/a'}</p>
+                                    <p className="m-b-0">{Object.keys(mainState).length ? mainState.opYears ? mainState.opYears : 'n/a' : 'n/a'}</p>
                                 </div>
                                 <hr />
                                 <div className="col-7">

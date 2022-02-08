@@ -1,5 +1,11 @@
 import React from 'react';
 import NVD3Chart from 'react-nvd3';
+import $ from 'jquery'
+
+let mouseleave = (event, d) => {
+    $('.nvtooltip').hide();
+}
+$('.nv-bar').on("mouseleave", mouseleave);
 
 let colors = [
         '#CD5C5C', '#000000', '#FF0000', '#FFFF00', '#00FF00', '#008000', '#008080', '#FF00FF', '#000080', '#800080', '#DFFF00', '#FFA07A', 

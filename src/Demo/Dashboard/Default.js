@@ -92,10 +92,10 @@ const Dashboard = (props) => {
     let isComputing = props.isComputing;
     let setIsComputing = props.setIsComputing;
 
-    //const [ weatherType, setWeatherType ] = useState('Rainfall');
+    //const [ weatherType, setWeatherType ] = useState('Rainfall');'
     //const [ isFetching, setIsFetching ] = useState(true);
     //const [ isComputing, setIsComputing ] = useState(true);
-    const [ queryCode, setQueryCode ] = useState('68005 (Bowral)');
+    const [ queryCode, setQueryCode ] = useState('68005 (Bowral Post Office (closed))');
     const [ mainState, setMainState ] = useState({});
     const [ filterControl, setFilterControl ] = useState('Overview');
     const [ seasonControl, setSeasonControl ] = useState('Summer');

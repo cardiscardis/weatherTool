@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import {Dropdown} from 'react-bootstrap';
 
 import ChatList from './ChatList';
@@ -14,6 +15,13 @@ class NavRight extends Component {
     state = {
         listOpen: false
     };
+
+    onclick(e) {
+        e.preventDefault();
+        AuthService.logout(); 
+        this.props.history.push('/auth/signin-1');
+        window.location.reload();
+    }
 
     render() {
 
@@ -93,18 +101,12 @@ class NavRight extends Component {
                                 <div className="pro-head">
                                     <img src={Avatar1} className="img-radius" alt="User Profile"/>
                                     <span>John Doe</span>
-                                    <a href={DEMO.BLANK_LINK} className="dud-logout" title="Logout" onClick={() => {
-                                        AuthService.logout();                                        
-                                        window.location.reload();
-                                    }}>
+                                    <a href={DEMO.BLANK_LINK} className="dud-logout" title="Logout" onClick={(e) => {this.onclick(e)}}>
                                         <i className="feather icon-log-out"/>
                                     </a>
                                 </div>
                                 <ul className="pro-body">
-                                    <li><a href={DEMO.BLANK_LINK} className="dropdown-item" onClick={() => {
-                                        AuthService.logout();             
-                                        window.location.reload();            
-                                    }}>
+                                    <li><a href={DEMO.BLANK_LINK} className="dropdown-item" onClick={(e) => {this.onclick(e)}}>
                                     <i className="feather icon-settings"/> Log Out</a></li>
                                     {/*<li><a href={DEMO.BLANK_LINK} className="dropdown-item"><i className="feather icon-user"/> Profile</a></li>
                                     <li><a href={DEMO.BLANK_LINK} className="dropdown-item"><i className="feather icon-mail"/> My Messages</a></li>
@@ -120,4 +122,4 @@ class NavRight extends Component {
     }
 }
 
-export default NavRight;
+export default withRouter(NavRight);

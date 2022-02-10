@@ -5,7 +5,8 @@ module.exports = (sequelize, Sequelize) => {
       },
       sub_station: {
         type: Sequelize.STRING
-      },      
+      }, 
+           
       Latitude: {
         type: Sequelize.STRING
       },

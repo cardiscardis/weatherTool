@@ -11,24 +11,11 @@ import Loader from "../Loader";
 import routes from "../../../routes";
 import Aux from "../../../hoc/_Aux";
 import * as actionTypes from "../../../store/actions";
-import AuthService from '../../../Demo/services/auth.service.js';
-import UserService from '../../../Demo/services/user.service.js';
 
 import './app.scss';
 
 class AdminLayout extends Component {    
-    state = {user: ''};    
-
-    async componentDidMount(){
-        const isUser = await UserService.getUserBoard();        
-        if (isUser === null) {                        
-            this.props.history.push('/auth/signIn-1');            
-            window.location.reload();            
-        } else {
-           const user = await AuthService.getCurrentUser()      
-            this.setState({user});
-        }
-    }
+    
 
 
     fullScreenExitHandler = () => {
@@ -72,6 +59,7 @@ class AdminLayout extends Component {
         });
 
         return (            
+
             <Aux>                
                 <Fullscreen enabled={this.props.isFullScreen}>
                     <Navigation />

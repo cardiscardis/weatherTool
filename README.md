@@ -7,3 +7,6 @@ Rebuilt with react, mysql and express.js.
 Npm install all dependencies in root.
 Npm start to view with dev server.
 Npm build to acquire prod build.
+
+Master2 branch contains all codes. 
+Make request to gain access.
